@@ -15,8 +15,8 @@ manifest:
   projects:
     - name: zmk
       remote: zmkfirmware
-      # revision: v0.3-branch
-      revision: v0.3.0
+      revision: v0.3-branch
+      # revision: v0.3.0
       import: app/west.yml
     - name: zmk-pmw3610-driver
       remote: badjeff
@@ -26,8 +26,8 @@ manifest:
     #   revision: main
     - name: zmk-rgbled-widget
       remote: caksoylar
-    # revision: v0.3-branch
-      revision: main
+      revision: v0.3-branch
+      # revision: main
     - name: zmk-input-processor-keybind
       remote: zettaface
       revision: main
