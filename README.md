@@ -1,3 +1,6 @@
+# キーマップ変更
+https://nickcoutsos.github.io/keymap-editor/
+
 # zmk-config-moNa2
 
 <img src="keymap-drawer/mona2_01.svg">
