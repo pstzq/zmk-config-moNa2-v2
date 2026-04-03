@@ -2,7 +2,7 @@
 
 <img src="keymap-drawer/mona2_01.svg">
 
-# COROPITを使用するへ
+# COROPITを使用する方へ
 
 COROPITを使用する方は以下のようにコードを編集してください。
 
