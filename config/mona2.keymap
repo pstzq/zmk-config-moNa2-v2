@@ -160,5 +160,14 @@
 
             sensor-bindings = <&scroll_up_down>;
         };
+
+        O24 {
+            bindings = <
+&kp Q   &kp Z   &kp U   &kp COMMA  &kp DOT                      &kp F   &kp W  &kp R  &kp Y  &kp P
+&kp E   &kp I   &kp A   &kp O      &kp MINUS            &trans  &kp K   &kp T  &kp N  &kp S  &kp H
+&kp L   &kp X   &kp C   &kp V      &kp SEMI   &trans    &trans  &kp G   &kp D  &kp M  &kp J  &kp B
+&trans  &trans  &trans  &trans     &trans     &trans    &trans  &trans                       &trans
+            >;
+        };
     };
 };
