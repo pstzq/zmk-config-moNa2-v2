@@ -301,6 +301,49 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  O24:
+  - Q
+  - Z
+  - U
+  - ','
+  - .
+  - F
+  - W
+  - R
+  - Y
+  - P
+  - E
+  - I
+  - A
+  - O
+  - '-'
+  - {t: ▽, type: trans}
+  - K
+  - T
+  - N
+  - S
+  - H
+  - L
+  - X
+  - C
+  - V
+  - ;
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - G
+  - D
+  - M
+  - J
+  - B
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
 combos:
 - p: [39, 38]
   k: {t: ESC, h: '4'}
