@@ -7,6 +7,7 @@
 #include <dt-bindings/zmk/pointing.h>
 
 // https://note.com/kloir_z/n/n314e739f03a1 【ZMK】OS設定を日本語キーボードのまま使う
+// OS設定を日本語キーボードのまま使用するための変換定義
 #define JP_DQUOTE       AT                // "
 #define JP_AMPERSAND    CARET             // &
 #define JP_QUOTE        AMPERSAND         // '
