@@ -411,7 +411,7 @@ layers:
   - '-'
   - F11
   - F12
-  - {t: ▽, type: trans}
+  - F13
   - {t: ▽, type: trans}
   - MENU
   - {t: ▽, type: trans}
