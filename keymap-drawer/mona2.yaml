@@ -1,6 +1,6 @@
 layout: {zmk_keyboard: mona2}
 layers:
-  default_mac:
+  default:
   - Q
   - W
   - E
@@ -8,7 +8,7 @@ layers:
   - T
   - Y
   - U
-  - {t: I, h: '6'}
+  - I
   - O
   - P
   - A
@@ -16,119 +16,119 @@ layers:
   - D
   - F
   - G
-  - ''''
+  - F13
   - H
   - J
   - K
   - L
-  - '-'
+  - ;
   - {t: Z, h: LEFT SHIFT}
   - X
   - C
   - V
   - B
-  - ;
-  - ':'
+  - F14
+  - F15
   - N
   - M
   - ','
   - .
-  - {t: /, h: RIGHT SHIFT}
+  - /
   - LCTRL
   - LEFT WIN
-  - LEFT ALT
+  - F16
   - BACKSPACE
-  - {t: SPACE, h: num}
+  - {t: ENTER, h: '2'}
   - {t: '&to_layer_0 LANG2', h: '3'}
   - {t: '&to_layer_0 LANG1', h: '3'}
-  - {t: ENTER, h: '9'}
-  - {t: DELETE, h: RIGHT SHIFT}
-  '9':
-  - F1
-  - F2
-  - F3
-  - F4
-  - F5
-  - '='
+  - {t: SPACE, h: '1'}
+  - LEFT ALT
+  '1':
   - '1'
   - '2'
   - '3'
-  - +
-  - F6
-  - F7
-  - F8
-  - F9
-  - F10
-  - {t: ▽, type: trans}
-  - '0'
   - '4'
   - '5'
   - '6'
-  - '-'
-  - F11
-  - F12
-  - F13
-  - {t: ▽, type: trans}
-  - MENU
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - .
   - '7'
   - '8'
   - '9'
-  - /
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {type: held}
-  - '*'
-  num:
-  - '-'
-  - '7'
-  - '8'
-  - '9'
-  - /
-  - '!'
-  - '@'
-  - '#'
-  - $
-  - '%'
   - '0'
-  - '4'
-  - '5'
-  - '6'
-  - '*'
-  - _
-  - ^
-  - '&'
-  - '~'
-  - (
-  - )
-  - .
-  - '1'
-  - '2'
-  - '3'
-  - +
-  - KP ENTER
-  - '='
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - '['
   - ']'
-  - '{'
-  - '}'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - (
+  - )
+  - {t: ▽, type: trans}
   - \
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {type: held}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - '|'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {type: held}
+  - {t: ▽, type: trans}
+  '2':
+  - '!'
+  - '@'
+  - '#'
+  - $
+  - '%'
+  - ^
+  - '&'
+  - '*'
+  - '-'
+  - _
+  - '`'
+  - '~'
+  - '"'
+  - ''''
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '&mkp MB3'
+  - '&mkp MB1'
+  - '&mkp MB2'
+  - '='
+  - +
+  - F1
+  - F2
+  - F3
+  - F4
+  - F5
+  - F11
+  - F12
+  - F6
+  - F7
+  - F8
+  - F9
+  - F10
+  - '&studio_unlock'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {type: held}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   '3':
   - {t: ▽, type: trans}
   - Ctl+Sft+TAB
@@ -227,9 +227,9 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - '&mkp MB3'
+  - '&mkp MB2'
+  - '&mkp MB1'
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -245,9 +245,9 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - '&mkp MB4'
   - {t: ▽, type: trans}
-  - '&mkp MB5'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -266,7 +266,6 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {type: held}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -293,134 +292,6 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  O24:
-  - Q
-  - Z
-  - U
-  - ','
-  - .
-  - F
-  - W
-  - R
-  - Y
-  - P
-  - E
-  - I
-  - A
-  - O
-  - '-'
-  - {t: ▽, type: trans}
-  - K
-  - T
-  - N
-  - S
-  - H
-  - L
-  - X
-  - C
-  - V
-  - ;
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - G
-  - D
-  - M
-  - J
-  - B
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  function:
-  - '1'
-  - '2'
-  - '3'
-  - '4'
-  - '5'
-  - F1
-  - F2
-  - F3
-  - F4
-  - F5
-  - '6'
-  - '7'
-  - '8'
-  - '9'
-  - '0'
-  - F13
-  - F6
-  - F7
-  - F8
-  - F9
-  - F10
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - F11
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - F12
-  '8':
-  - Q
-  - W
-  - E
-  - R
-  - T
-  - Y
-  - U
-  - I
-  - O
-  - P
-  - A
-  - S
-  - D
-  - F
-  - G
-  - '&'
-  - H
-  - J
-  - K
-  - L
-  - '-'
-  - Z
-  - X
-  - C
-  - V
-  - B
-  - ;
-  - ''''
-  - N
-  - M
-  - ','
-  - .
-  - /
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -435,7 +306,3 @@ combos:
   k: {t: ESC, h: '4'}
 - p: [11, 12]
   k: TAB
-- p: [13, 12]
-  k: Sft+TAB
-- p: [16, 15]
-  k: '"'
