@@ -111,19 +111,19 @@
 
         num-fx {
             bindings = <
-&kp F1   &kp F2   &kp F3   &kp F4   &kp F5                              &kp KP_EQUAL  &kp N1  &kp N2  &kp N3  &kp KP_PLUS
-&kp F6   &kp F7   &kp F8   &kp F9   &kp F10              &kp EQUAL      &kp N0        &kp N4  &kp N5  &kp N6  &kp KP_MINUS
-&kp F11  &kp F12  &kp F13  &kp F12  &kp F12  &kp APOS    &kp LS(EQUAL)  &kp KP_DOT    &kp N7  &kp N8  &kp N9  &kp KP_DIVIDE
-&trans   &trans   &trans   &trans   &trans   &trans      &trans         &trans                                &kp KP_ASTERISK
+&kp F1   &kp F2   &kp F3   &kp F4   &kp F5                                   &kp KP_EQUAL  &kp N1  &kp N2  &kp N3  &kp KP_PLUS
+&kp F6   &kp F7   &kp F8   &kp F9   &kp F10                   &kp EQUAL      &kp N0        &kp N4  &kp N5  &kp N6  &kp KP_MINUS
+&kp F11  &kp F12  &kp F13  &kp F14  &kp INT1  &kp LS(INT1)    &kp LS(EQUAL)  &kp KP_DOT    &kp N7  &kp N8  &kp N9  &kp KP_DIVIDE
+&trans   &trans   &trans   &trans   &trans    &trans          &trans         &trans                                &kp KP_ASTERISK
             >;
         };
 
         symbols {
             bindings = <
-&trans          &trans  &trans  &trans  &trans                    &kp LS(N1)  &kp LS(N2)  &kp LS(N3)  &kp LS(N4)  &kp LS(N5)
-&trans          &trans  &trans  &trans  &trans            &kp Q   &kp LS(N6)  &kp LS(N7)  &kp N8      &kp N9      &kp N0
-&trans          &trans  &trans  &trans  &trans  &trans    &kp Q   &kp Q       &kp Q       &kp Q       &kp Q       &kp Q
-&studio_unlock  &trans  &trans  &trans  &trans  &trans    &trans  &trans                                          &kp Q
+&trans          &trans  &trans  &trans  &trans                                  &kp LS(N1)         &kp LS(N2)  &kp LS(N3)             &kp LS(N4)    &kp LS(N5)
+&trans          &trans  &trans  &trans  &trans            &kp LS(LEFT_BRACKET)  &kp LS(N6)         &kp LS(N7)  &kp LS(N8)             &kp LS(N9)    &kp LS(N0)
+&trans          &trans  &trans  &trans  &trans  &trans    &kp INTERNATIONAL_3   &kp RIGHT_BRACKET  &kp HASH    &kp LS(RIGHT_BRACKET)  &kp RS(HASH)  &kp LS(QUESTION)
+&studio_unlock  &trans  &trans  &trans  &trans  &trans    &trans                &trans                                                              &kp LS(INTERNATIONAL_3)
             >;
         };
 
