@@ -100,8 +100,8 @@
         compatible = "alps,ec11";
         a-gpios = <&xiao_d 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&xiao_d 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        steps = <24>;
-        status = "disabled";
+        steps = <48>;
+        status = "okay"; //"disabled"; //xでの投稿あり https://x.com/Abashiri_Life_C/status/1936679054901752308
     };
 
     right_encoder: encoder_right {
