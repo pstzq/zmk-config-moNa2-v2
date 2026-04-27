@@ -26,7 +26,7 @@ layers:
   - X
   - C
   - V
-  - B
+  - {t: B, h: '5'}
   - {t: ;, h: '5'}
   - ''''
   - N
@@ -135,22 +135,22 @@ layers:
   - Alt+PRINTSCREEN
   - Ctl+TAB
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - HOME
-  - UP ARROW
-  - END
-  - {t: ▽, type: trans}
+  - Gui+LEFT ARROW
+  - Gui+DOWN ARROW
+  - Gui+UP ARROW
+  - Gui+RIGHT ARROW
+  - Alt+PRINTSCREEN
   - {t: ▽, type: trans}
   - Gui+LEFT ARROW
   - Gui+RIGHT ARROW
   - Ctl+Gui+LEFT ARROW
   - Ctl+Gui+RIGHT ARROW
-  - {t: ▽, type: trans}
+  - HOME
   - LEFT ARROW
   - DOWN ARROW
   - UP ARROW
   - RIGHT ARROW
-  - {t: ▽, type: trans}
+  - END
   - {t: ▽, type: trans}
   - LEFT SHIFT
   - Gui+Sft+LEFT ARROW
@@ -241,8 +241,8 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
   - {type: held}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - '&mkp MB4'
@@ -437,3 +437,7 @@ combos:
   k: TAB
 - p: [12, 13]
   k: Sft+TAB
+- p: [23, 22]
+  k: LANG2
+- p: [31, 30]
+  k: LANG1
