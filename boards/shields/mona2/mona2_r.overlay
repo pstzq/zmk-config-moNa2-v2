@@ -62,6 +62,12 @@
     };
 };
 
+// 20260404
+&zip_temp_layer {
+    excluded-positions = <10 17 18 19 21 29 31>;
+    require-prior-idle-ms = <300>;  // 好きなmsに調整（例: 300ms）
+};
+
 // Runtime input listener for right-side trackball
 &trackball_central_listener {
     status = "okay";
