@@ -121,10 +121,10 @@
 
         num-fx {
             bindings = <
-&kp F1   &kp F2   &kp F3   &kp F4   &kp F5                                   &kp KP_EQUAL  &kp N1  &kp N2  &kp N3  &kp KP_PLUS
-&kp F6   &kp F7   &kp F8   &kp F9   &kp F10                   &kp EQUAL      &kp N0        &kp N4  &kp N5  &kp N6  &kp KP_MINUS
-&kp F11  &kp F12  &kp F13  &kp F14  &kp INT1  &kp LS(INT1)    &kp LS(EQUAL)  &kp KP_DOT    &kp N7  &kp N8  &kp N9  &kp KP_DIVIDE
-&trans   &trans   &trans   &trans   &trans    &trans          &trans         &trans                                &kp KP_ASTERISK
+&kp F1   &kp F2   &kp F3   &kp F4   &kp F5                                   &kp LS(MINUS)  &kp N1  &kp N2  &kp N3  &kp KP_PLUS
+&kp F6   &kp F7   &kp F8   &kp F9   &kp F10                   &kp EQUAL      &kp N0         &kp N4  &kp N5  &kp N6  &kp KP_MINUS
+&kp F11  &kp F12  &kp F13  &kp F14  &kp INT1  &kp LS(INT1)    &kp LS(EQUAL)  &kp KP_DOT     &kp N7  &kp N8  &kp N9  &kp KP_DIVIDE
+&trans   &trans   &trans   &trans   &trans    &trans          &trans         &trans                                 &kp KP_ASTERISK
             >;
         };
 
