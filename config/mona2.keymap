@@ -41,6 +41,16 @@
             bindings = <&kp LS(TAB)>;
             key-positions = <12 13>;
         };
+
+        lang2 {
+            bindings = <&kp LANG2>;
+            key-positions = <23 22>;
+        };
+
+        lang1 {
+            bindings = <&kp LANG1>;
+            key-positions = <31 30>;
+        };
     };
 
     macros {
@@ -102,7 +112,7 @@
             bindings = <
 &kp Q             &kp W         &kp E         &kp R                &kp T                                                          &kp Y        &kp U  &kp I      &kp O    &kp P
 &mt LCTRL A       &kp S         &kp D         &kp F                &kp G                                  &kp LEFT_BRACKET        &kp H        &kp J  &kp K      &kp L    &mt RCTRL MINUS
-&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                &kp B        &lt 5 SEMICOLON           &kp SQT                 &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT SLASH
+&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                &lt 5 B      &lt 5 SEMICOLON           &kp SQT                 &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT SLASH
 &kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &mt LCTRL BACKSPACE  &lt 2 SPACE  &lt_to_layer_0 3 LANG2    &lt_to_layer_0 3 LANG1  &lt 1 ENTER                             &kp DELETE
             >;
 
@@ -129,10 +139,10 @@
 
         direction {
             bindings = <
-&trans  &kp LC(LS(TAB))     &kp LA(PRINTSCREEN)     &kp LC(TAB)              &trans                                     &trans          &kp HOME        &kp UP_ARROW  &kp END          &trans
-&trans  &kp LG(LEFT_ARROW)  &kp LG(RIGHT_ARROW)     &kp LC(LG(LEFT_ARROW))   &kp LC(LG(RIGHT_ARROW))            &trans  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp UP_ARROW  &kp RIGHT_ARROW  &trans
-&trans  &kp LEFT_SHIFT      &kp LG(LS(LEFT_ARROW))  &kp LG(LS(RIGHT_ARROW))  &trans                   &trans    &trans  &trans          &kp DELETE      &kp PAGE_UP   &kp PAGE_DOWN    &trans
-&trans  &trans              &trans                  &trans                   &trans                   &trans    &trans  &trans                                                         &trans
+&trans  &kp LC(LS(TAB))     &kp LA(PRINTSCREEN)     &kp LC(TAB)              &trans                                       &kp LG(LEFT_ARROW)  &kp LG(DOWN_ARROW)  &kp LG(UP_ARROW)  &kp LG(RIGHT_ARROW)  &kp LA(PRINTSCREEN)
+&trans  &kp LG(LEFT_ARROW)  &kp LG(RIGHT_ARROW)     &kp LC(LG(LEFT_ARROW))   &kp LC(LG(RIGHT_ARROW))            &kp HOME  &kp LEFT_ARROW      &kp DOWN_ARROW      &kp UP_ARROW      &kp RIGHT_ARROW      &kp END
+&trans  &kp LEFT_SHIFT      &kp LG(LS(LEFT_ARROW))  &kp LG(LS(RIGHT_ARROW))  &trans                   &trans    &trans    &trans              &kp DELETE          &kp PAGE_UP       &kp PAGE_DOWN        &trans
+&trans  &trans              &trans                  &trans                   &trans                   &trans    &trans    &trans                                                                         &trans
             >;
 
             sensor-bindings = <&rsr_vol>;
