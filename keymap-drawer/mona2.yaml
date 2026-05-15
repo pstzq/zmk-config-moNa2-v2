@@ -2,26 +2,26 @@ layout: {zmk_keyboard: mona2}
 layers:
   default:
   - Q
-  - W
-  - E
-  - R
-  - T
-  - Y
-  - U
-  - I
-  - O
-  - P
-  - {t: A, h: LCTRL}
-  - S
-  - D
-  - F
-  - G
-  - '['
-  - H
-  - J
-  - K
   - L
-  - {t: '-', h: RCTRL}
+  - U
+  - ','
+  - .
+  - F
+  - W
+  - R
+  - Y
+  - P
+  - E
+  - I
+  - A
+  - O
+  - '-'
+  - '['
+  - K
+  - T
+  - N
+  - S
+  - H
   - {t: Z, h: LEFT SHIFT}
   - X
   - C
@@ -29,11 +29,11 @@ layers:
   - {t: B, h: '5'}
   - {t: ;, h: '5'}
   - ''''
-  - N
+  - G
+  - D
   - M
-  - ','
-  - .
-  - {t: /, h: RIGHT SHIFT}
+  - J
+  - B
   - LCTRL
   - LEFT WIN
   - LEFT ALT
