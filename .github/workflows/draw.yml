@@ -45,10 +45,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin ${{ github.ref_name }}
+          # 生成物を先にステージ&コミットしてからrebase（unstagedだとrebase不可）
           git add keymap-drawer/mona2_behavior.svg
-          git diff --cached --quiet || git commit -m "[Draw] レイヤー&トラックボール動作図を更新"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes to behavior diagram."
+          else
+            git commit -m "[Draw] レイヤー&トラックボール動作図を更新"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push
+          fi
 
   # 上で出力された mona2.yaml を JIS グリフに差し替えて JIS版図を生成
   # （keymap-drawer/mona2_jis.svg）
