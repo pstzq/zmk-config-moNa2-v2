@@ -45,11 +45,11 @@ ACTIVATION = {
     "MAC":   "default  /  BT0",
     "WIN":   "BT1  /  BT2",
     "SYM":   "Space 長押し",
-    "NUM":   "LANG2 長押し  (英数キー)",
-    "NAV-W": "LANG1 長押し  (WIN ベース時)",
-    "NAV-M": "LANG1 長押し  (MAC ベース時)",
+    "NUM":   "Enter 長押し",
+    "NAV-W": "英数 or かな 長押し  (WIN ベース時)",
+    "NAV-M": "英数 or かな 長押し  (MAC ベース時)",
     "MOUSE": "ボール操作で自動遷移  /  500ms で復帰",
-    "BLE":   "英数 + かな  同時長押し",
+    "BLE":   "英数 ＆ かな  同時押し (コンボ)",
 }
 
 # (background, text, label)
@@ -179,7 +179,7 @@ def build(display_names, aml, scroll_layers):
     # ── footer note ──
     fy = TITLE_H + HEAD_H + n * ROW_H + PAD + 4
     out.append(text(PAD, fy,
-                    "★ = デフォルト層（電源投入時）　　スクロール = LANG1 / LANG2 長押し中に有効",
+                    "★ = デフォルト層（電源投入時）　　スクロール = NUM / NAV 層で有効",
                     size=10, fill="#95A5A6"))
 
     out.append('</svg>')

@@ -131,7 +131,7 @@
 &kp Q        &kp W      &kp E     &kp R          &kp T                                          &kp Y      &kp U  &kp I      &kp O    &kp P
 &kp A        &kp S      &kp D     &kp F          &kp G                           &kp JIS_AT     &kp H      &kp J  &kp K      &kp L    &mt LGUI JIS_MINUS
 &mt LSHFT Z  &kp X      &kp C     &kp V          &kp B          &caps_word       &kp JIS_UNDER  &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LGUI     &kp LCTRL  &kp LALT  &mt LGUI BSPC  &lt SYM SPACE  &lt NUM LANG2    &lt NAV_MAC LANG1  &kp ENTER                             &kp DEL
+&kp LGUI     &kp LCTRL  &kp LALT  &mt LGUI BSPC  &lt SYM SPACE  &lt NAV_MAC LANG2    &lt NAV_MAC LANG1  &lt NUM ENTER                             &kp DEL
             >;
 
             sensor-bindings = <&scroll_up_down>;
@@ -143,7 +143,7 @@
 &kp Q        &kp W     &kp E     &kp R           &kp T                                          &kp Y      &kp U  &kp I      &kp O    &kp P
 &kp A        &kp S     &kp D     &kp F           &kp G                           &kp JIS_AT     &kp H      &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
 &mt LSHFT Z  &kp X     &kp C     &kp V           &kp B          &caps_word       &kp JIS_UNDER  &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LCTRL    &kp LGUI  &kp LALT  &mt LCTRL BSPC  &lt SYM SPACE  &lt NUM LANG2    &lt NAV_WIN LANG1  &kp ENTER                             &kp DEL
+&kp LCTRL    &kp LGUI  &kp LALT  &mt LCTRL BSPC  &lt SYM SPACE  &lt NAV_WIN LANG2    &lt NAV_WIN LANG1  &lt NUM ENTER                             &kp DEL
             >;
 
             sensor-bindings = <&scroll_up_down>;

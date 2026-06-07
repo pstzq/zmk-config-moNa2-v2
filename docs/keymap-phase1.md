@@ -29,11 +29,11 @@
 | 0 | MAC | 既定 | QWERTY。修飾キー=Mac系(⌘/Ctrl/⌥) |
 | 1 | WIN | BTプロファイル連動(BT1/BT2) | QWERTY。修飾キー=Windows系(Ctrl/Win/Alt) |
 | 2 | SYM 記号 | Space 長押し | JIS正準の記号一式（`jis.h`経由） |
-| 3 | NUM 数字 | 英数(LANG2) 長押し | 右手テンキー＋左手Tab/矢印/BS/Del |
-| 4 | NAV-M 矢印(Mac) | かな(LANG1) 長押し ※MACベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。P=⌘⇧3(スクショ) |
-| 5 | NAV-W 矢印(Win) | かな(LANG1) 長押し ※WINベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。P=PrintScreen |
+| 3 | NUM 数字 | Enter 長押し | 右手テンキー＋左手F1〜F12 |
+| 4 | NAV-M 矢印(Mac) | 英数 or かな 長押し ※MACベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。右手矢印IJKL/メディア |
+| 5 | NAV-W 矢印(Win) | 英数 or かな 長押し ※WINベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。右手矢印IJKL/メディア |
 | 6 | MOUSE | オートマウス(AML) ＝ボール操作で自動 | 右手にマウスボタン |
-| 7 | BLE/設定 | Escコンボ長押し(英数+かな) | BT/出力/Studio/Boot/メディアキー/F1〜F12 |
+| 7 | BLE/設定 | 英数 ＆ かな 同時押し(コンボ) | Bluetooth/出力/Studio/Boot のみ |
 
 ---
 
@@ -51,7 +51,11 @@
 |---|---|---|---|---|---|
 | | BS | Space | 英数(LANG2) | かな(LANG1) | Enter |
 | tap | Backspace | Space | 英数(LANG2) | かな(LANG1) | Enter |
-| hold | Ctrl/⌘ | **SYM** | **NUM** | **NAV** | — |
+| hold | Ctrl/⌘ | **SYM** | **NAV** | **NAV** | **NUM** |
+
+- 英数・かな は**どちらの長押しでも NAV**（OS別に NAV-M / NAV-W 自動）。
+- **英数 ＆ かな 同時押し → BLE**（コンボ。タップ同時は Esc）。
+- NUM は Enter 長押しへ移動（左手 F1〜F12＋右手テンキーが使える）。
 
 ### 中央3キー（一等地）
 - 左内側 = **Caps Word**（`&caps_word`／1単語だけ大文字）
