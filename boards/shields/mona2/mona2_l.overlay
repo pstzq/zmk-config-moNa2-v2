@@ -1,4 +1,12 @@
 #include "mona2.dtsi"
+#include <mouse-gesture.dtsi>
+
+/ {
+    zip_mouse_gesture_win: zip_mouse_gesture_win {
+        compatible = "zmk,input-processor-mouse-gesture";
+        #input-processor-cells = <0>;
+    };
+};
 
 &kscan0 {
         col-gpios
