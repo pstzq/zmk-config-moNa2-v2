@@ -108,7 +108,7 @@ F11  F12  —    —    —         0  1  2  3  .
   | `T` | Win+Tab（タスクビュー） | Ctrl+↑（Mission Control） |
   | `P` | PrintScreen（全画面） | ⌘⇧3（全画面） |
   | `O` | Win+Shift+S（範囲指定） | ⌘⇧4（範囲指定） |
-  | `U` | Alt+PrintScreen（アクティブ窓） | —（Macは窓モードは⌘⇧4→Space） |
+  | `U` | Alt+PrintScreen（アクティブ窓） | `ss_window_mac`＝⌘⇧4→Space（ウィンドウ単位） |
 - **Mute** は `H`（右手ホーム内側）に `C_MUTE`（音量±の真上）。両 NAV 共通。
 - 右手下段メディアキー（両 NAV 共通）: `M / , / .` ＝ `⏮ ⏯ ⏭`（`C_PREV / C_PP / C_NEXT`）、両端 `N / /` ＝ `🔉 🔊`（`C_VOL_DN / C_VOL_UP`）。
 
