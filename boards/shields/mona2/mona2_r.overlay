@@ -94,14 +94,14 @@
              &scroll_runtime_input_processor>;
     };
 
-    // P長押し(layer 8): 2D自由スクロール(パン)。scroller(1/5)より速め(1/2)
+    // P長押し(layer 8): 2D自由スクロール(パン)。scroller(1/5)よりやや速め(1/4)
     panner {
         layers = <8>;
         input-processors =
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
-             &zip_scroll_scaler 1 2>;
+             &zip_scroll_scaler 1 4>;
     };
 
     // Del長押し(layer 9): Mac ウィンドウスナップ(Rectangle)
