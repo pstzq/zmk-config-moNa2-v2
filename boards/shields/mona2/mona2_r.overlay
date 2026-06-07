@@ -73,7 +73,7 @@
     status = "okay";
     device = <&trackball_central>;
     // オートマウスレイヤー(AML): ボール操作で MOUSE 層(=6) を一時有効化
-    input-processors = <&mouse_runtime_input_processor &zip_temp_layer 6 500>;
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &mouse_runtime_input_processor &zip_temp_layer 6 500>;
 
     scroller {
         layers = <3 4 5>;   // NUM(3)/NAV_WIN(4)/NAV_MAC(5) でスクロール有効

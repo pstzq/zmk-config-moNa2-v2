@@ -25,6 +25,31 @@ jobs:
       output_folder: "keymap-drawer"
       destination: "both"
 
+  # レイヤー&トラックボール動作の一覧SVGを生成
+  # （keymap-drawer/mona2_behavior.svg）
+  draw-behavior:
+    needs: draw-jis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Generate behavior diagram
+        run: python scripts/draw_behavior.py
+      - name: Commit behavior diagram
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin ${{ github.ref_name }}
+          git add keymap-drawer/mona2_behavior.svg
+          git diff --cached --quiet || git commit -m "[Draw] レイヤー&トラックボール動作図を更新"
+          git push
+
   # 上で出力された mona2.yaml を JIS グリフに差し替えて JIS版図を生成
   # （keymap-drawer/mona2_jis.svg）
   draw-jis:
