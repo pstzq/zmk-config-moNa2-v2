@@ -166,8 +166,8 @@
         rsr_vol: rsr_vol {
             compatible = "zmk,behavior-runtime-sensor-rotate";
             #sensor-binding-cells = <0>;
-            cw-binding = <&kp C_BRI_DN>;
-            ccw-binding = <&kp C_BRI_UP>;
+            cw-binding = <&kp C_VOL_DN>;
+            ccw-binding = <&kp C_VOL_UP>;
             tap-ms = <100>;
         };
     };
