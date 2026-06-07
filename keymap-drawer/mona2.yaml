@@ -40,7 +40,7 @@ layers:
   - {t: BSPC, h: LCTRL}
   - {t: SPACE, h: SYM}
   - {t: LANG2, h: NUM}
-  - {t: LANG1, h: NAV}
+  - {t: LANG1, h: NAV-W}
   - ENTER
   - DEL
   MAC:
@@ -83,7 +83,7 @@ layers:
   - {t: BSPC, h: LGUI}
   - {t: SPACE, h: SYM}
   - {t: LANG2, h: NUM}
-  - {t: LANG1, h: NAV}
+  - {t: LANG1, h: NAV-M}
   - ENTER
   - DEL
   SYM:
@@ -172,7 +172,50 @@ layers:
   - {t: ▽, type: trans}
   - ENTER
   - DEL
-  NAV:
+  NAV-W:
+  - ESC
+  - {t: ▽, type: trans}
+  - UP
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - PSCRN
+  - HOME
+  - LEFT
+  - DOWN
+  - RIGHT
+  - END
+  - {t: ▽, type: trans}
+  - LEFT
+  - DOWN
+  - UP
+  - RIGHT
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - PG UP
+  - PG DN
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - BSPC
+  - SPACE
+  - {t: ▽, type: trans}
+  - {type: held}
+  - ENTER
+  - DEL
+  NAV-M:
   - ESC
   - {t: ▽, type: trans}
   - UP
