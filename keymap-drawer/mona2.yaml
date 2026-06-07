@@ -1,48 +1,5 @@
 layout: {zmk_keyboard: mona2}
 layers:
-  WIN:
-  - Q
-  - W
-  - E
-  - R
-  - T
-  - Y
-  - U
-  - I
-  - O
-  - P
-  - A
-  - S
-  - D
-  - F
-  - G
-  - Sft+INT1
-  - H
-  - J
-  - K
-  - L
-  - {t: '-', h: RCTRL}
-  - {t: Z, h: LSHFT}
-  - X
-  - C
-  - V
-  - B
-  - '&caps_word'
-  - '&key_repeat'
-  - N
-  - M
-  - ','
-  - .
-  - {t: /, h: RSHFT}
-  - LCTRL
-  - LGUI
-  - LALT
-  - {t: BSPC, h: LCTRL}
-  - {t: SPACE, h: SYM}
-  - {t: LANG2, h: NUM}
-  - {t: LANG1, h: NAV-W}
-  - ENTER
-  - DEL
   MAC:
   - Q
   - W
@@ -84,6 +41,49 @@ layers:
   - {t: SPACE, h: SYM}
   - {t: LANG2, h: NUM}
   - {t: LANG1, h: NAV-M}
+  - ENTER
+  - DEL
+  WIN:
+  - Q
+  - W
+  - E
+  - R
+  - T
+  - Y
+  - U
+  - I
+  - O
+  - P
+  - A
+  - S
+  - D
+  - F
+  - G
+  - Sft+INT1
+  - H
+  - J
+  - K
+  - L
+  - {t: '-', h: RCTRL}
+  - {t: Z, h: LSHFT}
+  - X
+  - C
+  - V
+  - B
+  - '&caps_word'
+  - '&key_repeat'
+  - N
+  - M
+  - ','
+  - .
+  - {t: /, h: RSHFT}
+  - LCTRL
+  - LGUI
+  - LALT
+  - {t: BSPC, h: LCTRL}
+  - {t: SPACE, h: SYM}
+  - {t: LANG2, h: NUM}
+  - {t: LANG1, h: NAV-W}
   - ENTER
   - DEL
   SYM:
@@ -307,8 +307,8 @@ layers:
   - F3
   - F4
   - F5
-  - '&bt_win0'
-  - '&bt_mac1'
+  - '&bt_mac0'
+  - '&bt_win1'
   - '&bt_win2'
   - {t: BT, h: '3'}
   - {t: BT, h: '4'}
