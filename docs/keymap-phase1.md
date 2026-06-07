@@ -154,7 +154,7 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 
 ## Phase 2（今後）
 - 大西配列・薙刀式（→ 下記「導入案」参照）
-- マウスジェスチャー（`zip_mouse_gesture`、外部module追加）
+- マウスジェスチャー（`zip_mouse_gesture`、外部module追加）→ 下記「マウスジェスチャー実装案」参照
   - **P / Del に tap-mod（tap=通常 / hold=ジェスチャー）で割当予定**。位置は現状の右手側のまま（本人の手に合うとのこと）。
 - ホームローMod 本格導入（閾値チューニング込み）
 - LANG切替の `eager_tap_dance` 方式（kot版）併存
@@ -244,3 +244,108 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 
 **既存モジュールとの競合リスク**
 - `zmk-module-runtime-input-processor`（pin: `dbf92f7`）は入力処理パイプラインを拡張するモジュール。naginata も入力処理に割り込む可能性があり、競合が起きた場合は ZMK 側の割り込み順（`input_processors` の優先度）を調整する必要がある。
+
+---
+
+## マウスジェスチャー実装案（実装優先度: 低）
+
+### モジュール
+
+**`kot149/zmk-mouse-gesture`**（zettaface の `zmk-input-processor-keybind` とは別モジュール）
+- `zip_mouse_gesture` という input processor ノードを提供。
+- `mona2_r.overlay` の `&trackball_central_listener` の `input-processors` チェーンに追加する。
+- 主要パラメータ:
+  - `stroke-size = <N>`: ジェスチャー認識に必要な移動距離（デフォルト: 200。PMW3610 CPI=600 環境では 100〜150 程度が目安）
+  - `enable-eager-mode`: 方向確定次第即発火（推奨）
+  - `gesture-cooldown-ms = <N>`: 連続誤発火防止のクールダウン（例: 200ms）
+
+### ジェスチャーの定義方法
+
+keymap 内で以下のように記述する（`mouse-gesture.dtsi` を include した上で）:
+
+```dts
+&zip_mouse_gesture {
+    stroke-size = <150>;
+    enable-eager-mode;
+    gesture-cooldown-ms = <200>;
+
+    back {
+        pattern = <GESTURE_LEFT>;
+        bindings = <&kp LG(LEFT)>;   // Mac: ⌘← (ブラウザ戻る)
+    };
+    forward {
+        pattern = <GESTURE_RIGHT>;
+        bindings = <&kp LG(RIGHT)>;  // Mac: ⌘→ (ブラウザ進む)
+    };
+    close_tab {
+        pattern = <GESTURE_DOWN GESTURE_RIGHT>;  // L字
+        bindings = <&kp LG(W)>;
+    };
+};
+```
+
+- 方向は `GESTURE_UP / GESTURE_DOWN / GESTURE_LEFT / GESTURE_RIGHT` の 4 方向。
+- 複数方向を並べると L字・Z字等の連続ジェスチャーになる。
+- MAC/WIN で修飾キーが異なるため、Phase 1 のコピペコンボ（`layers = <MAC>` / `<WIN>` の 2 本定義）と同じ方式で OS 別に分岐する必要がある。
+
+### 設計方針: GESTURE専用層方式（推奨）
+
+**常時アクティブにしない理由**: `zip_mouse_gesture` をメインの input-processors チェーンに直置きすると、普通のマウス移動でジェスチャーが誤発火する。
+
+**推奨設計**:
+
+1. GESTURE 層（例: 8）を追加。
+2. `mona2_r.overlay` の `&trackball_central_listener` に、スクローラー（`scroller {}`）と同様のサブノードを追加し、`layers = <8>` で GESTURE 層のみ有効化。
+3. P と Del に `&lt GESTURE P` / `&lt GESTURE DEL`（tap-mod）を割り当て。**hold 中だけ GESTURE 層がアクティブになり、その間のトラックボール操作だけジェスチャーとして処理される。**
+
+```dts
+// mona2_r.overlay イメージ
+&trackball_central_listener {
+    // ...既存の input-processors はそのまま...
+
+    gesturer {
+        layers = <8>;   // GESTURE層のみ有効
+        input-processors = <&zip_mouse_gesture>;
+    };
+};
+```
+
+```c
+// mona2.keymap イメージ（右手 P / Del 位置）
+&lt GESTURE P      // tap=P / hold=ジェスチャーモード
+&lt GESTURE DEL    // tap=Del / hold=ジェスチャーモード（別アサイン案）
+```
+
+**P と Del の役割分け案**（未決定、実装時に検討）:
+- P と Del を同一 GESTURE 層につなぐ → どちらを押しても同じジェスチャーセット
+- 別々の層（GEST_P / GEST_DEL）にする → 2 倍のジェスチャー数を使い分け可能だがレイヤー数が増える
+
+### west.yml への追加方法
+
+```yaml
+- name: zmk-mouse-gesture
+  remote: kot149
+  revision: main   # 動作確認後に SHA で pin すること
+```
+
+リモート定義も追加:
+```yaml
+- name: kot149
+  url-base: https://github.com/kot149
+```
+
+### 実装前に潰すべき障壁
+
+**DYAフォーク互換性**
+- ZMK 本体が `cormoran/zmk v0.3-branch+dya`。`zmk-mouse-gesture` が標準 ZMK を前提にしていた場合に動作しない可能性がある。
+- 確認手順: west.yml に追加して keymap への組み込みなしにビルドだけ通るかを先に確認する（薙刀式・案 C と同様）。
+
+**input-processor チェーンの順序**
+- 現状のチェーン: `&zip_xy_transform → &mouse_runtime_input_processor → &zip_temp_layer 6 500`
+- `zip_mouse_gesture` は AML 用の `zip_temp_layer` より **後** に置く必要があるか要確認。順序を誤るとジェスチャー認識前に AML が先に処理してしまう。
+
+**stroke-size の実機チューニング**
+- PMW3610 の CPI=600 設定に合わせた調整が必要。既存ユーザー事例: 20〜300 と幅が広い。実装後に実機で確認すること。
+
+**レイヤー数**
+- GESTURE 層追加で 9 層以上になるが、ZMK のデフォルト上限 16 まで余裕あり。
