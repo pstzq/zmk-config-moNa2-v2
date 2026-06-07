@@ -179,7 +179,7 @@ layers:
   - {t: ▽, type: trans}
   - Ctl+UP
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - '&ss_window_mac'
   - UP
   - Gui+Sft+4
   - Gui+Sft+3
