@@ -50,6 +50,6 @@ manifest:
       revision: main
     - name: zmk-mouse-gesture
       remote: kot149
-      revision: main   # 動作確認後にSHAでpin
+      revision: 855a6e80f18f4b19ea2181648ac062ec72876ece   # masterブランチHEAD相当(mainなし)
   self:
     path: config
