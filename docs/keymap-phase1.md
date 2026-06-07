@@ -1,7 +1,9 @@
 # moNa2 キーマップ — Phase 1 実装まとめ
 
 > このドキュメントは `claude/keymap-rework` ブランチで実装した内容のまとめです。
-> **キーマップ図の正**は GitHub Actions(`draw.yml`)が自動生成する [`keymap-drawer/mona2.svg`](../keymap-drawer/mona2.svg)（push毎に更新）。
+> **キーマップ図**は GitHub Actions(`draw.yml`)が push 毎に自動生成（2種類）：
+> - US(ANSI)準拠: [`keymap-drawer/mona2.svg`](../keymap-drawer/mona2.svg)（keymap-drawer標準。記号は `Sft+1` `[` 等のUS表記）
+> - **JIS準拠**: [`keymap-drawer/mona2_jis.svg`](../keymap-drawer/mona2_jis.svg)（`scripts/jis_relabel.py` で JIS で実際に出る記号 `@ : ^ ¥` 等に変換した版）
 
 ## 目的
 - 日本語(JIS)環境での **US/JIS 記号の読み替えの煩雑さ** を恒久的に解消する。

@@ -2,14 +2,16 @@ name: "Draw ZMK Keymap"
 
 on:
   workflow_dispatch:
-  # push時に自動で実行する場合は、以下のコメントアウトを外す
   push:
     paths:
       - "config/mona2.keymap"
       - "keymap_drawer.config.yaml"
       - "config/mona2.dtsi"
+      - "scripts/jis_relabel.py"
+      - "scripts/mona2_info.json"
 
 jobs:
+  # US(ANSI)準拠の図を生成（keymap-drawer/mona2.svg, mona2.yaml）
   draw:
     uses: caksoylar/keymap-drawer/.github/workflows/draw-zmk.yml@f9cf9d3677368a7fb1dc505c51b8156fafa66fe2
     permissions:
@@ -22,3 +24,31 @@ jobs:
       config_path: "keymap_drawer.config.yaml" # config file, ignored if not exists
       output_folder: "keymap-drawer"
       destination: "both"
+
+  # 上で出力された mona2.yaml を JIS グリフに差し替えて JIS版図を生成
+  # （keymap-drawer/mona2_jis.svg）
+  draw-jis:
+    needs: draw
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install keymap-drawer
+        run: pip install keymap-drawer==0.21.0 pyyaml
+      - name: Generate JIS keymap drawing
+        run: |
+          python scripts/jis_relabel.py keymap-drawer/mona2.yaml /tmp/mona2_jis.yaml
+          keymap draw -j scripts/mona2_info.json -l LAYOUT /tmp/mona2_jis.yaml > keymap-drawer/mona2_jis.svg
+      - name: Commit JIS drawing
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add keymap-drawer/mona2_jis.svg
+          git diff --cached --quiet || git commit -m "[Draw] JIS版キーマップ図を更新"
+          git push
