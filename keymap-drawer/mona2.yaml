@@ -130,9 +130,9 @@ layers:
   - ENTER
   - INT3
   NUM:
+  - TAB
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - UP
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - KP MULTIPLY
@@ -140,11 +140,11 @@ layers:
   - KP 8
   - KP 9
   - KP DIVIDE
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - BSPC
+  - LEFT
+  - DOWN
+  - RIGHT
+  - DEL
   - {t: ▽, type: trans}
   - KP PLUS
   - KP 4
@@ -182,17 +182,17 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - Gui+Sft+3
   - HOME
   - LEFT
   - DOWN
   - RIGHT
   - END
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - LEFT
+  - DOWN
+  - UP
+  - RIGHT
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - PG UP
@@ -276,9 +276,9 @@ layers:
   - F10
   - {t: ▽, type: trans}
   - OUT TOG
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - PREV
+  - PP
+  - NEXT
   - '&studio_unlock'
   - F11
   - F12
