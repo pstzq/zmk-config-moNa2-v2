@@ -97,29 +97,29 @@ layers:
   - Sft+8
   - Sft+9
   - Sft+INT3
-  - {t: ▽, type: trans}
-  - Sft+;
-  - '-'
-  - Sft+INT1
-  - INT1
-  - Sft+[
-  - ']'
-  - '#'
-  - Sft+]
-  - Sft+#
-  - Sft+-
   - '='
   - Sft+=
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - Sft+;
+  - '-'
   - Sft+'
-  - {t: ▽, type: trans}
+  - Sft+[
+  - Sft+]
+  - Sft+#
+  - ']'
+  - '#'
+  - Sft+-
+  - '1'
+  - '2'
+  - '3'
+  - '4'
+  - '5'
   - ;
   - ''''
-  - Sft+,
-  - Sft+.
-  - Sft+/
+  - '6'
+  - '7'
+  - '8'
+  - '9'
+  - '0'
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -194,17 +194,17 @@ layers:
   - DOWN
   - RIGHT
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - LSHFT
   - PG UP
   - PG DN
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  - VOL DN
   - PREV
   - PP
   - NEXT
-  - VOL DN
   - VOL UP
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -237,17 +237,17 @@ layers:
   - DOWN
   - RIGHT
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - LSHFT
   - PG UP
   - PG DN
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  - VOL DN
   - PREV
   - PP
   - NEXT
-  - VOL DN
   - VOL UP
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
