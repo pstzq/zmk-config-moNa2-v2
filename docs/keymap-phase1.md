@@ -71,6 +71,9 @@
 | `S`+`D` | Tab |
 | `D`+`F` | Shift+Tab |
 | `英数`+`かな` | tap=Esc / hold=BLE層 |
+| `J`+`K` | コピー（MAC=⌘C / WIN=CtrlC、OS別に分岐） |
+| `K`+`L` | ペースト（MAC=⌘V / WIN=CtrlV、OS別に分岐） |
+- コピペは `layers = <MAC>` / `<WIN>` で同位置コンボを2本ずつ定義し、ベース層に応じて修飾を自動で出し分け。
 
 ### SYM（記号）
 - `config/jis.h` のエイリアスで JIS-OS でも記号が正しく出る。
@@ -103,7 +106,10 @@ F11  F12  —    —    —         0  1  2  3  .
   | キー位置 | NAV-W (Windows) | NAV-M (Mac) |
   |---|---|---|
   | `T` | Win+Tab（タスクビュー） | Ctrl+↑（Mission Control） |
-  | `P` | PrintScreen | ⌘⇧3（スクリーンショット） |
+  | `P` | PrintScreen（全画面） | ⌘⇧3（全画面） |
+  | `O` | Win+Shift+S（範囲指定） | ⌘⇧4（範囲指定） |
+  | `U` | Alt+PrintScreen（アクティブ窓） | —（Macは窓モードは⌘⇧4→Space） |
+- **Mute** は `H`（右手ホーム内側）に `C_MUTE`（音量±の真上）。両 NAV 共通。
 - 右手下段メディアキー（両 NAV 共通）: `M / , / .` ＝ `⏮ ⏯ ⏭`（`C_PREV / C_PP / C_NEXT`）、両端 `N / /` ＝ `🔉 🔊`（`C_VOL_DN / C_VOL_UP`）。
 
 ### MOUSE（オートマウスレイヤー）
@@ -149,6 +155,7 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 ## Phase 2（今後）
 - 大西配列（裏の裏トグル）
 - マウスジェスチャー（`zip_mouse_gesture`、外部module追加）
+  - **P / Del に tap-mod（tap=通常 / hold=ジェスチャー）で割当予定**。位置は現状の右手側のまま（本人の手に合うとのこと）。
 - ホームローMod 本格導入（閾値チューニング込み）
 - LANG切替の `eager_tap_dance` 方式（kot版）併存
 - Enter長押しの活用 / roBaへの横展開
