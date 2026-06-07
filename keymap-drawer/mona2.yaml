@@ -181,7 +181,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - UP
-  - {t: ▽, type: trans}
+  - Gui+Sft+4
   - Gui+Sft+3
   - HOME
   - LEFT
@@ -189,7 +189,7 @@ layers:
   - RIGHT
   - END
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - MUTE
   - LEFT
   - DOWN
   - RIGHT
@@ -222,9 +222,9 @@ layers:
   - {t: ▽, type: trans}
   - Gui+TAB
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - Alt+PSCRN
   - UP
-  - {t: ▽, type: trans}
+  - Gui+Sft+S
   - PSCRN
   - HOME
   - LEFT
@@ -232,7 +232,7 @@ layers:
   - RIGHT
   - END
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - MUTE
   - LEFT
   - DOWN
   - RIGHT
@@ -354,3 +354,15 @@ combos:
 - p: [38, 39]
   k: {t: ESC, h: BLE}
   l: [WIN, MAC]
+- p: [17, 18]
+  k: Gui+C
+  l: [MAC]
+- p: [17, 18]
+  k: Ctl+C
+  l: [WIN]
+- p: [18, 19]
+  k: Gui+V
+  l: [MAC]
+- p: [18, 19]
+  k: Ctl+V
+  l: [WIN]
