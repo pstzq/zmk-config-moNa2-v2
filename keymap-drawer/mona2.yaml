@@ -88,15 +88,15 @@ layers:
   - DEL
   SYM:
   - Sft+1
-  - '['
+  - Sft+2
   - Sft+3
   - Sft+4
   - Sft+5
-  - '='
   - Sft+6
-  - Sft+'
+  - Sft+7
   - Sft+8
   - Sft+9
+  - '['
   - Sft+-
   - Sft+;
   - '-'
@@ -113,9 +113,9 @@ layers:
   - ''''
   - ;
   - Sft+7
+  - '='
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - Sft+2
+  - Sft+'
   - Sft+,
   - Sft+.
   - Sft+/
