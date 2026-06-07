@@ -203,9 +203,9 @@
             display-name = "SYM";
             bindings = <
 &kp JIS_EXCL   &kp JIS_DQT    &kp JIS_HASH   &kp JIS_DLR    &kp JIS_PCT                            &kp JIS_AMPS   &kp JIS_QUOTE  &kp JIS_LPAR  &kp JIS_RPAR  &kp JIS_PIPE
-&kp JIS_CARET  &kp JIS_TILDE  &kp JIS_PLUS   &kp JIS_MINUS  &kp JIS_STAR               &kp JIS_GRV  &kp JIS_LBRC   &kp JIS_RBRC  &kp JIS_LBKT  &kp JIS_RBKT  &kp JIS_EQUAL
+&kp JIS_CARET  &kp JIS_TILDE  &kp JIS_PLUS   &kp JIS_MINUS  &kp JIS_STAR               &kp JIS_YEN  &kp JIS_LBRC   &kp JIS_RBRC  &kp JIS_LBKT  &kp JIS_RBKT  &kp JIS_EQUAL
 &kp N1         &kp N2         &kp N3         &kp N4         &kp N5         &kp JIS_SEMI   &kp JIS_COLON  &kp N6     &kp N7         &kp N8        &kp N9        &kp N0
-&trans         &trans         &trans         &kp BSPC       &trans         &trans    &trans  &kp ENTER                                                &kp JIS_YEN
+&trans         &trans         &trans         &kp BSPC       &trans         &trans    &trans  &kp ENTER                                                &trans
             >;
 
             sensor-bindings = <&scroll_up_down>;

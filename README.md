@@ -116,7 +116,7 @@ Shift PgUp PgDn  —   —                              🔅  ⏮   ⏯   ⏭  �
 ## DYA Studio でのキーマップ変更
 
 [DYA Studio](https://studio.dya.cormoran.works/) を使うと GUI でキーマップを変更できます。
-接続前に BLE 層の `studio_unlock` キーを押してください（`J` の右隣）。
+接続前に BLE 層の `studio_unlock` キーを押してください（`L` の右隣）。
 
 詳細: [`README2.md`](README2.md)
 
