@@ -39,9 +39,9 @@ layers:
   - LALT
   - {t: BSPC, h: LGUI}
   - {t: SPACE, h: SYM}
-  - {t: LANG2, h: NUM}
+  - {t: LANG2, h: NAV-M}
   - {t: LANG1, h: NAV-M}
-  - ENTER
+  - {t: ENTER, h: NUM}
   - DEL
   WIN:
   - Q
@@ -82,9 +82,9 @@ layers:
   - LALT
   - {t: BSPC, h: LCTRL}
   - {t: SPACE, h: SYM}
-  - {t: LANG2, h: NUM}
+  - {t: LANG2, h: NAV-W}
   - {t: LANG1, h: NAV-W}
-  - ENTER
+  - {t: ENTER, h: NUM}
   - DEL
   SYM:
   - Sft+1
@@ -168,9 +168,9 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {type: held}
   - {t: ▽, type: trans}
-  - ENTER
+  - {t: ▽, type: trans}
+  - {t: ENTER, type: held}
   - DEL
   NAV-M:
   - ESC
@@ -211,8 +211,8 @@ layers:
   - {t: ▽, type: trans}
   - BSPC
   - SPACE
-  - {t: ▽, type: trans}
   - {type: held}
+  - {t: ▽, type: trans}
   - ENTER
   - DEL
   NAV-W:
@@ -254,8 +254,8 @@ layers:
   - {t: ▽, type: trans}
   - BSPC
   - SPACE
-  - {t: ▽, type: trans}
   - {type: held}
+  - {t: ▽, type: trans}
   - ENTER
   - DEL
   MOUSE:
