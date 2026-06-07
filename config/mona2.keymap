@@ -174,7 +174,7 @@
         };
 
         nav_win_layer {
-            display-name = "NAV";
+            display-name = "NAV-W";
             bindings = <
 &kp ESC   &trans     &kp UP     &trans     &trans                       &trans     &trans     &trans   &trans      &kp PSCRN
 &kp HOME  &kp LEFT   &kp DOWN   &kp RIGHT  &kp END              &trans  &kp LEFT   &kp DOWN   &kp UP   &kp RIGHT   &trans
@@ -186,7 +186,7 @@
         };
 
         nav_mac_layer {
-            display-name = "NAV";
+            display-name = "NAV-M";
             bindings = <
 &kp ESC   &trans     &kp UP     &trans     &trans                            &trans     &trans     &trans   &trans      &kp LG(LS(N3))
 &kp HOME  &kp LEFT   &kp DOWN   &kp RIGHT  &kp END                  &trans  &kp LEFT   &kp DOWN   &kp UP   &kp RIGHT   &trans
