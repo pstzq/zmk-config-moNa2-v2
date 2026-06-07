@@ -102,7 +102,7 @@ layers:
   - Sft+;
   - '-'
   - Sft+'
-  - Sft+[
+  - INT3
   - Sft+]
   - Sft+#
   - ']'
@@ -128,7 +128,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - ENTER
-  - INT3
+  - {t: ▽, type: trans}
   NUM:
   - F1
   - F2
