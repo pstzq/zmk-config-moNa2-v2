@@ -2,6 +2,15 @@
 #include <input/processors.dtsi>
 #include <input/processors/runtime-input-processor.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <mouse-gesture.dtsi>
+
+/ {
+    // Windows用ジェスチャープロセッサ（Mac用はmouse-gesture.dtsiのzip_mouse_gestureを使用）
+    zip_mouse_gesture_win: zip_mouse_gesture_win {
+        compatible = "zmk,input-processor-mouse-gesture";
+        #input-processor-cells = <0>;
+    };
+};
 
 &default_transform {
     col-offset = <6>;
@@ -83,6 +92,28 @@
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
              &zip_scroll_scaler 1 5
              &scroll_runtime_input_processor>;
+    };
+
+    // P長押し(layer 8): 2D自由スクロール(パン)。scroller(1/5)より速め(1/2)
+    panner {
+        layers = <8>;
+        input-processors =
+            <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
+             &zip_xy_to_scroll_mapper
+             &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
+             &zip_scroll_scaler 1 2>;
+    };
+
+    // Del長押し(layer 9): Mac ウィンドウスナップ(Rectangle)
+    gesturer_mac {
+        layers = <9>;
+        input-processors = <&zip_mouse_gesture>;
+    };
+
+    // Del長押し(layer 10): Win ウィンドウスナップ(Win+矢印)
+    gesturer_win {
+        layers = <10>;
+        input-processors = <&zip_mouse_gesture_win>;
     };
 };
 

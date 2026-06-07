@@ -14,6 +14,8 @@ manifest:
       url-base: https://github.com/caksoylar  
     - name: zettaface  # <-- Input Processor Keybind
       url-base: https://github.com/zettaface
+    - name: kot149    # <-- Mouse Gesture
+      url-base: https://github.com/kot149
   projects:
     - name: zmk
       remote: cormoran
@@ -46,5 +48,8 @@ manifest:
     - name: zmk-input-processor-keybind
       remote: zettaface
       revision: main
+    - name: zmk-mouse-gesture
+      remote: kot149
+      revision: main   # 動作確認後にSHAでpin
   self:
     path: config
