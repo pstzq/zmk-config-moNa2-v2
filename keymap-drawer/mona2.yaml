@@ -10,13 +10,13 @@ layers:
   - U
   - I
   - O
-  - {t: P, h: '['}
+  - P
   - A
   - S
   - D
   - F
   - G
-  - Sft+INT1
+  - '['
   - H
   - J
   - K
@@ -28,7 +28,7 @@ layers:
   - V
   - B
   - '&caps_word'
-  - '&key_repeat'
+  - Sft+INT1
   - N
   - M
   - ','
@@ -53,13 +53,13 @@ layers:
   - U
   - I
   - O
-  - {t: P, h: '['}
+  - P
   - A
   - S
   - D
   - F
   - G
-  - Sft+INT1
+  - '['
   - H
   - J
   - K
@@ -71,7 +71,7 @@ layers:
   - V
   - B
   - '&caps_word'
-  - '&key_repeat'
+  - Sft+INT1
   - N
   - M
   - ','
@@ -107,7 +107,7 @@ layers:
   - '#'
   - Sft+]
   - Sft+#
-  - Sft+INT3
+  - {t: ▽, type: trans}
   - Sft+[
   - Sft+=
   - ''''
@@ -116,10 +116,10 @@ layers:
   - '='
   - {t: ▽, type: trans}
   - Sft+'
+  - {t: ▽, type: trans}
   - Sft+,
   - Sft+.
   - Sft+/
-  - /
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -172,26 +172,26 @@ layers:
   - {t: ▽, type: trans}
   - ENTER
   - DEL
-  NAV-W:
+  NAV-M:
   - ESC
   - {t: ▽, type: trans}
   - UP
   - {t: ▽, type: trans}
-  - Gui+TAB
+  - Ctl+UP
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  - UP
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - PSCRN
+  - Gui+Sft+3
   - HOME
   - LEFT
   - DOWN
   - RIGHT
   - END
   - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - LEFT
   - DOWN
-  - UP
   - RIGHT
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -215,26 +215,26 @@ layers:
   - {type: held}
   - ENTER
   - DEL
-  NAV-M:
+  NAV-W:
   - ESC
   - {t: ▽, type: trans}
   - UP
   - {t: ▽, type: trans}
-  - Ctl+UP
+  - Gui+TAB
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  - UP
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - Gui+Sft+3
+  - PSCRN
   - HOME
   - LEFT
   - DOWN
   - RIGHT
   - END
   - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - LEFT
   - DOWN
-  - UP
   - RIGHT
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
