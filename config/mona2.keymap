@@ -12,14 +12,15 @@
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
-#include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
 #include "jis.h"
 
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 30
 
 /* ---- レイヤー定義 ---- */
+
 #define WIN   0   // ベース(Windows)
 #define MAC   1   // ベース(Mac)
 #define SYM   2   // 記号
@@ -43,6 +44,7 @@
         compatible = "zmk,combos";
 
         // S+D = Tab
+
         combo_tab {
             bindings = <&kp TAB>;
             key-positions = <11 12>;
@@ -50,6 +52,7 @@
         };
 
         // D+F = Shift+Tab
+
         combo_stab {
             bindings = <&kp LS(TAB)>;
             key-positions = <12 13>;
@@ -57,6 +60,7 @@
         };
 
         // 英数+かな = tap:Esc / hold:BLE層 (sayu-hub意識)
+
         combo_esc_ble {
             bindings = <&lt BLE ESC>;
             key-positions = <38 39>;
@@ -66,28 +70,32 @@
 
     macros {
         // OSをBTプロファイルに紐づけて切替 (BT0=Win / BT1=Mac / BT2=Win)
+
         bt_win0: bt_win0 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to WIN>, <&bt BT_SEL 0>;
+            bindings = <&to WIN &bt BT_SEL 0>;
             label = "BT_WIN0";
         };
+
         bt_mac1: bt_mac1 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to MAC>, <&bt BT_SEL 1>;
+            bindings = <&to MAC &bt BT_SEL 1>;
             label = "BT_MAC1";
         };
+
         bt_win2: bt_win2 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to WIN>, <&bt BT_SEL 2>;
+            bindings = <&to WIN &bt BT_SEL 2>;
             label = "BT_WIN2";
         };
     };
 
     behaviors {
         // エンコーダ: runtime-sensor-rotate (DYA Studioから動的変更可)
+
         scroll_up_down: scroll_up_down {
             compatible = "zmk,behavior-runtime-sensor-rotate";
             #sensor-binding-cells = <0>;
@@ -119,77 +127,84 @@
         win_layer {
             display-name = "WIN";
             bindings = <
-&kp Q          &kp W   &kp E   &kp R   &kp T                                 &kp Y   &kp U   &kp I      &kp O    &kp P
-&kp A          &kp S   &kp D   &kp F   &kp G          &kp JIS_UNDER         &kp H   &kp J   &kp K      &kp L    &mt RCTRL JIS_MINUS
-&mt LSHFT Z    &kp X   &kp C   &kp V   &kp B   &caps_word      &key_repeat   &kp N   &kp M   &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LCTRL  &kp LGUI  &kp LALT  &mt LCTRL BSPC  &lt SYM SPACE  &lt NUM LANG2     &lt NAV LANG1  &kp ENTER                       &kp DEL
+&kp Q        &kp W     &kp E     &kp R           &kp T                                          &kp Y      &kp U  &kp I      &kp O    &kp P
+&kp A        &kp S     &kp D     &kp F           &kp G                           &kp JIS_UNDER  &kp H      &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
+&mt LSHFT Z  &kp X     &kp C     &kp V           &kp B          &caps_word       &key_repeat    &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
+&kp LCTRL    &kp LGUI  &kp LALT  &mt LCTRL BSPC  &lt SYM SPACE  &lt NUM LANG2    &lt NAV LANG1  &kp ENTER                             &kp DEL
             >;
+
             sensor-bindings = <&scroll_up_down>;
         };
 
         mac_layer {
             display-name = "MAC";
             bindings = <
-&kp Q          &kp W   &kp E   &kp R   &kp T                                 &kp Y   &kp U   &kp I      &kp O    &kp P
-&kp A          &kp S   &kp D   &kp F   &kp G          &kp JIS_UNDER         &kp H   &kp J   &kp K      &kp L    &mt LGUI JIS_MINUS
-&mt LSHFT Z    &kp X   &kp C   &kp V   &kp B   &caps_word      &key_repeat   &kp N   &kp M   &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LGUI   &kp LCTRL &kp LALT  &mt LGUI BSPC   &lt SYM SPACE  &lt NUM LANG2     &lt NAV LANG1  &kp ENTER                       &kp DEL
+&kp Q        &kp W      &kp E     &kp R          &kp T                                          &kp Y      &kp U  &kp I      &kp O    &kp P
+&kp A        &kp S      &kp D     &kp F          &kp G                           &kp JIS_UNDER  &kp H      &kp J  &kp K      &kp L    &mt LGUI JIS_MINUS
+&mt LSHFT Z  &kp X      &kp C     &kp V          &kp B          &caps_word       &key_repeat    &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
+&kp LGUI     &kp LCTRL  &kp LALT  &mt LGUI BSPC  &lt SYM SPACE  &lt NUM LANG2    &lt NAV LANG1  &kp ENTER                             &kp DEL
             >;
+
             sensor-bindings = <&scroll_up_down>;
         };
 
         sym_layer {
             display-name = "SYM";
             bindings = <
-&kp JIS_EXCL  &kp JIS_AT     &kp JIS_HASH   &kp JIS_DLR   &kp JIS_PCT                         &kp JIS_CARET  &kp JIS_AMPS  &kp JIS_STAR  &kp JIS_LPAR  &kp JIS_RPAR
-&kp JIS_EQUAL &kp JIS_PLUS   &kp JIS_MINUS  &kp JIS_UNDER &kp JIS_BSLH  &trans                &kp JIS_LBKT   &kp JIS_RBKT  &kp JIS_LBRC  &kp JIS_RBRC  &kp JIS_PIPE
-&kp JIS_GRV   &kp JIS_TILDE  &kp JIS_COLON  &kp JIS_SEMI  &kp JIS_QUOTE &trans      &trans    &kp JIS_DQT    &kp JIS_LABK  &kp JIS_RABK  &kp JIS_QUES  &kp JIS_FSLH
-&trans   &trans   &trans   &kp BSPC   &trans   &trans      &trans   &kp ENTER                                &kp JIS_YEN
+&kp JIS_EXCL   &kp JIS_AT     &kp JIS_HASH   &kp JIS_DLR    &kp JIS_PCT                      &kp JIS_CARET  &kp JIS_AMPS  &kp JIS_STAR  &kp JIS_LPAR  &kp JIS_RPAR
+&kp JIS_EQUAL  &kp JIS_PLUS   &kp JIS_MINUS  &kp JIS_UNDER  &kp JIS_BSLH             &trans  &kp JIS_LBKT   &kp JIS_RBKT  &kp JIS_LBRC  &kp JIS_RBRC  &kp JIS_PIPE
+&kp JIS_GRV    &kp JIS_TILDE  &kp JIS_COLON  &kp JIS_SEMI   &kp JIS_QUOTE  &trans    &trans  &kp JIS_DQT    &kp JIS_LABK  &kp JIS_RABK  &kp JIS_QUES  &kp JIS_FSLH
+&trans         &trans         &trans         &kp BSPC       &trans         &trans    &trans  &kp ENTER                                                &kp JIS_YEN
             >;
+
             sensor-bindings = <&scroll_up_down>;
         };
 
         num_layer {
             display-name = "NUM";
             bindings = <
-&trans   &trans   &trans   &trans   &trans                            &kp KP_MULTIPLY  &kp KP_N7  &kp KP_N8  &kp KP_N9  &kp KP_DIVIDE
-&trans   &trans   &trans   &trans   &trans   &trans                   &kp KP_PLUS      &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp KP_MINUS
-&trans   &trans   &trans   &trans   &trans   &trans      &trans       &kp KP_N0        &kp KP_N1  &kp KP_N2  &kp KP_N3  &kp KP_DOT
-&trans   &trans   &trans   &trans   &trans   &trans      &trans   &kp ENTER                                  &kp DEL
+&trans  &trans  &trans  &trans  &trans                    &kp KP_MULTIPLY  &kp KP_N7  &kp KP_N8  &kp KP_N9  &kp KP_DIVIDE
+&trans  &trans  &trans  &trans  &trans            &trans  &kp KP_PLUS      &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp KP_MINUS
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &kp KP_N0        &kp KP_N1  &kp KP_N2  &kp KP_N3  &kp KP_DOT
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &kp ENTER                                         &kp DEL
             >;
+
             sensor-bindings = <&scroll_up_down>;
         };
 
         nav_layer {
             display-name = "NAV";
             bindings = <
-&trans   &trans   &kp UP     &trans     &trans                           &trans   &trans   &trans   &trans   &trans
-&kp HOME &kp LEFT &kp DOWN   &kp RIGHT  &kp END   &trans                  &trans   &trans   &trans   &trans   &trans
-&trans   &kp PG_UP &kp PG_DN &trans     &trans    &trans      &trans      &trans   &trans   &trans   &trans   &trans
-&trans   &trans   &trans   &kp BSPC   &kp SPACE   &trans      &trans   &kp ENTER                              &kp DEL
+&trans    &trans     &kp UP     &trans     &trans                       &trans     &trans  &trans  &trans  &trans
+&kp HOME  &kp LEFT   &kp DOWN   &kp RIGHT  &kp END              &trans  &trans     &trans  &trans  &trans  &trans
+&trans    &kp PG_UP  &kp PG_DN  &trans     &trans     &trans    &trans  &trans     &trans  &trans  &trans  &trans
+&trans    &trans     &trans     &kp BSPC   &kp SPACE  &trans    &trans  &kp ENTER                          &kp DEL
             >;
+
             sensor-bindings = <&scroll_up_down>;
         };
 
         mouse_layer {
             display-name = "MOUSE";
             bindings = <
-&trans   &trans   &trans   &trans   &trans                           &trans      &trans      &trans      &trans      &trans
-&trans   &trans   &trans   &trans   &trans   &trans                  &mkp LCLK   &mkp RCLK   &mkp MCLK   &mkp MB4    &mkp MB5
-&trans   &trans   &trans   &trans   &trans   &trans      &trans      &trans      &trans      &trans      &trans      &trans
-&trans   &trans   &trans   &trans   &trans   &trans      &trans   &trans                                 &trans
+&trans  &trans  &trans  &trans  &trans                    &trans  &trans    &trans    &trans    &trans
+&trans  &trans  &trans  &trans  &trans            &trans  &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &mkp MB4  &trans    &mkp MB5  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans                                &trans
             >;
+
             sensor-bindings = <&scroll_up_down>;
         };
 
         ble_layer {
             display-name = "BLE";
             bindings = <
-&kp F1   &kp F2   &kp F3   &kp F4   &kp F5                                  &bt_win0     &bt_mac1   &bt_win2      &bt BT_SEL 3  &bt BT_SEL 4
-&kp F6   &kp F7   &kp F8   &kp F9   &kp F10  &trans                         &out OUT_TOG &trans     &trans        &trans        &studio_unlock
-&kp F11  &kp F12  &trans   &trans   &trans   &trans      &bootloader        &trans       &trans     &trans        &trans        &bt BT_CLR
-&trans   &trans   &trans   &trans   &trans   &trans      &trans   &trans                                          &bt BT_CLR_ALL
+&kp F1   &kp F2   &kp F3  &kp F4  &kp F5                          &bt_win0      &bt_mac1  &bt_win2  &bt BT_SEL 3  &bt BT_SEL 4
+&kp F6   &kp F7   &kp F8  &kp F9  &kp F10            &trans       &out OUT_TOG  &trans    &trans    &trans        &studio_unlock
+&kp F11  &kp F12  &trans  &trans  &trans   &trans    &bootloader  &trans        &trans    &trans    &trans        &bt BT_CLR
+&trans   &trans   &trans  &trans  &trans   &trans    &trans       &trans                                          &bt BT_CLR_ALL
             >;
+
             sensor-bindings = <&rsr_vol>;
         };
     };
