@@ -173,7 +173,7 @@ layers:
   - ENTER
   - DEL
   NAV:
-  - {t: ▽, type: trans}
+  - ESC
   - {t: ▽, type: trans}
   - UP
   - {t: ▽, type: trans}
