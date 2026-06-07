@@ -45,6 +45,7 @@
   - WIN: `Ctrl / Win(GUI) / Alt`、BS長押し=Ctrl、長音ー長押し=Ctrl
 - `Z` = mod-tap Shift（`&mt LSHFT Z`）
 - `L` の右隣 = **長音「ー」**（`JIS_MINUS`、hold=Ctrl/⌘）
+- **Backspace** は専用 hold-tap `mt_bspc`（`quick-tap-ms=200`）。タップ→すぐ長押しで **BS をオートリピート**（連続削除）。修飾キー(⌘/Ctrl)の hold はそのまま。他の mod-tap には quick-tap を付けていない。
 
 ### 親指クラスタ
 | | 左手 | | | 右手 | |
