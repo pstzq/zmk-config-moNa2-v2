@@ -2,10 +2,18 @@
 #include <input/processors.dtsi>
 #include <dt-bindings/zmk/input_transform.h>
 #include <physical_layouts.dtsi>
+#include <mouse-gesture.dtsi>
 
 / {
     chosen {
         zmk,physical-layout = &physical_layout0;
+    };
+
+    // Windows用ジェスチャープロセッサ（Mac用は mouse-gesture.dtsi の zip_mouse_gesture を使用）。
+    // mona2.keymap が左右共通で参照するため、両ビルドから見える dtsi に定義する。
+    zip_mouse_gesture_win: zip_mouse_gesture_win {
+        compatible = "zmk,input-processor-mouse-gesture";
+        #input-processor-cells = <0>;
     };
 
     physical_layout0: physical_layout_0 {

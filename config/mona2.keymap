@@ -1,7 +1,7 @@
 /*
  * moNa2 keymap (Phase 1) - JIS運用 / WIN・MAC分離 / DYA Studio対応
- * 設計: zmk-keyboard/REQUIREMENTS.md
- * レイアウト図: zmk-keyboard/draw/mona2_phase1.svg
+ * 設計: docs/keymap-phase1.md
+ * レイアウト図: keymap-drawer/mona2_jis.svg
  */
 
 #include <input/processors.dtsi>
@@ -152,14 +152,6 @@
             #sensor-binding-cells = <0>;
             cw-binding = <&msc SCRL_DOWN>;
             ccw-binding = <&msc SCRL_UP>;
-            tap-ms = <100>;
-        };
-
-        scroll_right_left: scroll_right_left {
-            compatible = "zmk,behavior-runtime-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            cw-binding = <&msc SCRL_RIGHT>;
-            ccw-binding = <&msc SCRL_LEFT>;
             tap-ms = <100>;
         };
 

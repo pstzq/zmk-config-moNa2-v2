@@ -17,13 +17,20 @@ DYA Studioに接続するときは、事前に「`&studio_unlock`」をキーマ
 
 ## 1. `config/west.yml` 例
 
+> ⚠️ **権威ある定義は [`config/west.yml`](config/west.yml) が常に正**です。以下は DYA 関連の最小構成を示す抜粋で、
+> 実際のリビジョンは v4 移行回避のため一部 SHA で pin しています（`revision: main` のままコピーすると
+> `too many arguments to zmk_keymap_layer_activate` 等のビルド失敗を踏みます）。慣性スクロール・マウスジェスチャーの
+> モジュールも実 config には含まれます。詳細は config/west.yml と docs/keymap-phase1.md の「依存モジュールのpin」を参照。
+
 ```yaml
 manifest:
   remotes:
     - name: cormoran
       url-base: https://github.com/cormoran
-    - name: badjeff
-      url-base: https://github.com/badjeff
+    - name: razilyis    # <-- PMW3610 慣性スクロール対応フォーク
+      url-base: https://github.com/razilyis
+    - name: kot149      # <-- Mouse Gesture
+      url-base: https://github.com/kot149
 
   projects:
     - name: zmk
@@ -33,7 +40,7 @@ manifest:
 
     - name: zmk-module-ble-management
       remote: cormoran
-      revision: main
+      revision: 851661c   # v4移行前にpin
 
     - name: zmk-module-battery-history
       remote: cormoran
@@ -45,15 +52,19 @@ manifest:
 
     - name: zmk-module-runtime-input-processor
       remote: cormoran
-      revision: main
+      revision: dbf92f7   # v4移行前にpin
 
     - name: zmk-behavior-runtime-sensor-rotate
       remote: cormoran
       revision: main
 
     - name: zmk-pmw3610-driver
-      remote: badjeff
-      revision: zmk-0.3
+      remote: razilyis
+      revision: Dev-v0.3_inertial-scroll
+
+    - name: zmk-mouse-gesture
+      remote: kot149
+      revision: 855a6e80f18f4b19ea2181648ac062ec72876ece
 
   self:
     path: config
@@ -174,7 +185,7 @@ sensor-bindings = <&rsr_pg>;
     input-processors = <&mouse_runtime_input_processor>;
 
     scroller {
-        layers = <3>;
+        layers = <3 4 5>;   // NUM/NAV_MAC/NAV_WIN（実 config と同じ）
         input-processors =
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
@@ -186,5 +197,5 @@ sensor-bindings = <&rsr_pg>;
 ```
 
 補足:
-- 現在の `mona2_r.overlay` は、既存の `zip_*` 変換を維持しつつ `&scroll_runtime_input_processor` を追加する構成。
-- `mona2.keymap` に `#define ZMK_POINTING_DEFAULT_SCRL_VAL 100` を置くと、環境によっては `pointing.h` 側定義との再定義 warning が出る場合がある。
+- 現在の `mona2_r.overlay` は、既存の `zip_*` 変換を維持しつつ `&scroll_runtime_input_processor` を追加する構成。さらに慣性スクロール・パン（layer 8）・ジェスチャー（layer 9/10）のサブノードも持つ（実 config 参照）。
+- `mona2.keymap` の `#define ZMK_POINTING_DEFAULT_SCRL_VAL`（実 config では `30`）を大きくしすぎると、環境によっては `pointing.h` 側定義との再定義 warning が出る場合がある。

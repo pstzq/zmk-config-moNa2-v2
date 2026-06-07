@@ -15,18 +15,20 @@ OUTPUT  = ROOT / "keymap-drawer" / "mona2_behavior.svg"
 
 # ── Parse source files ──────────────────────────────────────────────────────────
 
-def parse_defines(text):
-    return {m[1]: int(m[2]) for m in re.finditer(r"#define\s+(\w+)\s+(\d+)", text)}
-
 def parse_display_names(text):
     return re.findall(r'display-name\s*=\s*"([^"]+)"', text)
+
+def _subnode_layers(text, node):
+    m = re.search(node + r"\s*\{[^}]*layers\s*=\s*<([^>]+)>", text, re.DOTALL)
+    return set(map(int, m.group(1).split())) if m else set()
 
 def parse_overlay(text):
     m = re.search(r"zip_temp_layer\s+(\d+)", text)
     aml = int(m.group(1)) if m else None
-    m2 = re.search(r"scroller\s*\{[^}]*layers\s*=\s*<([^>]+)>", text, re.DOTALL)
-    scroll = set(map(int, m2.group(1).split())) if m2 else set()
-    return aml, scroll
+    scroll  = _subnode_layers(text, "scroller")
+    pan     = _subnode_layers(text, "panner")
+    gesture = _subnode_layers(text, "gesturer_mac") | _subnode_layers(text, "gesturer_win")
+    return aml, scroll, pan, gesture
 
 # ── Static layer descriptions (keyed by display-name) ──────────────────────────
 
@@ -39,6 +41,9 @@ LAYER_COLOR = {
     "NAV-M": "#D35400",
     "MOUSE": "#7D3C98",
     "BLE":   "#C0392B",
+    "PAN":    "#117A65",
+    "SNAP-M": "#B9770E",
+    "SNAP-W": "#B9770E",
 }
 
 ACTIVATION = {
@@ -50,6 +55,9 @@ ACTIVATION = {
     "NAV-M": "英数 or かな 長押し  (MAC ベース時)",
     "MOUSE": "ボール操作で自動遷移  /  500ms で復帰",
     "BLE":   "英数 ＆ かな  同時押し (コンボ)",
+    "PAN":    "P 長押し",
+    "SNAP-M": "Del 長押し  (MAC ベース時)",
+    "SNAP-W": "Del 長押し  (WIN ベース時)",
 }
 
 # (background, text, label)
@@ -58,6 +66,8 @@ BALL_AUTO    = ("#D5F5E3", "#1E8449", "→ 自動で MOUSE へ")
 BALL_SCROLL  = ("#A9DFBF", "#1E8449", "スクロール")
 BALL_BUTTONS = ("#D7BDE2", "#6C3483", "MB1 · MB2 · MB3 · MB4 · MB5")
 BALL_VOLUME  = ("#FAD7A0", "#935116", "ボリューム  (エンコーダ共通)")
+BALL_PAN     = ("#A2D9CE", "#0E6655", "2D パン  (自由スクロール)")
+BALL_GESTURE = ("#FAE5D3", "#A04000", "ジェスチャー  (ウィンドウスナップ)")
 
 # ── SVG primitives ──────────────────────────────────────────────────────────────
 
@@ -97,7 +107,7 @@ def pill(cx, cy, label, bg, fg, min_w=90):
 
 # ── Main SVG builder ────────────────────────────────────────────────────────────
 
-def build(display_names, aml, scroll_layers):
+def build(display_names, aml, scroll_layers, pan_layers, gesture_layers):
     n = len(display_names)
     H = TITLE_H + HEAD_H + n * ROW_H + PAD + 18
 
@@ -155,6 +165,10 @@ def build(display_names, aml, scroll_layers):
         ball_cx = CX[3] + CW[3] // 2
         if i in scroll_layers:
             out.append(pill(ball_cx, cy, BALL_SCROLL[2], BALL_SCROLL[0], BALL_SCROLL[1]))
+        elif i in pan_layers:
+            out.append(pill(ball_cx, cy, BALL_PAN[2], BALL_PAN[0], BALL_PAN[1], min_w=CW[3] - 16))
+        elif i in gesture_layers:
+            out.append(pill(ball_cx, cy, BALL_GESTURE[2], BALL_GESTURE[0], BALL_GESTURE[1], min_w=CW[3] - 16))
         elif i == aml:
             out.append(pill(ball_cx, cy, BALL_BUTTONS[2], BALL_BUTTONS[0], BALL_BUTTONS[1], min_w=CW[3] - 16))
         elif name == "BLE":
@@ -190,11 +204,11 @@ def main():
     ktext = KEYMAP.read_text(encoding="utf-8")
     otext = OVERLAY.read_text(encoding="utf-8")
     names   = parse_display_names(ktext)
-    defines = parse_defines(ktext)
-    aml, scroll = parse_overlay(otext)
-    svg = build(names, aml, scroll)
+    aml, scroll, pan, gesture = parse_overlay(otext)
+    svg = build(names, aml, scroll, pan, gesture)
     OUTPUT.write_text(svg, encoding="utf-8")
-    print(f"Written: {OUTPUT}  (aml={aml}, scroll={sorted(scroll)})")
+    print(f"Written: {OUTPUT}  (aml={aml}, scroll={sorted(scroll)}, "
+          f"pan={sorted(pan)}, gesture={sorted(gesture)})")
 
 if __name__ == "__main__":
     main()

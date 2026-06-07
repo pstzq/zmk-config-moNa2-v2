@@ -6,7 +6,7 @@
  * このヘッダは「JIS-OSで意図した文字が出る」キーコードに別名を付ける。
  *
  * 出典: QMK quantum/keymap_extras/keymap_japanese.h を検証して移植。
- * 詳細表: zmk-keyboard/jis-mapping.md
+ * 記号配置の解説: docs/keymap-phase1.md の「SYM（記号）」節を参照。
  */
 
 #pragma once

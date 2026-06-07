@@ -98,37 +98,31 @@
 <line x1="430" y1="426" x2="430" y2="474" stroke="#DEDEDE" stroke-width="1"/>
 <rect x="0" y="474" width="740" height="48" fill="#FFFFFF"/>
 <line x1="0" y1="522" x2="740" y2="522" stroke="#DEDEDE" stroke-width="1"/>
-<rect x="9" y="483" width="32" height="30" fill="#95A5A6" rx="5"/>
+<rect x="9" y="483" width="32" height="30" fill="#117A65" rx="5"/>
 <text x="25" y="504" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="bold" fill="#FFFFFF">8</text>
-<text x="58" y="504" text-anchor="start" font-size="13" font-family="sans-serif" font-weight="bold" fill="#95A5A6">PAN</text>
-<text x="170" y="504" text-anchor="start" font-size="11" font-family="sans-serif" font-weight="normal" fill="#34495E">—</text>
-<rect x="438" y="485" width="76" height="26" fill="#AED6F1" rx="13"/>
-<text x="476" y="503" text-anchor="middle" font-size="11" font-family="sans-serif" font-weight="bold" fill="#1A5276">カーソル</text>
-<text x="522" y="503" text-anchor="start" font-size="10" font-family="sans-serif" font-weight="normal" fill="#1E8449">→ 自動で MOUSE へ</text>
+<text x="58" y="504" text-anchor="start" font-size="13" font-family="sans-serif" font-weight="bold" fill="#117A65">PAN</text>
+<text x="170" y="504" text-anchor="start" font-size="11" font-family="sans-serif" font-weight="normal" fill="#34495E">P 長押し</text>
+<rect x="438" y="485" width="294" height="26" fill="#A2D9CE" rx="13"/><text x="585" y="503" text-anchor="middle" font-size="11" font-family="sans-serif" font-weight="bold" fill="#0E6655">2D パン  (自由スクロール)</text>
 <line x1="50" y1="474" x2="50" y2="522" stroke="#DEDEDE" stroke-width="1"/>
 <line x1="160" y1="474" x2="160" y2="522" stroke="#DEDEDE" stroke-width="1"/>
 <line x1="430" y1="474" x2="430" y2="522" stroke="#DEDEDE" stroke-width="1"/>
 <rect x="0" y="522" width="740" height="48" fill="#F2F3F4"/>
 <line x1="0" y1="570" x2="740" y2="570" stroke="#DEDEDE" stroke-width="1"/>
-<rect x="9" y="531" width="32" height="30" fill="#95A5A6" rx="5"/>
+<rect x="9" y="531" width="32" height="30" fill="#B9770E" rx="5"/>
 <text x="25" y="552" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="bold" fill="#FFFFFF">9</text>
-<text x="58" y="552" text-anchor="start" font-size="13" font-family="sans-serif" font-weight="bold" fill="#95A5A6">SNAP-M</text>
-<text x="170" y="552" text-anchor="start" font-size="11" font-family="sans-serif" font-weight="normal" fill="#34495E">—</text>
-<rect x="438" y="533" width="76" height="26" fill="#AED6F1" rx="13"/>
-<text x="476" y="551" text-anchor="middle" font-size="11" font-family="sans-serif" font-weight="bold" fill="#1A5276">カーソル</text>
-<text x="522" y="551" text-anchor="start" font-size="10" font-family="sans-serif" font-weight="normal" fill="#1E8449">→ 自動で MOUSE へ</text>
+<text x="58" y="552" text-anchor="start" font-size="13" font-family="sans-serif" font-weight="bold" fill="#B9770E">SNAP-M</text>
+<text x="170" y="552" text-anchor="start" font-size="11" font-family="sans-serif" font-weight="normal" fill="#34495E">Del 長押し  (MAC ベース時)</text>
+<rect x="438" y="533" width="294" height="26" fill="#FAE5D3" rx="13"/><text x="585" y="551" text-anchor="middle" font-size="11" font-family="sans-serif" font-weight="bold" fill="#A04000">ジェスチャー  (ウィンドウスナップ)</text>
 <line x1="50" y1="522" x2="50" y2="570" stroke="#DEDEDE" stroke-width="1"/>
 <line x1="160" y1="522" x2="160" y2="570" stroke="#DEDEDE" stroke-width="1"/>
 <line x1="430" y1="522" x2="430" y2="570" stroke="#DEDEDE" stroke-width="1"/>
 <rect x="0" y="570" width="740" height="48" fill="#FFFFFF"/>
 <line x1="0" y1="618" x2="740" y2="618" stroke="#DEDEDE" stroke-width="1"/>
-<rect x="9" y="579" width="32" height="30" fill="#95A5A6" rx="5"/>
+<rect x="9" y="579" width="32" height="30" fill="#B9770E" rx="5"/>
 <text x="25" y="600" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="bold" fill="#FFFFFF">10</text>
-<text x="58" y="600" text-anchor="start" font-size="13" font-family="sans-serif" font-weight="bold" fill="#95A5A6">SNAP-W</text>
-<text x="170" y="600" text-anchor="start" font-size="11" font-family="sans-serif" font-weight="normal" fill="#34495E">—</text>
-<rect x="438" y="581" width="76" height="26" fill="#AED6F1" rx="13"/>
-<text x="476" y="599" text-anchor="middle" font-size="11" font-family="sans-serif" font-weight="bold" fill="#1A5276">カーソル</text>
-<text x="522" y="599" text-anchor="start" font-size="10" font-family="sans-serif" font-weight="normal" fill="#1E8449">→ 自動で MOUSE へ</text>
+<text x="58" y="600" text-anchor="start" font-size="13" font-family="sans-serif" font-weight="bold" fill="#B9770E">SNAP-W</text>
+<text x="170" y="600" text-anchor="start" font-size="11" font-family="sans-serif" font-weight="normal" fill="#34495E">Del 長押し  (WIN ベース時)</text>
+<rect x="438" y="581" width="294" height="26" fill="#FAE5D3" rx="13"/><text x="585" y="599" text-anchor="middle" font-size="11" font-family="sans-serif" font-weight="bold" fill="#A04000">ジェスチャー  (ウィンドウスナップ)</text>
 <line x1="50" y1="570" x2="50" y2="618" stroke="#DEDEDE" stroke-width="1"/>
 <line x1="160" y1="570" x2="160" y2="618" stroke="#DEDEDE" stroke-width="1"/>
 <line x1="430" y1="570" x2="430" y2="618" stroke="#DEDEDE" stroke-width="1"/>

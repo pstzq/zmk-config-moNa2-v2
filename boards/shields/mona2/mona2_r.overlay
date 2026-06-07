@@ -2,15 +2,8 @@
 #include <input/processors.dtsi>
 #include <input/processors/runtime-input-processor.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
-#include <mouse-gesture.dtsi>
 
-/ {
-    // Windows用ジェスチャープロセッサ（Mac用はmouse-gesture.dtsiのzip_mouse_gestureを使用）
-    zip_mouse_gesture_win: zip_mouse_gesture_win {
-        compatible = "zmk,input-processor-mouse-gesture";
-        #input-processor-cells = <0>;
-    };
-};
+// zip_mouse_gesture_win / mouse-gesture.dtsi は mona2.dtsi で定義・include 済み。
 
 &default_transform {
     col-offset = <6>;
