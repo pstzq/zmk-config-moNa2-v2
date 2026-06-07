@@ -29,10 +29,11 @@
 | 0 | WIN | 既定 | QWERTY。修飾キー=Windows系(Ctrl/Win/Alt) |
 | 1 | MAC | BTプロファイル連動(BT1) | QWERTY。修飾キー=Mac系(⌘/Ctrl/⌥) |
 | 2 | SYM 記号 | Space 長押し | JIS正準の記号一式（`jis.h`経由） |
-| 3 | NUM 数字 | 英数(LANG2) 長押し | 右手テンキー（`KP_*`でJIS非依存） |
-| 4 | NAV 矢印 | かな(LANG1) 長押し | 左手 逆T字＋Home/End/PgUp/PgDn |
-| 5 | MOUSE | オートマウス(AML) ＝ボール操作で自動 | 右手にマウスボタン |
-| 6 | BLE/設定 | Escコンボ長押し(英数+かな) | BT/出力/Studio/Boot |
+| 3 | NUM 数字 | 英数(LANG2) 長押し | 右手テンキー＋左手Tab/矢印/BS/Del |
+| 4 | NAV-W 矢印(Win) | かな(LANG1) 長押し ※WINベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。P=PrintScreen |
+| 5 | NAV-M 矢印(Mac) | かな(LANG1) 長押し ※MACベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。P=⌘⇧3(スクショ) |
+| 6 | MOUSE | オートマウス(AML) ＝ボール操作で自動 | 右手にマウスボタン |
+| 7 | BLE/設定 | Escコンボ長押し(英数+かな) | BT/出力/Studio/Boot/メディアキー/F1〜F12 |
 
 ---
 
@@ -71,14 +72,22 @@
 
 ### NUM（数字・右手テンキー）
 ```
-*  7  8  9  /
-+  4  5  6  -
-0  1  2  3  .
+左手                          右手テンキー
+Tab  —   ↑   —   —           *  7  8  9  /
+BS   ←   ↓   →   Del         +  4  5  6  -
+—    —   —   —   —           0  1  2  3  .
 ```
 - テンキーHID（`KP_*`）なので配列に依存しない。0 は 1 の左。
+- 左手は Tab/BS/Del/矢印を配置（全 `&trans` だった箇所を有効化）。
 
-### NAV（矢印・左手）
-- `E=↑`, `S/D/F=←↓→`（逆T字）, `A=Home`, `G=End`, `Z=PgUp`, `X=PgDn`。
+### NAV-W / NAV-M（矢印・左手）
+- 共通: `E=↑`, `S/D/F=←↓→`（逆T字）, `A=Home`, `G=End`, `Z=PgUp`, `X=PgDn`。
+- 右手にも Vim 式矢印（H/J/K/L 位置）を配置。
+- OS 別キー:
+  | キー位置 | NAV-W (Windows) | NAV-M (Mac) |
+  |---|---|---|
+  | `T` | Win+Tab（タスクビュー） | Ctrl+↑（Mission Control） |
+  | `P` | PrintScreen | ⌘⇧3（スクリーンショット） |
 
 ### MOUSE（オートマウスレイヤー）
 - 右手に `LCLK / RCLK / MCLK / MB4(戻) / MB5(進)`。
@@ -87,6 +96,8 @@
 ### BLE/設定
 - `BT0(Win機) / BT1(Mac機) / BT2(Win機) / BT3 / BT4`、`BTclr / BTclrA`。
 - `OUT`(USB/BLE出力切替)、`Studio`(`&studio_unlock`)、`Boot`(`&bootloader`)、F1〜F12。
+- メディアキー: `C_PREV / C_PP / C_NEXT`（BLE層右手 H/J/K 位置）。
+- エンコーダは `rsr_vol`（ボリューム）に切り替わる。
 
 ---
 
@@ -96,8 +107,9 @@
 - 接続先デバイス(Win機/Mac機)を選ぶと、対応するベース層へ自動で切り替わる。
 
 ## オートマウスレイヤー(AML)
-- `boards/shields/mona2/mona2_r.overlay` のトラックボール listener に `&zip_temp_layer 5 500` を配線。
-- ボールスクロールのトリガは NAV 層(=4)（= かな長押し中はボールでスクロール）。
+- `boards/shields/mona2/mona2_r.overlay` のトラックボール listener に `&zip_temp_layer 6 500` を配線。
+- ボール操作で MOUSE 層(=6) へ自動遷移、500ms 操作なしで復帰。
+- ボールスクロールのトリガは NAV_WIN(=4) と NAV_MAC(=5) の両方（`layers = <4 5>`）。
 
 ## 依存モジュールのpin（重要）
 DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-processor` が **2026-04-30 に zmk v4 へ移行** → fork(`v0.3-branch+dya`)と非互換になりビルド失敗(`too many arguments to zmk_keymap_layer_activate`)。shakupan版に倣い `config/west.yml` で v4移行前にpin：
