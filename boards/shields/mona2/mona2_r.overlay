@@ -72,10 +72,11 @@
 &trackball_central_listener {
     status = "okay";
     device = <&trackball_central>;
-    input-processors = <&mouse_runtime_input_processor>;
+    // オートマウスレイヤー(AML): ボール操作で MOUSE 層(=5) を一時有効化
+    input-processors = <&mouse_runtime_input_processor &zip_temp_layer 5 500>;
 
     scroller {
-        layers = <3>;
+        layers = <4>;   // NAV(かな長押し)中はボールをスクロールに
         input-processors =
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
