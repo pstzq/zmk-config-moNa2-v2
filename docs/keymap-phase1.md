@@ -26,8 +26,8 @@
 ## レイヤー構成
 | # | 名称 | 起動方法 | 内容 |
 |---|---|---|---|
-| 0 | WIN | 既定 | QWERTY。修飾キー=Windows系(Ctrl/Win/Alt) |
-| 1 | MAC | BTプロファイル連動(BT1) | QWERTY。修飾キー=Mac系(⌘/Ctrl/⌥) |
+| 0 | MAC | 既定 | QWERTY。修飾キー=Mac系(⌘/Ctrl/⌥) |
+| 1 | WIN | BTプロファイル連動(BT1/BT2) | QWERTY。修飾キー=Windows系(Ctrl/Win/Alt) |
 | 2 | SYM 記号 | Space 長押し | JIS正準の記号一式（`jis.h`経由） |
 | 3 | NUM 数字 | 英数(LANG2) 長押し | 右手テンキー＋左手Tab/矢印/BS/Del |
 | 4 | NAV-W 矢印(Win) | かな(LANG1) 長押し ※WINベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。P=PrintScreen |
@@ -41,8 +41,8 @@
 
 ### Base (WIN / MAC)
 - 英字 QWERTY。両OSで英字・機能層アクセスは共通、**違いは修飾キーのみ**。
-  - WIN: `Ctrl / Win(GUI) / Alt`、BS長押し=Ctrl、長音ー長押し=Ctrl
   - MAC: `⌘(GUI) / Ctrl / ⌥(Alt)`、BS長押し=⌘、長音ー長押し=⌘
+  - WIN: `Ctrl / Win(GUI) / Alt`、BS長押し=Ctrl、長音ー長押し=Ctrl
 - `Z` = mod-tap Shift（`&mt LSHFT Z`）
 - `L` の右隣 = **長音「ー」**（`JIS_MINUS`、hold=Ctrl/⌘）
 
@@ -102,9 +102,10 @@ BS   ←   ↓   →   Del         +  4  5  6  -
 ---
 
 ## OS切替（BTプロファイル連動）
-- マクロ `bt_win0` / `bt_mac1` / `bt_win2` が「ベース層切替(`&to`)＋`&bt BT_SEL`」をまとめて実行。
-  - BT0/BT2 → WIN ベース、BT1 → MAC ベース。
-- 接続先デバイス(Win機/Mac機)を選ぶと、対応するベース層へ自動で切り替わる。
+- マクロ `bt_mac0` / `bt_win1` / `bt_win2` が「ベース層切替(`&to`)＋`&bt BT_SEL`」をまとめて実行。
+  - BT0 → MAC ベース、BT1/BT2 → WIN ベース。
+- デフォルト(電源投入時)は MAC ベース（layer 0）。
+- 接続先デバイス(Mac機/Win機)を選ぶと、対応するベース層へ自動で切り替わる。
 
 ## オートマウスレイヤー(AML)
 - `boards/shields/mona2/mona2_r.overlay` のトラックボール listener に `&zip_temp_layer 6 500` を配線。

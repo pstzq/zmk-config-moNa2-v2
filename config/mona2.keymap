@@ -21,8 +21,8 @@
 
 /* ---- レイヤー定義 ---- */
 
-#define WIN     0   // ベース(Windows)
-#define MAC     1   // ベース(Mac)
+#define MAC     0   // ベース(Mac)        — デフォルト
+#define WIN     1   // ベース(Windows)
 #define SYM     2   // 記号
 #define NUM     3   // 数字(右手テンキー)
 #define NAV_WIN 4   // 矢印/ナビ(Windows) — P=PrtSc
@@ -70,20 +70,20 @@
     };
 
     macros {
-        // OSをBTプロファイルに紐づけて切替 (BT0=Win / BT1=Mac / BT2=Win)
+        // OSをBTプロファイルに紐づけて切替 (BT0=Mac / BT1=Win / BT2=Win)
 
-        bt_win0: bt_win0 {
+        bt_mac0: bt_mac0 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to WIN &bt BT_SEL 0>;
-            label = "BT_WIN0";
+            bindings = <&to MAC &bt BT_SEL 0>;
+            label = "BT_MAC0";
         };
 
-        bt_mac1: bt_mac1 {
+        bt_win1: bt_win1 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to MAC &bt BT_SEL 1>;
-            label = "BT_MAC1";
+            bindings = <&to WIN &bt BT_SEL 1>;
+            label = "BT_WIN1";
         };
 
         bt_win2: bt_win2 {
@@ -125,18 +125,6 @@
     keymap {
         compatible = "zmk,keymap";
 
-        win_layer {
-            display-name = "WIN";
-            bindings = <
-&kp Q        &kp W     &kp E     &kp R           &kp T                                          &kp Y      &kp U  &kp I      &kp O    &kp P
-&kp A        &kp S     &kp D     &kp F           &kp G                           &kp JIS_UNDER  &kp H      &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
-&mt LSHFT Z  &kp X     &kp C     &kp V           &kp B          &caps_word       &key_repeat    &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LCTRL    &kp LGUI  &kp LALT  &mt LCTRL BSPC  &lt SYM SPACE  &lt NUM LANG2    &lt NAV_WIN LANG1  &kp ENTER                             &kp DEL
-            >;
-
-            sensor-bindings = <&scroll_up_down>;
-        };
-
         mac_layer {
             display-name = "MAC";
             bindings = <
@@ -144,6 +132,18 @@
 &kp A        &kp S      &kp D     &kp F          &kp G                           &kp JIS_UNDER  &kp H      &kp J  &kp K      &kp L    &mt LGUI JIS_MINUS
 &mt LSHFT Z  &kp X      &kp C     &kp V          &kp B          &caps_word       &key_repeat    &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
 &kp LGUI     &kp LCTRL  &kp LALT  &mt LGUI BSPC  &lt SYM SPACE  &lt NUM LANG2    &lt NAV_MAC LANG1  &kp ENTER                             &kp DEL
+            >;
+
+            sensor-bindings = <&scroll_up_down>;
+        };
+
+        win_layer {
+            display-name = "WIN";
+            bindings = <
+&kp Q        &kp W     &kp E     &kp R           &kp T                                          &kp Y      &kp U  &kp I      &kp O    &kp P
+&kp A        &kp S     &kp D     &kp F           &kp G                           &kp JIS_UNDER  &kp H      &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
+&mt LSHFT Z  &kp X     &kp C     &kp V           &kp B          &caps_word       &key_repeat    &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
+&kp LCTRL    &kp LGUI  &kp LALT  &mt LCTRL BSPC  &lt SYM SPACE  &lt NUM LANG2    &lt NAV_WIN LANG1  &kp ENTER                             &kp DEL
             >;
 
             sensor-bindings = <&scroll_up_down>;
@@ -212,7 +212,7 @@
         ble_layer {
             display-name = "BLE";
             bindings = <
-&kp F1   &kp F2   &kp F3  &kp F4  &kp F5                          &bt_win0      &bt_mac1  &bt_win2  &bt BT_SEL 3  &bt BT_SEL 4
+&kp F1   &kp F2   &kp F3  &kp F4  &kp F5                          &bt_mac0      &bt_win1  &bt_win2  &bt BT_SEL 3  &bt BT_SEL 4
 &kp F6   &kp F7   &kp F8  &kp F9  &kp F10            &trans       &out OUT_TOG  &kp C_PREV  &kp C_PP  &kp C_NEXT    &studio_unlock
 &kp F11  &kp F12  &trans  &trans  &trans   &trans    &bootloader  &trans        &trans    &trans    &trans        &bt BT_CLR
 &trans   &trans   &trans  &trans  &trans   &trans    &trans       &trans                                          &bt BT_CLR_ALL
