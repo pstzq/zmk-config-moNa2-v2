@@ -30,8 +30,8 @@
 | 1 | WIN | BTプロファイル連動(BT1/BT2) | QWERTY。修飾キー=Windows系(Ctrl/Win/Alt) |
 | 2 | SYM 記号 | Space 長押し | JIS正準の記号一式（`jis.h`経由） |
 | 3 | NUM 数字 | 英数(LANG2) 長押し | 右手テンキー＋左手Tab/矢印/BS/Del |
-| 4 | NAV-W 矢印(Win) | かな(LANG1) 長押し ※WINベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。P=PrintScreen |
-| 5 | NAV-M 矢印(Mac) | かな(LANG1) 長押し ※MACベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。P=⌘⇧3(スクショ) |
+| 4 | NAV-M 矢印(Mac) | かな(LANG1) 長押し ※MACベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。P=⌘⇧3(スクショ) |
+| 5 | NAV-W 矢印(Win) | かな(LANG1) 長押し ※WINベース時 | 左手 逆T字＋Home/End/PgUp/PgDn。P=PrintScreen |
 | 6 | MOUSE | オートマウス(AML) ＝ボール操作で自動 | 右手にマウスボタン |
 | 7 | BLE/設定 | Escコンボ長押し(英数+かな) | BT/出力/Studio/Boot/メディアキー/F1〜F12 |
 
@@ -55,8 +55,9 @@
 
 ### 中央3キー（一等地）
 - 左内側 = **Caps Word**（`&caps_word`／1単語だけ大文字）
-- 右内側・上 = **`_`**（`JIS_UNDER`／アンダースコア直置き）
-- 右内側・中 = **Repeat**（`&key_repeat`／直前キー繰り返し）
+- 右内側・上 = **`@`**（`JIS_AT`／Teams等のメンションで多用するため表に直置き）
+- 右内側・中 = **`_`**（`JIS_UNDER`／アンダースコア直置き）
+- ※ Repeat(`&key_repeat`)は使用頻度が低かったため廃止
 - ※ `;` `:` は記号層にあるため基底中央には置かない
 
 ### コンボ（sayu-hub 意識）
@@ -68,7 +69,9 @@
 
 ### SYM（記号）
 - `config/jis.h` のエイリアスで JIS-OS でも記号が正しく出る。
-- 上段 `! @ # $ %` / `^ & * ( )`、中段 `= + - _ \` / `[ ] { } |`、下段 `` ` ~ : ; ' `` / `" < > ? /`、`¥`。
+- 上段 `! " # $ %` / `& ' ( ) |`、中段 `= + - _ \` / `[ ] { }`、下段 `` ` ~ : ; ' `` ＋ `^` / `* < > ?`、最下段に `¥`。
+- `|`（パイプ）は P 位置（0 の裏）に1つだけ配置。
+- `< > ?` は基底の `, . /` の裏に整列（直感的対応）。`/` はベース層に表で出るため SYM には置かない。
 
 ### NUM（数字・右手テンキー）
 ```
@@ -82,7 +85,7 @@ BS   ←   ↓   →   Del         +  4  5  6  -
 
 ### NAV-W / NAV-M（矢印・左手）
 - 共通: `E=↑`, `S/D/F=←↓→`（逆T字）, `A=Home`, `G=End`, `Z=PgUp`, `X=PgDn`。
-- 右手にも Vim 式矢印（H/J/K/L 位置）を配置。
+- 右手にも矢印（**I/J/K/L** 位置）を配置：`I=↑`, `J=←`, `K=↓`, `L=→`（逆T字）。
 - OS 別キー:
   | キー位置 | NAV-W (Windows) | NAV-M (Mac) |
   |---|---|---|
@@ -91,7 +94,7 @@ BS   ←   ↓   →   Del         +  4  5  6  -
 
 ### MOUSE（オートマウスレイヤー）
 - 右手に `LCLK / RCLK / MCLK / MB4(戻) / MB5(進)`。
-- トラックボール操作で MOUSE 層(=5)へ自動遷移（AML）。
+- トラックボール操作で MOUSE 層(=6)へ自動遷移（AML）。
 
 ### BLE/設定
 - `BT0(Win機) / BT1(Mac機) / BT2(Win機) / BT3 / BT4`、`BTclr / BTclrA`。
@@ -110,7 +113,7 @@ BS   ←   ↓   →   Del         +  4  5  6  -
 ## オートマウスレイヤー(AML)
 - `boards/shields/mona2/mona2_r.overlay` のトラックボール listener に `&zip_temp_layer 6 500` を配線。
 - ボール操作で MOUSE 層(=6) へ自動遷移、500ms 操作なしで復帰。
-- ボールスクロールのトリガは NAV_WIN(=4) と NAV_MAC(=5) の両方（`layers = <4 5>`）。
+- ボールスクロールのトリガは NUM(=3) / NAV_MAC(=4) / NAV_WIN(=5)（`layers = <3 4 5>`）。LANG2(NUM) 長押し中にもスクロール可能。
 
 ## 依存モジュールのpin（重要）
 DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-processor` が **2026-04-30 に zmk v4 へ移行** → fork(`v0.3-branch+dya`)と非互換になりビルド失敗(`too many arguments to zmk_keymap_layer_activate`)。shakupan版に倣い `config/west.yml` で v4移行前にpin：
