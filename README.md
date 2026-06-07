@@ -5,6 +5,8 @@ https://nickcoutsos.github.io/keymap-editor/
 
 <img src="keymap-drawer/mona2.svg">
 
+<img src="keymap-drawer/mona2_jis.svg">
+
 # COROPITを使用する方へ
 
 COROPITを使用する方は以下のようにコードを編集してください。
