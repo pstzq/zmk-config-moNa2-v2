@@ -152,9 +152,9 @@
         sym_layer {
             display-name = "SYM";
             bindings = <
-&kp JIS_EXCL   &kp JIS_AT     &kp JIS_HASH   &kp JIS_DLR    &kp JIS_PCT                      &kp JIS_CARET  &kp JIS_AMPS  &kp JIS_STAR  &kp JIS_LPAR  &kp JIS_RPAR
-&kp JIS_EQUAL  &kp JIS_PLUS   &kp JIS_MINUS  &kp JIS_UNDER  &kp JIS_BSLH             &trans  &kp JIS_LBKT   &kp JIS_RBKT  &kp JIS_LBRC  &kp JIS_RBRC  &kp JIS_PIPE
-&kp JIS_GRV    &kp JIS_TILDE  &kp JIS_COLON  &kp JIS_SEMI   &kp JIS_QUOTE  &trans    &trans  &kp JIS_DQT    &kp JIS_LABK  &kp JIS_RABK  &kp JIS_QUES  &kp JIS_FSLH
+&kp JIS_EXCL   &kp JIS_DQT    &kp JIS_HASH   &kp JIS_DLR    &kp JIS_PCT                            &kp JIS_AMPS   &kp JIS_QUOTE  &kp JIS_LPAR  &kp JIS_RPAR  &kp JIS_AT
+&kp JIS_EQUAL  &kp JIS_PLUS   &kp JIS_MINUS  &kp JIS_UNDER  &kp JIS_BSLH               &trans  &kp JIS_LBKT   &kp JIS_RBKT  &kp JIS_LBRC  &kp JIS_RBRC  &kp JIS_PIPE
+&kp JIS_GRV    &kp JIS_TILDE  &kp JIS_COLON  &kp JIS_SEMI   &kp JIS_QUOTE  &kp JIS_CARET  &trans  &kp JIS_STAR   &kp JIS_LABK  &kp JIS_RABK  &kp JIS_QUES  &kp JIS_FSLH
 &trans         &trans         &trans         &kp BSPC       &trans         &trans    &trans  &kp ENTER                                                &kp JIS_YEN
             >;
 
