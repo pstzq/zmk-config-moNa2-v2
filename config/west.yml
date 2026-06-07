@@ -6,8 +6,10 @@ manifest:
       url-base: https://github.com/zmkfirmware
     - name: sayu-hub
       url-base: https://github.com/sayu-hub
-    - name: badjeff    # <-- PMW3610
+    - name: badjeff    # <-- PMW3610 (慣性スクロール無効版に戻す場合はこちら)
       url-base: https://github.com/badjeff
+    - name: razilyis   # <-- PMW3610 慣性スクロール対応フォーク
+      url-base: https://github.com/razilyis
     # - name: sekigon-gonnoc  # <-- PAW3222
     #   url-base: https://github.com/sekigon-gonnoc
     - name: caksoylar  # <-- RGB LED
@@ -36,9 +38,12 @@ manifest:
     - name: zmk-behavior-runtime-sensor-rotate
       remote: cormoran
       revision: main
+    # - name: zmk-pmw3610-driver  # 慣性スクロール無効版に戻す場合はこちらのコメントを外す
+    #   remote: badjeff
+    #   revision: zmk-0.3
     - name: zmk-pmw3610-driver
-      remote: badjeff
-      revision: zmk-0.3
+      remote: razilyis
+      revision: Dev-v0.3_inertial-scroll
     # - name: zmk-driver-paw3222
     #   remote: sekigon-gonnoc
     #   revision: main

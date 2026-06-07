@@ -66,6 +66,13 @@
         // invert-x;
         // invert-y;
         evt-type = <INPUT_EV_REL>;
+        // 慣性スクロール設定（無効にする場合は以下をコメントアウト）
+        inertial-scroll;
+        inertial-scroll-layers = <3 4 5>;   // NUM/NAV_MAC/NAV_WIN でスクロール有効
+        inertial-scroll-gain-pct = <130>;   // 指を離した瞬間の初速の強さ
+        inertial-scroll-decay-pct = <99>;   // 1回ごとの速度残存率(%)
+        inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
+        inertial-scroll-threshold = <4>;    // 停止判定の下限値
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
     };
