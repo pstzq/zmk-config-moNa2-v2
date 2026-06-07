@@ -21,7 +21,7 @@ manifest:
       import: app/west.yml
     - name: zmk-module-ble-management
       remote: cormoran
-      revision: main
+      revision: 851661c   # v4移行前にpin (shakupan準拠。main非互換回避)
     - name: zmk-module-battery-history
       remote: cormoran
       revision: main
@@ -30,7 +30,7 @@ manifest:
       revision: main
     - name: zmk-module-runtime-input-processor
       remote: cormoran
-      revision: main
+      revision: dbf92f7   # v4移行前にpin (zmk fork v0.3系と互換。これが今回の失敗原因)
     - name: zmk-behavior-runtime-sensor-rotate
       remote: cormoran
       revision: main
