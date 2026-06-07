@@ -128,7 +128,7 @@
         mac_layer {
             display-name = "MAC";
             bindings = <
-&kp Q        &kp W      &kp E     &kp R          &kp T                                          &kp Y      &kp U  &kp I      &kp O    &kp P
+&kp Q        &kp W      &kp E     &kp R          &kp T                                          &kp Y      &kp U  &kp I      &kp O    &mt JIS_AT P
 &kp A        &kp S      &kp D     &kp F          &kp G                           &kp JIS_UNDER  &kp H      &kp J  &kp K      &kp L    &mt LGUI JIS_MINUS
 &mt LSHFT Z  &kp X      &kp C     &kp V          &kp B          &caps_word       &key_repeat    &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
 &kp LGUI     &kp LCTRL  &kp LALT  &mt LGUI BSPC  &lt SYM SPACE  &lt NUM LANG2    &lt NAV_MAC LANG1  &kp ENTER                             &kp DEL
@@ -140,7 +140,7 @@
         win_layer {
             display-name = "WIN";
             bindings = <
-&kp Q        &kp W     &kp E     &kp R           &kp T                                          &kp Y      &kp U  &kp I      &kp O    &kp P
+&kp Q        &kp W     &kp E     &kp R           &kp T                                          &kp Y      &kp U  &kp I      &kp O    &mt JIS_AT P
 &kp A        &kp S     &kp D     &kp F           &kp G                           &kp JIS_UNDER  &kp H      &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
 &mt LSHFT Z  &kp X     &kp C     &kp V           &kp B          &caps_word       &key_repeat    &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
 &kp LCTRL    &kp LGUI  &kp LALT  &mt LCTRL BSPC  &lt SYM SPACE  &lt NUM LANG2    &lt NAV_WIN LANG1  &kp ENTER                             &kp DEL
@@ -152,7 +152,7 @@
         sym_layer {
             display-name = "SYM";
             bindings = <
-&kp JIS_EXCL   &kp JIS_DQT    &kp JIS_HASH   &kp JIS_DLR    &kp JIS_PCT                            &kp JIS_AMPS   &kp JIS_QUOTE  &kp JIS_LPAR  &kp JIS_RPAR  &kp JIS_AT
+&kp JIS_EXCL   &kp JIS_DQT    &kp JIS_HASH   &kp JIS_DLR    &kp JIS_PCT                            &kp JIS_AMPS   &kp JIS_QUOTE  &kp JIS_LPAR  &kp JIS_RPAR  &kp JIS_PIPE
 &kp JIS_EQUAL  &kp JIS_PLUS   &kp JIS_MINUS  &kp JIS_UNDER  &kp JIS_BSLH               &trans  &kp JIS_LBKT   &kp JIS_RBKT  &kp JIS_LBRC  &kp JIS_RBRC  &kp JIS_PIPE
 &kp JIS_GRV    &kp JIS_TILDE  &kp JIS_COLON  &kp JIS_SEMI   &kp JIS_QUOTE  &kp JIS_CARET  &trans  &kp JIS_STAR   &kp JIS_LABK  &kp JIS_RABK  &kp JIS_QUES  &kp JIS_FSLH
 &trans         &trans         &trans         &kp BSPC       &trans         &trans    &trans  &kp ENTER                                                &kp JIS_YEN
