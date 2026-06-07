@@ -10,7 +10,7 @@ layers:
   - U
   - I
   - O
-  - P
+  - {t: P, h: '['}
   - A
   - S
   - D
@@ -53,7 +53,7 @@ layers:
   - U
   - I
   - O
-  - P
+  - {t: P, h: '['}
   - A
   - S
   - D
@@ -96,7 +96,7 @@ layers:
   - Sft+7
   - Sft+8
   - Sft+9
-  - '['
+  - Sft+INT3
   - Sft+-
   - Sft+;
   - '-'
