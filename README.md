@@ -13,6 +13,10 @@ moNa2（右手トラックボール付き分割キーボード）用の ZMK キ�
 
 ---
 
+<img src="keymap-drawer/mona2_statemachine.svg">
+
+---
+
 ## レイヤー構成
 
 | # | 名称 | 起動方法 |

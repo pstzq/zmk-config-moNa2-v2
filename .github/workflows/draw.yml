@@ -9,6 +9,9 @@ on:
       - "config/mona2.dtsi"
       - "scripts/jis_relabel.py"
       - "scripts/mona2_info.json"
+      - "scripts/draw_behavior.py"
+      - "scripts/draw_statemachine.py"
+      - "boards/shields/mona2/mona2_r.overlay"
 
 jobs:
   # US(ANSI)準拠の図を生成（keymap-drawer/mona2.svg, mona2.yaml）
@@ -51,6 +54,34 @@ jobs:
             echo "No changes to behavior diagram."
           else
             git commit -m "[Draw] レイヤー&トラックボール動作図を更新"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push
+          fi
+
+  # レイヤー状態遷移図を生成（keymap-drawer/mona2_statemachine.svg）
+  draw-statemachine:
+    needs: draw-behavior
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Generate state machine diagram
+        run: python scripts/draw_statemachine.py
+      - name: Commit state machine diagram
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add keymap-drawer/mona2_statemachine.svg
+          if git diff --cached --quiet; then
+            echo "No changes to state machine diagram."
+          else
+            git commit -m "[Draw] レイヤー状態遷移図を更新"
             git pull --rebase origin ${{ github.ref_name }}
             git push
           fi
