@@ -63,8 +63,8 @@
         // 慣性スクロール設定（無効にする場合は以下をコメントアウト）
         inertial-scroll;
         inertial-scroll-layers = <3 4 5>;   // NUM/NAV_MAC/NAV_WIN でスクロール有効
-        inertial-scroll-gain-pct = <130>;   // 指を離した瞬間の初速の強さ
-        inertial-scroll-decay-pct = <99>;   // 1回ごとの速度残存率(%)
+        inertial-scroll-gain-pct = <100>;   // 指を離した瞬間の初速の強さ (130→100: 増幅なし)
+        inertial-scroll-decay-pct = <93>;   // 1回ごとの速度残存率(%) (99→93: 約0.5秒で停止)
         inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
         inertial-scroll-threshold = <4>;    // 停止判定の下限値
         x-input-code = <INPUT_REL_X>;
@@ -95,14 +95,15 @@
              &scroll_runtime_input_processor>;
     };
 
-    // P長押し(layer 8): 2D自由スクロール(パン)。scroller(1/5)よりやや速め(1/4)
+    // P長押し(layer 8): 2D自由スクロール(パン)。scroller と同構成・同速度
     panner {
         layers = <8>;
         input-processors =
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
-             &zip_scroll_scaler 1 4>;
+             &zip_scroll_scaler 1 5
+             &scroll_runtime_input_processor>;
     };
 
     // Del長押し(layer 9): Mac ウィンドウスナップ(Rectangle)
@@ -118,9 +119,14 @@
     };
 
     // Q 長押し(layer 11): トラックボール → 矢印キー入力
+    // zip_keybind_keys は XY イベントを消費しないため、後続で XY→scroll 変換して
+    // mouse_runtime_input_processor へ XY が届かないようにする (マウスカーソル移動防止)
     cursor_keys {
         layers = <11>;
-        input-processors = <&zip_keybind_keys>;
+        input-processors =
+            <&zip_keybind_keys
+             &zip_xy_to_scroll_mapper
+             &zip_scroll_scaler 1 100>;
     };
 };
 
