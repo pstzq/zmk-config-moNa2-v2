@@ -28,7 +28,8 @@ def parse_overlay(text):
     scroll  = _subnode_layers(text, "scroller")
     pan     = _subnode_layers(text, "panner")
     gesture = _subnode_layers(text, "gesturer_mac") | _subnode_layers(text, "gesturer_win")
-    return aml, scroll, pan, gesture
+    keybind = _subnode_layers(text, "cursor_keys")
+    return aml, scroll, pan, gesture, keybind
 
 # ── Static layer descriptions (keyed by display-name) ──────────────────────────
 
@@ -45,6 +46,7 @@ LAYER_COLOR = {
     "PAN":    "#0598a7",
     "SNAP-M": "#d03592",
     "SNAP-W": "#d03592",
+    "CURSOR": "#0075ca",
 }
 
 ACTIVATION = {
@@ -59,6 +61,7 @@ ACTIVATION = {
     "PAN":    "P 長押し",
     "SNAP-M": "Del 長押し  (MAC ベース時)",
     "SNAP-W": "Del 長押し  (WIN ベース時)",
+    "CURSOR": "Q 長押し  (MAC / WIN 共通)",
 }
 
 # (background, foreground, label)  — pastel fills consistent with keymap-drawer combo/held colors
@@ -69,6 +72,7 @@ BALL_BUTTONS = ("#f5d0f5", "#6f42c1", "MB1 · MB2 · MB3 · MB4 · MB5")
 BALL_VOLUME  = ("#fff3cd", "#856404", "ボリューム（エンコーダ共通）")
 BALL_PAN     = ("#d1ecf1", "#0598a7", "2D パン（自由スクロール）")
 BALL_GESTURE = ("#ffe8cc", "#e36209", "ジェスチャー（ウィンドウスナップ）")
+BALL_KEYBIND = ("#ddf4ff", "#0075ca", "矢印キー入力")
 
 # ── Design tokens (aligned with keymap-drawer) ──────────────────────────────────
 
@@ -114,7 +118,7 @@ def pill(cx, cy, label, bg, fg, min_w=90):
 
 # ── Main SVG builder ────────────────────────────────────────────────────────────
 
-def build(display_names, aml, scroll_layers, pan_layers, gesture_layers):
+def build(display_names, aml, scroll_layers, pan_layers, gesture_layers, keybind_layers):
     n = len(display_names)
     H = TITLE_H + HEAD_H + n * ROW_H + PAD + 14
 
@@ -178,6 +182,8 @@ def build(display_names, aml, scroll_layers, pan_layers, gesture_layers):
             out.append(pill(ball_cx, cy, BALL_PAN[2], BALL_PAN[0], BALL_PAN[1], min_w=CW[3] - 20))
         elif i in gesture_layers:
             out.append(pill(ball_cx, cy, BALL_GESTURE[2], BALL_GESTURE[0], BALL_GESTURE[1], min_w=CW[3] - 20))
+        elif i in keybind_layers:
+            out.append(pill(ball_cx, cy, BALL_KEYBIND[2], BALL_KEYBIND[0], BALL_KEYBIND[1]))
         elif i == aml:
             out.append(pill(ball_cx, cy, BALL_BUTTONS[2], BALL_BUTTONS[0], BALL_BUTTONS[1], min_w=CW[3] - 20))
         elif name == "BLE":
@@ -211,12 +217,12 @@ def build(display_names, aml, scroll_layers, pan_layers, gesture_layers):
 def main():
     ktext = KEYMAP.read_text(encoding="utf-8")
     otext = OVERLAY.read_text(encoding="utf-8")
-    names              = parse_display_names(ktext)
-    aml, scroll, pan, gesture = parse_overlay(otext)
-    svg = build(names, aml, scroll, pan, gesture)
+    names                          = parse_display_names(ktext)
+    aml, scroll, pan, gesture, keybind = parse_overlay(otext)
+    svg = build(names, aml, scroll, pan, gesture, keybind)
     OUTPUT.write_text(svg, encoding="utf-8")
     print(f"Written: {OUTPUT}  (aml={aml}, scroll={sorted(scroll)}, "
-          f"pan={sorted(pan)}, gesture={sorted(gesture)})")
+          f"pan={sorted(pan)}, gesture={sorted(gesture)}, keybind={sorted(keybind)})")
 
 if __name__ == "__main__":
     main()

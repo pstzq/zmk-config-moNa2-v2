@@ -2,6 +2,7 @@
 #include <input/processors.dtsi>
 #include <input/processors/runtime-input-processor.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <input/processors/zmk-input-processor-keybind.dtsi>
 
 // zip_mouse_gesture_win / mouse-gesture.dtsi は mona2.dtsi で定義・include 済み。
 
@@ -73,7 +74,7 @@
 
 // 20260404
 &zip_temp_layer {
-    excluded-positions = <10 17 18 19 21 29 31>;
+    excluded-positions = <0 10 17 18 19 21 29 31>;
     require-prior-idle-ms = <300>;  // 好きなmsに調整（例: 300ms）
 };
 
@@ -114,6 +115,12 @@
     gesturer_win {
         layers = <10>;
         input-processors = <&zip_mouse_gesture_win>;
+    };
+
+    // Q 長押し(layer 11): トラックボール → 矢印キー入力
+    cursor_keys {
+        layers = <11>;
+        input-processors = <&zip_keybind_keys>;
     };
 };
 

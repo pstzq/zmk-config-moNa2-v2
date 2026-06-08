@@ -25,9 +25,10 @@ LAYER_COLOR = {
     "BLE":    "#cb2431",
     "PAN":    "#0598a7",
     "SNAP-M": "#d03592", "SNAP-W": "#d03592",
+    "CURSOR": "#0075ca",
 }
 
-W, H   = 860, 460
+W, H   = 860, 530
 NW, NH = 96, 32   # node box width / height
 MAC_C  = "#0366d6"
 WIN_C  = "#e36209"
@@ -46,6 +47,7 @@ NODES = {
     "NAV-W":  (810, 238),
     "SNAP-M": (210, 402),
     "SNAP-W": (650, 402),
+    "CURSOR": (430, 470),
 }
 
 # (src, dst, label, curve_offset, color_key)
@@ -61,6 +63,7 @@ EDGES = [
     ("MAC", "MOUSE",  "ボール操作",  -18,   "mac"),
     ("MAC", "BLE",    "英数+かな",   -18,   "mac"),
     ("MAC", "PAN",    "P",           -18,   "mac"),
+    ("MAC", "CURSOR", "Q",           -14,   "mac"),
     # From WIN
     ("WIN", "NAV-W",  "英数/かな",   0,    "win"),
     ("WIN", "SNAP-W", "Del",          0,    "win"),
@@ -69,6 +72,7 @@ EDGES = [
     ("WIN", "MOUSE",  "ボール操作",  +18,   "win"),
     ("WIN", "BLE",    "英数+かな",   +18,   "win"),
     ("WIN", "PAN",    "P",           +18,   "win"),
+    ("WIN", "CURSOR", "Q",           +14,   "win"),
 ]
 
 # ── Geometry helpers ─────────────────────────────────────────────────────────────
@@ -151,7 +155,8 @@ def build():
         ("Shared layers (MAC &amp; WIN)", W // 2, 46, C_MUT),
         ("MAC-only",  130, 211, MAC_C),
         ("WIN-only",  730, 211, WIN_C),
-        ("Snap gestures", 430, 376, C_MUT),
+        ("Snap gestures", 340, 376, C_MUT),
+        ("Cursor", 430, 445, C_MUT),
     ]:
         out.append(svg_text(lx, ly, lbl, size=9, fill=col, readable=False))
 
@@ -186,7 +191,7 @@ def build():
                             readable=False))
 
     # ── legend ──
-    ly = H - 16
+    ly = H - 14
     lx = 12
     for col, lbl in [
         (MAC_C, "MAC ベース時の遷移"),
