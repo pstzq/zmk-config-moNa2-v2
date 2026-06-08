@@ -23,6 +23,8 @@ from pathlib import Path
 
 # ── デバイス定数 ───────────────────────────────────────────
 VENDOR_ID    = 0x04FE
+# 0x0020-0x0021: ANSI 確認済み
+# 0x0022: JIS の可能性あり（list コマンドで実機確認が必要）
 PRODUCT_IDS  = [0x0020, 0x0021, 0x0022]
 USAGE_PAGE   = 0xFF00   # Interface #2（ベンダー固有）
 MAGIC        = 0xAA
@@ -137,15 +139,41 @@ def dump_firmware(dev: hid.Device, output_path: str = 'firmware.bin') -> bytes:
     return bytes(firmware)
 
 
+def probe_keymap_raw(dev: hid.Device):
+    """
+    GET_KEYMAP の生レスポンスをそのまま表示する。
+    JIS 配列では ANSI と構造が異なる可能性があるため、
+    まずこれを実行してパス数・バイト数を確認すること。
+    docs/jis.md 参照。
+    """
+    dev.write(make_packet(CMD_GET_KEYMAP))
+    time.sleep(0.05)
+
+    total = bytearray()
+    for i in range(6):
+        resp = dev.read(64, timeout_ms=500)
+        if not resp:
+            print(f"Pass {i+1}: timeout (no more data)")
+            break
+        print(f"Pass {i+1}: {bytes(resp[:20]).hex()} ...")
+        total.extend(resp)
+
+    print(f"Total: {len(total)} bytes received across passes")
+    return bytes(total)
+
+
 def get_keymap(dev: hid.Device, output_path: str = None) -> list:
     """
-    GET_KEYMAP (0x87) — キーマップを読み取る（128 キー分）。
-    3 回の受信: 58 + 58 + 12 bytes (各オフセット +6 から)
+    GET_KEYMAP (0x87) — キーマップを読み取る。
+
+    ANSI: 128 bytes（3パス: 58+58+12、各オフセット +6）
+    JIS:  未確認。まず probe-keymap で実測すること。
     """
     dev.write(make_packet(CMD_GET_KEYMAP))
     time.sleep(0.05)
 
     keymap_raw = bytearray()
+    # ANSI 用デフォルト。JIS では変更が必要な可能性がある。
     read_sizes = [58, 58, 12]
 
     for expected_size in read_sizes:
@@ -208,9 +236,13 @@ def main():
             if not out:
                 print(json.dumps(km))
 
+        elif cmd == 'probe-keymap':
+            # JIS 配列の構造確認用。docs/jis.md 参照。
+            probe_keymap_raw(dev)
+
         else:
             print(f"Unknown command: {cmd}")
-            print(__doc__)
+            print("Commands: info, list, dump-firmware [out.bin], get-keymap [out.json], probe-keymap")
             sys.exit(1)
 
 
