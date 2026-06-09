@@ -36,8 +36,8 @@
 | 6 | MOUSE | オートマウス(AML) ＝ボール操作で自動 | 右手にマウスボタン |
 | 7 | BLE/設定 | 英数 ＆ かな 同時押し(コンボ) | Bluetooth/出力/Studio/Boot のみ |
 | 8 | GESTURE PAN | P 長押し | 2D自由スクロール（パン） |
-| 9 | GESTURE SNAP (Mac) | Del 長押し（MACベース時） | ウィンドウスナップ（Rectangle） |
-| 10 | GESTURE SNAP (Win) | Del 長押し（WINベース時） | ウィンドウスナップ（Win+矢印） |
+| 9 | GESTURE SNAP (Mac) | Q 長押し（MACベース時） | ウィンドウスナップ（Rectangle） |
+| 10 | GESTURE SNAP (Win) | Q 長押し（WINベース時） | ウィンドウスナップ（Win+矢印） |
 
 ---
 
@@ -50,8 +50,9 @@
 - `Z` = mod-tap Shift（`&mt LSHFT Z`）
 - `L` の右隣 = **長音「ー」**（`JIS_MINUS`、hold=Ctrl/⌘）
 - **Backspace** は専用 hold-tap `mt_bspc`（`quick-tap-ms=200`）。タップ→すぐ長押しで **BS をオートリピート**（連続削除）。修飾キー(⌘/Ctrl)の hold はそのまま。他の mod-tap には quick-tap を付けていない。
+- **Q** = `&lt GESTURE_SNAP_MAC Q` / `&lt GESTURE_SNAP_WIN Q`（tap=Q / hold=スナップモード。OSベース層に応じて自動分岐）
 - **P** = `&lt GESTURE_PAN P`（tap=P / hold=パンモード）
-- **Del** = `&lt GESTURE_SNAP_MAC DEL` または `&lt GESTURE_SNAP_WIN DEL`（tap=Del / hold=スナップモード。OSベース層に応じて自動分岐）
+- **Del** = `&kp DEL`（通常の Delete キー）
 
 ### 親指クラスタ
 | | 左手 | | | 右手 | |
@@ -134,10 +135,10 @@ F11  F12  —    —    —         0  1  2  3  .
 
 ### GESTURE PAN（P長押し・層8）
 - トラックボールで **縦横自由にスクロール**（2Dパン）。
-- `zip_xy_to_scroll_mapper` → `zip_scroll_scaler 1 4` で速度調整（通常スクロール `1 5` よりわずかに速め）。
+- `zip_xy_to_scroll_mapper` → `zip_scroll_scaler 1 5` で速度調整（通常スクロール `scroller` と同一速度）。`scroll_runtime_input_processor` でスクロールイベントを確実に伝達。
 - キー入力はすべて `&trans` で素通り。
 
-### GESTURE SNAP（Del長押し・層9/10）
+### GESTURE SNAP（Q長押し・層9/10）
 - トラックボールをストロークするとウィンドウをスナップ。
 - `stroke-size = <150>`、`enable-eager-mode`、`gesture-cooldown-ms = <200>`。
 
@@ -170,8 +171,8 @@ F11  F12  —    —    —         0  1  2  3  .
   ```dts
   inertial-scroll;
   inertial-scroll-layers = <3 4 5>;
-  inertial-scroll-gain-pct = <130>;   // 指を離した瞬間の初速の強さ
-  inertial-scroll-decay-pct = <99>;   // 1回ごとの速度残存率(%)
+  inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅
+  inertial-scroll-decay-pct = <97>;   // 1回ごとの速度残存率(%) ≈ 0.5〜0.7秒で停止
   inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
   inertial-scroll-threshold = <4>;    // 停止判定の下限値
   ```
@@ -196,15 +197,15 @@ F11  F12  —    —    —         0  1  2  3  .
 
     panner {          // GESTURE_PAN(8): 2D スクロール
         layers = <8>;
-        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 4>;
+        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 5 &scroll_runtime_input_processor>;
     };
 
-    gesturer_mac {    // GESTURE_SNAP_MAC(9): Rectangle スナップ
+    gesturer_mac {    // GESTURE_SNAP_MAC(9): Rectangle スナップ (Q長押し・MAC)
         layers = <9>;
         input-processors = <&zip_mouse_gesture>;
     };
 
-    gesturer_win {    // GESTURE_SNAP_WIN(10): Win スナップ
+    gesturer_win {    // GESTURE_SNAP_WIN(10): Win スナップ (Q長押し・WIN)
         layers = <10>;
         input-processors = <&zip_mouse_gesture_win>;
     };
@@ -227,7 +228,7 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 ## ビルド & 書き込み
 - push すると GitHub Actions(`build.yml`)が uf2 を生成。実行ページ下部の Artifacts `firmware` をDL。
 - 含まれる uf2: `mona2_l` / `mona2_r` / `settings_reset`。
-- **キーマップ構造が大きく変わったため、初回は `settings_reset` も一度書き込む**ことを推奨（旧設定の残留防止）。
+- `settings_reset` はキーバインド変更のみなら**通常不要**。BLE ペアリング問題や設定破損が疑われる場合のみ書き込む。
 
 ---
 

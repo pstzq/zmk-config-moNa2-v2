@@ -118,11 +118,5 @@
         input-processors = <&zip_mouse_gesture_win>;
     };
 
-    // Q 長押し(layer 11): トラックボール → 矢印キー入力 (現在未使用: Q は SNAP に割り当て変更済み)
-    // 将来の再実装のためコメントアウトで残す
-    // cursor_keys {
-    //     layers = <11>;
-    //     input-processors = <&zip_keybind_keys>;
-    // };
 };
 
