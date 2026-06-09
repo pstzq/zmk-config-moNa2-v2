@@ -106,13 +106,13 @@
              &scroll_runtime_input_processor>;
     };
 
-    // Del長押し(layer 9): Mac ウィンドウスナップ(Rectangle)
+    // Q長押し(layer 9): Mac ウィンドウスナップ(Rectangle)
     gesturer_mac {
         layers = <9>;
         input-processors = <&zip_mouse_gesture>;
     };
 
-    // Del長押し(layer 10): Win ウィンドウスナップ(Win+矢印)
+    // Q長押し(layer 10): Win ウィンドウスナップ(Win+矢印)
     gesturer_win {
         layers = <10>;
         input-processors = <&zip_mouse_gesture_win>;
