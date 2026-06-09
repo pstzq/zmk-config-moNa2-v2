@@ -63,8 +63,8 @@
         // 慣性スクロール設定（無効にする場合は以下をコメントアウト）
         inertial-scroll;
         inertial-scroll-layers = <3 4 5>;   // NUM/NAV_MAC/NAV_WIN でスクロール有効
-        inertial-scroll-gain-pct = <100>;   // 指を離した瞬間の初速の強さ (130→100: 増幅なし)
-        inertial-scroll-decay-pct = <93>;   // 1回ごとの速度残存率(%) (99→93: 約0.5秒で停止)
+        inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅。軽いスワイプでも慣性感を体感できる量にする
+        inertial-scroll-decay-pct = <97>;   // 1回ごとの速度残存率(%)。約0.4〜0.7秒でスーッと停止
         inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
         inertial-scroll-threshold = <4>;    // 停止判定の下限値
         x-input-code = <INPUT_REL_X>;
@@ -82,8 +82,10 @@
 &trackball_central_listener {
     status = "okay";
     device = <&trackball_central>;
-    // オートマウスレイヤー(AML): ボール操作で MOUSE 層(=6) を一時有効化
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &mouse_runtime_input_processor &zip_temp_layer 6 500>;
+    // mouse_runtime_input_processor は mouser サブノード(layer 6)に移動。
+    // Q 長押し時は excluded-positions=<0> により MOUSE(6) が起動しないため、
+    // mouser が実行されず、マウスカーソルが動かない。
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_temp_layer 6 500>;
 
     scroller {
         layers = <3 4 5>;   // NUM(3)/NAV_MAC(4)/NAV_WIN(5) でスクロール有効
@@ -118,15 +120,20 @@
         input-processors = <&zip_mouse_gesture_win>;
     };
 
-    // Q 長押し(layer 11): トラックボール → 矢印キー入力
-    // zip_keybind_keys は XY イベントを消費しないため、後続で XY→scroll 変換して
-    // mouse_runtime_input_processor へ XY が届かないようにする (マウスカーソル移動防止)
-    cursor_keys {
-        layers = <11>;
-        input-processors =
-            <&zip_keybind_keys
-             &zip_xy_to_scroll_mapper
-             &zip_scroll_scaler 1 100>;
+    // Q 長押し(layer 11): トラックボール → 矢印キー入力 (現在未使用: Q は SNAP に割り当て変更済み)
+    // 将来の再実装のためコメントアウトで残す
+    // cursor_keys {
+    //     layers = <11>;
+    //     input-processors =
+    //         <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
+    //          &zip_keybind_keys>;
+    // };
+
+    // MOUSE 層(6)が有効な間だけマウスカーソルを動かす。
+    // 他のサブノード(scroller/panner 等)が XY を消費した後に実行されるよう最後に定義。
+    mouser {
+        layers = <6>;
+        input-processors = <&mouse_runtime_input_processor>;
     };
 };
 
