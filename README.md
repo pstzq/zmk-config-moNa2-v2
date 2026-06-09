@@ -1,3 +1,7 @@
+# キーマップ変更
+https://nickcoutsos.github.io/keymap-editor/
+
+
 # zmk-config-moNa2-v2
 
 moNa2（右手トラックボール付き分割キーボード）用の ZMK キーマップ設定です。
