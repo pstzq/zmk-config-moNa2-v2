@@ -1,5 +1,5 @@
 /*
- * moNa2 keymap (Phase 1) - JIS運用 / WIN・MAC分離 / DYA Studio対応
+ * moNa2 keymap - JIS運用 / WIN・MAC分離 / DYA Studio対応
  * 設計: docs/keymap-phase1.md
  * レイアウト図: keymap-drawer/mona2_jis.svg
  */
@@ -31,9 +31,9 @@
 #define MOUSE        6   // マウス(オートマウスレイヤー)
 #define BLE          7   // BT/設定
 #define GESTURE_PAN  8   // P長押し → 2D自由スクロール(パン)
-#define GESTURE_SNAP_MAC 9   // Del長押し(Mac) → ウィンドウスナップ(Rectangle)
-#define GESTURE_SNAP_WIN 10  // Del長押し(Win) → ウィンドウスナップ(Win+矢印)
-#define CURSOR       11  // (現在未使用) Q 長押し → トラックボールで矢印キー入力
+#define GESTURE_SNAP_MAC 9   // Q長押し(Mac) → ウィンドウスナップ(Rectangle)
+#define GESTURE_SNAP_WIN 10  // Q長押し(Win) → ウィンドウスナップ(Win+矢印)
+#define CURSOR       11  // (現在未使用)  長押し → トラックボールで矢印キー入力
 
 &mt {
     flavor = "balanced";
@@ -206,7 +206,7 @@
             display-name = "MAC";
             bindings = <
 &lt GESTURE_SNAP_MAC Q &kp W      &kp E     &kp R          &kp T                                          &kp Y      &kp U  &kp I      &kp O    &lt GESTURE_PAN P
-&kp A        &kp S      &kp D     &kp F          &kp G                           &kp JIS_AT     &kp H      &kp J  &kp K      &kp L    &mt LGUI JIS_MINUS
+&kp A        &kp S      &kp D     &kp F          &kp G                           &kp JIS_AT     &kp H      &kp J  &kp K      &kp L    &mt RGUI JIS_MINUS
 &mt LSHFT Z  &kp X      &kp C     &kp V          &kp B          &caps_word       &kp JIS_UNDER  &kp N      &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
 &kp LGUI     &kp LCTRL  &kp LALT  &mt_bspc LGUI BSPC  &lt SYM SPACE  &lt NAV_MAC LANG2    &lt NAV_MAC LANG1  &lt NUM ENTER                             &kp DEL
             >;
