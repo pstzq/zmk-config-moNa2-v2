@@ -1,4 +1,4 @@
-﻿#include "mona2.dtsi"
+#include "mona2.dtsi"
 #include <input/processors.dtsi>
 #include <input/processors/runtime-input-processor.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
@@ -64,9 +64,9 @@
         inertial-scroll;
         inertial-scroll-layers = <3 4 5>;   // NUM/NAV_MAC/NAV_WIN でスクロール有効
         inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅。軽いスワイプでも慣性感を体感できる量にする
-        inertial-scroll-decay-pct = <97>;   // 1回ごとの速度残存率(%)。約0.4〜0.7秒でスーッと停止
+        inertial-scroll-decay-pct = <93>;   // 1回ごとの速度残存率(%)。約0.4〜0.7秒でスーッと停止
         inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
-        inertial-scroll-threshold = <4>;    // 停止判定の下限値
+        inertial-scroll-threshold = <8>;    // 停止判定の下限値
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
     };
@@ -91,7 +91,7 @@
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
-             &zip_scroll_scaler 1 5
+             &zip_scroll_scaler 1 4
              &scroll_runtime_input_processor>;
     };
 
@@ -102,7 +102,7 @@
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
-             &zip_scroll_scaler 1 5
+             &zip_scroll_scaler 1 4
              &scroll_runtime_input_processor>;
     };
 
