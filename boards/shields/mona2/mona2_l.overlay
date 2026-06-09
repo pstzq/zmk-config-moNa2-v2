@@ -1,5 +1,7 @@
 #include "mona2.dtsi"
 
+// zip_mouse_gesture_win / mouse-gesture.dtsi は mona2.dtsi で定義・include 済み。
+
 &kscan0 {
         col-gpios
             = <&xiao_d 10 GPIO_ACTIVE_HIGH>

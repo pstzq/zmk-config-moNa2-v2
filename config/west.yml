@@ -1,48 +1,60 @@
 manifest:
   remotes:
+    - name: cormoran
+      url-base: https://github.com/cormoran
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
     - name: sayu-hub
       url-base: https://github.com/sayu-hub
-    - name: badjeff    # <-- PMW3610
+    - name: badjeff    # <-- PMW3610 (慣性スクロール無効版に戻す場合はこちら)
       url-base: https://github.com/badjeff
+    - name: razilyis   # <-- PMW3610 慣性スクロール対応フォーク
+      url-base: https://github.com/razilyis
     # - name: sekigon-gonnoc  # <-- PAW3222
     #   url-base: https://github.com/sekigon-gonnoc
     - name: caksoylar  # <-- RGB LED
-      url-base: https://github.com/caksoylar
+      url-base: https://github.com/caksoylar  
     - name: zettaface  # <-- Input Processor Keybind
       url-base: https://github.com/zettaface
-    # 20260404 
-    - name: kot149
+    - name: kot149    # <-- Mouse Gesture
       url-base: https://github.com/kot149
-    - name: ssbb
-      url-base: https://github.com/ssbb
-    
   projects:
     - name: zmk
-      remote: zmkfirmware
-      revision: v0.3-branch
-      # revision: v0.3.0
+      remote: cormoran
+      revision: v0.3-branch+dya
       import: app/west.yml
+    - name: zmk-module-ble-management
+      remote: cormoran
+      revision: 851661c   # v4移行前にpin (shakupan準拠。main非互換回避)
+    - name: zmk-module-battery-history
+      remote: cormoran
+      revision: main
+    - name: zmk-module-settings-rpc
+      remote: cormoran
+      revision: main
+    - name: zmk-module-runtime-input-processor
+      remote: cormoran
+      revision: dbf92f7   # v4移行前にpin (zmk fork v0.3系と互換。これが今回の失敗原因)
+    - name: zmk-behavior-runtime-sensor-rotate
+      remote: cormoran
+      revision: main
+    # - name: zmk-pmw3610-driver  # 慣性スクロール無効版に戻す場合はこちらのコメントを外す
+    #   remote: badjeff
+    #   revision: zmk-0.3
     - name: zmk-pmw3610-driver
-      remote: badjeff
-      revision: zmk-0.3
+      remote: razilyis
+      revision: Dev-v0.3_inertial-scroll
     # - name: zmk-driver-paw3222
     #   remote: sekigon-gonnoc
     #   revision: main
     - name: zmk-rgbled-widget
       remote: caksoylar
       revision: v0.3-branch
-    # revision: main
     - name: zmk-input-processor-keybind
       remote: zettaface
       revision: main
-    # 20260404 
     - name: zmk-mouse-gesture
       remote: kot149
-      revision: v1
-    - name: zmk-listeners
-      remote: ssbb
-      revision: v1
+      revision: 855a6e80f18f4b19ea2181648ac062ec72876ece   # masterブランチHEAD相当(mainなし)
   self:
     path: config
