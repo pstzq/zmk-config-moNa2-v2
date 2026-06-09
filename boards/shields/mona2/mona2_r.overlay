@@ -133,7 +133,9 @@
     // 他のサブノード(scroller/panner 等)が XY を消費した後に実行されるよう最後に定義。
     mouser {
         layers = <6>;
-        input-processors = <&mouse_runtime_input_processor>;
+        input-processors =
+            <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
+             &mouse_runtime_input_processor>;
     };
 };
 
