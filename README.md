@@ -1,4 +1,4 @@
-# キーマップ変更
+# キーマップ変更 は使えないと思っておいた方がいい（JIS対応＆特定レイヤでのキーマップ等が壊れうる）
 https://nickcoutsos.github.io/keymap-editor/
 
 
