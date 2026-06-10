@@ -19,20 +19,22 @@ C_MUT  = "#6a737d"
 
 LAYER_COLOR = {
     "MAC":    "#0366d6", "WIN":    "#0366d6",
+    "O24":    "#6f42c1",
     "SYM":    "#28a745", "NUM":    "#28a745",
     "NAV-M":  "#e36209", "NAV-W":  "#e36209",
     "MOUSE":  "#6f42c1",
     "BLE":    "#cb2431",
     "PAN":    "#0598a7",
     "SNAP-M": "#d03592", "SNAP-W": "#d03592",
-    "CURSOR": "#0075ca",
+    "CURSOR": "#cccccc",  # grayed: reserved but unimplemented
 }
 
-W, H   = 860, 530
+W, H   = 860, 580
 NW, NH = 96, 32   # node box width / height
 MAC_C  = "#0366d6"
 WIN_C  = "#e36209"
 BT_C   = "#6a737d"
+O24_C  = "#6f42c1"
 
 # Node center positions
 NODES = {
@@ -47,32 +49,37 @@ NODES = {
     "NAV-W":  (810, 238),
     "SNAP-M": (210, 402),
     "SNAP-W": (650, 402),
-    "CURSOR": (430, 470),
+    "CURSOR": (430, 470),  # reserved / unimplemented
+    "O24":    (588, 470),  # Q+P toggle
 }
 
 # (src, dst, label, curve_offset, color_key)
 # curve_offset: perpendicular bend in px (+/- to separate parallel edges)
+# color_key: "mac", "win", "bt", "o24", "hidden"
 EDGES = [
     # BT profile: handled specially as bidirectional
     ("MAC", "WIN",    "BT profile",  0,    "bt"),
     # From MAC
     ("MAC", "NAV-M",  "英数/かな",   0,    "mac"),
-    ("MAC", "SNAP-M", "Del",          0,    "mac"),
-    ("MAC", "SYM",    "Space",       -18,   "mac"),
-    ("MAC", "NUM",    "Enter",       -18,   "mac"),
-    ("MAC", "MOUSE",  "ボール操作",  -18,   "mac"),
-    ("MAC", "BLE",    "英数+かな",   -18,   "mac"),
-    ("MAC", "PAN",    "P",           -18,   "mac"),
-    ("MAC", "CURSOR", "Q",           -14,   "mac"),
+    ("MAC", "SNAP-M", "Q",           0,    "mac"),
+    ("MAC", "SYM",    "Space",       -18,  "mac"),
+    ("MAC", "NUM",    "Enter",       -18,  "mac"),
+    ("MAC", "MOUSE",  "ボール操作",  -18,  "mac"),
+    ("MAC", "BLE",    "英数+かな",   -18,  "mac"),
+    ("MAC", "PAN",    "P",           -18,  "mac"),
+    ("MAC", "CURSOR", "Q",           -14,  "hidden"),  # CURSOR is unimplemented
     # From WIN
     ("WIN", "NAV-W",  "英数/かな",   0,    "win"),
-    ("WIN", "SNAP-W", "Del",          0,    "win"),
-    ("WIN", "SYM",    "Space",       +18,   "win"),
-    ("WIN", "NUM",    "Enter",       +18,   "win"),
-    ("WIN", "MOUSE",  "ボール操作",  +18,   "win"),
-    ("WIN", "BLE",    "英数+かな",   +18,   "win"),
-    ("WIN", "PAN",    "P",           +18,   "win"),
-    ("WIN", "CURSOR", "Q",           +14,   "win"),
+    ("WIN", "SNAP-W", "Q",           0,    "win"),
+    ("WIN", "SYM",    "Space",       +18,  "win"),
+    ("WIN", "NUM",    "Enter",       +18,  "win"),
+    ("WIN", "MOUSE",  "ボール操作",  +18,  "win"),
+    ("WIN", "BLE",    "英数+かな",   +18,  "win"),
+    ("WIN", "PAN",    "P",           +18,  "win"),
+    ("WIN", "CURSOR", "Q",           +14,  "hidden"),  # CURSOR is unimplemented
+    # O24 toggle (dashed, purple)
+    ("MAC", "O24",    "Q+P",          0,   "o24"),
+    ("WIN", "O24",    "Q+P",          0,   "o24"),
 ]
 
 # ── Geometry helpers ─────────────────────────────────────────────────────────────
@@ -138,7 +145,7 @@ def build():
 
     # defs
     out.append("<defs>")
-    for mid, col in [("mac", MAC_C), ("win", WIN_C), ("bt", BT_C)]:
+    for mid, col in [("mac", MAC_C), ("win", WIN_C), ("bt", BT_C), ("o24", O24_C)]:
         out.append(arrow_marker(mid, col))
     out.append("</defs>")
 
@@ -156,16 +163,16 @@ def build():
         ("MAC-only",  130, 211, MAC_C),
         ("WIN-only",  730, 211, WIN_C),
         ("Snap gestures", 340, 376, C_MUT),
-        ("Cursor", 430, 445, C_MUT),
+        ("Cursor / O24", 509, 445, C_MUT),
     ]:
         out.append(svg_text(lx, ly, lbl, size=9, fill=col, readable=False))
 
     # ── edges ──
     for src, dst, label, offset, kind in EDGES:
-        col = {"mac": MAC_C, "win": WIN_C, "bt": BT_C}[kind]
+        col_map = {"mac": MAC_C, "win": WIN_C, "bt": BT_C, "o24": O24_C, "hidden": BT_C}
+        col = col_map[kind]
 
         if kind == "bt":
-            # two thin arrows forming a double arrow
             pa, (lxa, lya) = quad_bezier(src, dst, -9)
             pb, _ = quad_bezier(dst, src, -9)
             for p in (pa, pb):
@@ -173,6 +180,17 @@ def build():
                             f' opacity="0.65" marker-end="url(#ah-bt)"/>')
             lx = (NODES[src][0] + NODES[dst][0]) / 2
             ly = min(NODES[src][1], NODES[dst][1]) - 14
+            out.append(svg_text(lx, ly, label, size=9, fill=col))
+        elif kind == "hidden":
+            path, (lx, ly) = quad_bezier(src, dst, offset)
+            out.append(f'<path d="{path}" fill="none" stroke="{col}" stroke-width="1.5"'
+                       f' opacity="0" marker-end="url(#ah-mac)"/>')
+            out.append(svg_text(lx, ly, label, size=9, fill=col, readable=False) \
+                       .replace('>', ' opacity="0">', 1))
+        elif kind == "o24":
+            path, (lx, ly) = quad_bezier(src, dst, offset)
+            out.append(f'<path d="{path}" fill="none" stroke="{col}" stroke-width="1.5"'
+                       f' opacity="0.75" stroke-dasharray="5 3" marker-end="url(#ah-o24)"/>')
             out.append(svg_text(lx, ly, label, size=9, fill=col))
         else:
             path, (lx, ly) = quad_bezier(src, dst, offset)
@@ -197,6 +215,7 @@ def build():
         (MAC_C, "MAC ベース時の遷移"),
         (WIN_C, "WIN ベース時の遷移"),
         (BT_C,  "BT profile 切替（双方向）"),
+        (O24_C, "Q+P コンボ（トグル）"),
         (C_MUT, "★ = デフォルト層　キー離し = 元の層に復帰"),
     ]:
         out.append(f'<rect x="{lx}" y="{ly - 5}" width="16" height="3" rx="1" fill="{col}" opacity="0.8"/>')

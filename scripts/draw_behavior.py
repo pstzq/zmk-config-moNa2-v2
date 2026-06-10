@@ -37,6 +37,7 @@ def parse_overlay(text):
 LAYER_COLOR = {
     "MAC":    "#0366d6",
     "WIN":    "#0366d6",
+    "O24":    "#6f42c1",
     "SYM":    "#28a745",
     "NUM":    "#28a745",
     "NAV-W":  "#e36209",
@@ -52,6 +53,7 @@ LAYER_COLOR = {
 ACTIVATION = {
     "MAC":    "default  /  BT0",
     "WIN":    "BT1  /  BT2",
+    "O24":    "Q + P 同時押し（トグル）",
     "SYM":    "Space 長押し",
     "NUM":    "Enter 長押し",
     "NAV-W":  "英数 or かな 長押し  (WIN ベース時)",
@@ -59,9 +61,9 @@ ACTIVATION = {
     "MOUSE":  "ボール操作で自動遷移  /  500ms で復帰",
     "BLE":    "英数 ＆ かな  同時押し (コンボ)",
     "PAN":    "P 長押し",
-    "SNAP-M": "Del 長押し  (MAC ベース時)",
-    "SNAP-W": "Del 長押し  (WIN ベース時)",
-    "CURSOR": "Q 長押し  (MAC / WIN 共通)",
+    "SNAP-M": "Q 長押し  (MAC ベース時)",
+    "SNAP-W": "Q 長押し  (WIN ベース時)",
+    "CURSOR": "— （未実装・予約済み）",
 }
 
 # (background, foreground, label)  — pastel fills consistent with keymap-drawer combo/held colors
@@ -184,6 +186,11 @@ def build(display_names, aml, scroll_layers, pan_layers, gesture_layers, keybind
             out.append(pill(ball_cx, cy, BALL_GESTURE[2], BALL_GESTURE[0], BALL_GESTURE[1], min_w=CW[3] - 20))
         elif i in keybind_layers:
             out.append(pill(ball_cx, cy, BALL_KEYBIND[2], BALL_KEYBIND[0], BALL_KEYBIND[1]))
+        elif name == "CURSOR":
+            cw = 72; ch = 22
+            px = CX[3] + 10; py = cy - ch // 2
+            out.append(rect(px, py, cw, ch, "#f0f0f0", rx=11, stroke="#aaaaaa", stroke_width="0.8"))
+            out.append(text(px + cw // 2, cy + 4, "（なし）", anchor="middle", size=11, bold=True, fill="#888888"))
         elif i == aml:
             out.append(pill(ball_cx, cy, BALL_BUTTONS[2], BALL_BUTTONS[0], BALL_BUTTONS[1], min_w=CW[3] - 20))
         elif name == "BLE":

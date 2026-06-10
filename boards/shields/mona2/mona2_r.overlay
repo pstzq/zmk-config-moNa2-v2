@@ -62,7 +62,7 @@
         evt-type = <INPUT_EV_REL>;
         // 慣性スクロール設定（無効にする場合は以下をコメントアウト）
         inertial-scroll;
-        inertial-scroll-layers = <3 4 5>;   // NUM/NAV_MAC/NAV_WIN でスクロール有効
+        inertial-scroll-layers = <4 5 6>;   // NUM/NAV_MAC/NAV_WIN でスクロール有効
         inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅。軽いスワイプでも慣性感を体感できる量にする
         inertial-scroll-decay-pct = <93>;   // 1回ごとの速度残存率(%)。約0.4〜0.7秒でスーッと停止
         inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
@@ -83,10 +83,10 @@
     status = "okay";
     device = <&trackball_central>;
     // オートマウスレイヤー(AML): ボール操作で MOUSE 層(=6) を一時有効化
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &mouse_runtime_input_processor &zip_temp_layer 6 500>;
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &mouse_runtime_input_processor &zip_temp_layer 7 500>;
 
     scroller {
-        layers = <3 4 5>;   // NUM(3)/NAV_MAC(4)/NAV_WIN(5) でスクロール有効
+        layers = <4 5 6>;   // NUM(4)/NAV_MAC(5)/NAV_WIN(6) でスクロール有効
         input-processors =
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
@@ -95,9 +95,9 @@
              &scroll_runtime_input_processor>;
     };
 
-    // P長押し(layer 8): 2D自由スクロール(パン)。scroller と同構成・同速度
+    // P長押し(layer 9): 2D自由スクロール(パン)。scroller と同構成・同速度
     panner {
-        layers = <8>;
+        layers = <9>;
         input-processors =
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
@@ -106,15 +106,15 @@
              &scroll_runtime_input_processor>;
     };
 
-    // Q長押し(layer 9): Mac ウィンドウスナップ(Rectangle)
+    // Q長押し(layer 10): Mac ウィンドウスナップ(Rectangle)
     gesturer_mac {
-        layers = <9>;
+        layers = <10>;
         input-processors = <&zip_mouse_gesture>;
     };
 
-    // Q長押し(layer 10): Win ウィンドウスナップ(Win+矢印)
+    // Q長押し(layer 11): Win ウィンドウスナップ(Win+矢印)
     gesturer_win {
-        layers = <10>;
+        layers = <11>;
         input-processors = <&zip_mouse_gesture_win>;
     };
 

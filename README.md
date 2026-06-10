@@ -34,9 +34,10 @@ moNa2（右手トラックボール付き分割キーボード）用の ZMK キ�
 | 6 | **MOUSE** | トラックボール操作で自動遷移（AML） |
 | 7 | **BLE/設定** | `英数`+`かな` 同時押し |
 | 8 | **GESTURE PAN** | `P` 長押し |
-| 9 | **GESTURE SNAP (Mac)** | `Del` 長押し（MAC ベース時） |
-| 10 | **GESTURE SNAP (Win)** | `Del` 長押し（WIN ベース時） |
-| 11 | **CURSOR** | `Q` 長押し（MAC / WIN 共通） |
+| 9 | **GESTURE SNAP (Mac)** | `Q` 長押し（MAC ベース時） |
+| 10 | **GESTURE SNAP (Win)** | `Q` 長押し（WIN ベース時） |
+| 11 | **CURSOR** | 未実装（予約済み） |
+| 12 | **O24**（代替レイアウト） | `Q`+`P` 同時押しでトグル |
 
 ---
 
@@ -73,15 +74,13 @@ BLE 層（`英数`+`かな` 同時押し）の最上段で切替：
 | 通常 | マウスカーソル移動 |
 | NUM / NAV 層中 | スクロール（慣性スクロール対応） |
 | `P` 長押し中 | **パン**（2D 自由スクロール） |
-| `Q` 長押し中 | **テキストカーソル移動**（矢印キー入力） |
-| `Del` 長押し中（Mac） | **ウィンドウスナップ**（Rectangle） |
-| `Del` 長押し中（Win） | **ウィンドウスナップ**（Win+矢印） |
+| `Q` 長押し中 | **ウィンドウスナップ**（Rectangle / Win+矢印） |
 
 トラックボールを動かすと **MOUSE 層へ自動遷移**（AML）、500ms 静止で元に戻ります。
 
 #### ウィンドウスナップ ジェスチャー
 
-`Del` を押したままトラックボールを弾く方向でスナップ先が変わります：
+`Q` を押したままトラックボールを弾く方向でスナップ先が変わります：
 
 | ストローク方向 | Mac（Rectangle） | Windows |
 |---|---|---|
@@ -136,7 +135,7 @@ Shift PgUp PgDn  —   —                              🔅  ⏮   ⏯   ⏭  �
 [DYA Studio](https://studio.dya.cormoran.works/) を使うと GUI でキーマップを変更できます。
 接続前に BLE 層の `studio_unlock` キーを押してください（`L` の右隣）。
 
-詳細: [`README2.md`](README2.md)
+詳細: [`docs/keymap-phase1.md`](docs/keymap-phase1.md)
 
 ---
 
@@ -154,3 +153,9 @@ invert-y;
 ## 設計ドキュメント
 
 詳細な設計思想・実装経緯・今後の拡張案: [`docs/keymap-phase1.md`](docs/keymap-phase1.md)
+
+---
+
+## 補足
+
+- `boards/shields/mona2/mona2.keymap` は旧デフォルトキーマップ（7層）です。実際に動作するのは `config/mona2.keymap`（12層+O24）です。
