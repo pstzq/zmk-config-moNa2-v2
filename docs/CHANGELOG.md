@@ -11,6 +11,18 @@
 
 ---
 
+## 2026-06-10  O24 バグ修正 & レイヤー番号再編
+
+（by チャット依頼）
+
+- O24 レイヤーを layer 12 → layer 2 に移動（layer 12 では SYM/NUM/NAV より優先度が高くなり機能不全になる ZMK 仕様の問題を修正）
+- O24 T位置キーバインドを `COMMA` → `DOT` に修正（コンマが2つ並んでいた誤りを解消）
+- `mona2_r.overlay` の全レイヤー番号参照を新番号に更新（AML=7、scroller=4,5,6、panner=9、gesturer_mac=10、gesturer_win=11）
+- `keymap-drawer/mona2.yaml` の O24 セクションを WIN の直後に移動し、T位置エントリを `','` → `'.'` に修正
+- `docs/keymap-phase1.md` のレイヤー表・AML/慣性スクロール節・コードブロックを新番号に合わせて更新
+
+---
+
 ## 2026-06-10  ドキュメント最新化（実装との乖離修正・README2.md 廃止）
 
 （by チャット依頼）

@@ -29,17 +29,17 @@
 |---|---|---|---|
 | 0 | MAC | 既定 | QWERTY。修飾キー=Mac系(⌘/Ctrl/⌥) |
 | 1 | WIN | BTプロファイル連動(BT1/BT2) | QWERTY。修飾キー=Windows系(Ctrl/Win/Alt) |
-| 2 | SYM 記号 | Space 長押し | JIS正準の記号一式（`jis.h`経由） |
-| 3 | NUM 数字 | Enter 長押し | 右手テンキー＋左手F1〜F12 |
-| 4 | NAV-M 矢印(Mac) | 英数 or かな 長押し（MACベース時） | 左手 逆T字＋Home/End/PgUp/PgDn。右手矢印IJKL/メディア/輝度 |
-| 5 | NAV-W 矢印(Win) | 英数 or かな 長押し（WINベース時） | 左手 逆T字＋Home/End/PgUp/PgDn。右手矢印IJKL/メディア/輝度 |
-| 6 | MOUSE | オートマウス(AML) ＝ボール操作で自動 | 右手にマウスボタン |
-| 7 | BLE/設定 | 英数 ＆ かな 同時押し(コンボ) | Bluetooth/出力/Studio/Boot のみ |
-| 8 | GESTURE PAN | P 長押し | 2D自由スクロール（パン） |
-| 9 | GESTURE SNAP (Mac) | Q 長押し（MACベース時） | ウィンドウスナップ（Rectangle） |
-| 10 | GESTURE SNAP (Win) | Q 長押し（WINベース時） | ウィンドウスナップ（Win+矢印） |
-| 11 | CURSOR（予約） | — （未実装） | トラックボールで矢印キー入力（将来実装候補） |
-| 12 | O24 | `Q`+`P` 同時押しトグル | 代替キーレイアウト |
+| 2 | O24 | `Q`+`P` 同時押しトグル | 代替キーレイアウト |
+| 3 | SYM 記号 | Space 長押し | JIS正準の記号一式（`jis.h`経由） |
+| 4 | NUM 数字 | Enter 長押し | 右手テンキー＋左手F1〜F12 |
+| 5 | NAV-M 矢印(Mac) | 英数 or かな 長押し（MACベース時） | 左手 逆T字＋Home/End/PgUp/PgDn。右手矢印IJKL/メディア/輝度 |
+| 6 | NAV-W 矢印(Win) | 英数 or かな 長押し（WINベース時） | 左手 逆T字＋Home/End/PgUp/PgDn。右手矢印IJKL/メディア/輝度 |
+| 7 | MOUSE | オートマウス(AML) ＝ボール操作で自動 | 右手にマウスボタン |
+| 8 | BLE/設定 | 英数 ＆ かな 同時押し(コンボ) | Bluetooth/出力/Studio/Boot のみ |
+| 9 | GESTURE PAN | P 長押し | 2D自由スクロール（パン） |
+| 10 | GESTURE SNAP (Mac) | Q 長押し（MACベース時） | ウィンドウスナップ（Rectangle） |
+| 11 | GESTURE SNAP (Win) | Q 長押し（WINベース時） | ウィンドウスナップ（Win+矢印） |
+| 12 | CURSOR（予約） | — （未実装） | トラックボールで矢印キー入力（将来実装候補） |
 
 ---
 
@@ -125,7 +125,7 @@ F11  F12  —    —    —         0  1  2  3  .
 
 ### MOUSE（オートマウスレイヤー）
 - 右手に `LCLK / RCLK / MCLK / MB4(戻) / MB5(進)`。
-- トラックボール操作で MOUSE 層(=6)へ自動遷移（AML）。
+- トラックボール操作で MOUSE 層(=7)へ自動遷移（AML）。
 
 ### BLE/設定（Bluetooth・端末管理に限定）
 - **雑多なキーは置かず Bluetooth まわりに集中**：BT0〜BT4 の選択（Y〜P 位置）。
@@ -135,12 +135,12 @@ F11  F12  —    —    —         0  1  2  3  .
 - F1〜F12 は **NUM 層左手**へ、メディアキーは **NAV 層右手**へ移設済み。
 - エンコーダは `rsr_vol`（音量）に切り替わる。
 
-### GESTURE PAN（P長押し・層8）
+### GESTURE PAN（P長押し・層9）
 - トラックボールで **縦横自由にスクロール**（2Dパン）。
 - `zip_xy_to_scroll_mapper` → `zip_scroll_scaler 1 5` で速度調整（通常スクロール `scroller` と同一速度）。`scroll_runtime_input_processor` でスクロールイベントを確実に伝達。
 - キー入力はすべて `&trans` で素通り。
 
-### GESTURE SNAP（Q長押し・層9/10）
+### GESTURE SNAP（Q長押し・層10/11）
 - トラックボールをストロークするとウィンドウをスナップ。
 - `stroke-size = <150>`、`enable-eager-mode`、`gesture-cooldown-ms = <200>`。
 
@@ -160,19 +160,19 @@ F11  F12  —    —    —         0  1  2  3  .
 - デフォルト(電源投入時)は MAC ベース（layer 0）。
 
 ## オートマウスレイヤー(AML)
-- `boards/shields/mona2/mona2_r.overlay` のトラックボール listener に `&zip_temp_layer 6 500` を配線。
-- ボール操作で MOUSE 層(=6) へ自動遷移、500ms 操作なしで復帰。
+- `boards/shields/mona2/mona2_r.overlay` のトラックボール listener に `&zip_temp_layer 7 500` を配線。
+- ボール操作で MOUSE 層(=7) へ自動遷移、500ms 操作なしで復帰。
 - `require-prior-idle-ms = <300>` でタイピング直後の誤AML発動を防止。
-- ボールスクロールのトリガは NUM(=3) / NAV_MAC(=4) / NAV_WIN(=5)（`layers = <3 4 5>`）。
+- ボールスクロールのトリガは NUM(=4) / NAV_MAC(=5) / NAV_WIN(=6)（`layers = <4 5 6>`）。
 
 ## 慣性スクロール（razilyis フォーク）
 - `badjeff/zmk-pmw3610-driver` の代わりに **`razilyis/zmk-pmw3610-driver`**（`Dev-v0.3_inertial-scroll` ブランチ）を使用。
 - 参考: [note 記事](https://note.com/razily/n/nea1575614710)
-- NUM / NAV_MAC / NAV_WIN 層（`inertial-scroll-layers = <3 4 5>`）でスクロール後に慣性が効く。
+- NUM / NAV_MAC / NAV_WIN 層（`inertial-scroll-layers = <4 5 6>`）でスクロール後に慣性が効く。
 - 主な設定値（`mona2_r.overlay` の `trackball_central@0` ノード内）:
   ```dts
   inertial-scroll;
-  inertial-scroll-layers = <3 4 5>;
+  inertial-scroll-layers = <4 5 6>;
   inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅
   inertial-scroll-decay-pct = <97>;   // 1回ごとの速度残存率(%) ≈ 0.5〜0.7秒で停止
   inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
@@ -187,28 +187,28 @@ F11  F12  —    —    —         0  1  2  3  .
 ### 入力プロセッサ配線（`mona2_r.overlay`）
 ```dts
 &trackball_central_listener {
-    // デフォルト: カーソル移動 + AML(layer 6)
+    // デフォルト: カーソル移動 + AML(layer 7)
     input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
                         &mouse_runtime_input_processor
-                        &zip_temp_layer 6 500>;
+                        &zip_temp_layer 7 500>;
 
     scroller {        // NUM/NAV 層: スクロール
-        layers = <3 4 5>;
-        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 5>;
+        layers = <4 5 6>;
+        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 4>;
     };
 
-    panner {          // GESTURE_PAN(8): 2D スクロール
-        layers = <8>;
-        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 5 &scroll_runtime_input_processor>;
-    };
-
-    gesturer_mac {    // GESTURE_SNAP_MAC(9): Rectangle スナップ (Q長押し・MAC)
+    panner {          // GESTURE_PAN(9): 2D スクロール
         layers = <9>;
+        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 4 &scroll_runtime_input_processor>;
+    };
+
+    gesturer_mac {    // GESTURE_SNAP_MAC(10): Rectangle スナップ (Q長押し・MAC)
+        layers = <10>;
         input-processors = <&zip_mouse_gesture>;
     };
 
-    gesturer_win {    // GESTURE_SNAP_WIN(10): Win スナップ (Q長押し・WIN)
-        layers = <10>;
+    gesturer_win {    // GESTURE_SNAP_WIN(11): Win スナップ (Q長押し・WIN)
+        layers = <11>;
         input-processors = <&zip_mouse_gesture_win>;
     };
 };
@@ -240,14 +240,14 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 
 **共通前提**
 - OS側配列は引き続き JIS 固定。
-- Layer 11（CURSOR）・Layer 12（O24）は既に実装済み。今後の追加は 13 番以降。
+- Layer 2（O24）実装済み。Layer 12（CURSOR）は予約済み。今後の追加は 13 番以降。
 - BLE層からの切替ボタンとして実装する想定。
 
 #### 案 A: `&tog` オーバーレイ方式（大西配列向き・最小コスト）
 
-- 大西配列レイヤー（例: 11）を MAC/WIN の上に重ねる透過レイヤーとして追加。
+- 大西配列レイヤー（例: 13）を MAC/WIN の上に重ねる透過レイヤーとして追加。
 - 英字キー位置のみ上書き。SYM / NAV / NUM / BLE は `&trans` で素通り。
-- BLE層に `&tog 11` ボタン1つで オン/オフ。
+- BLE層に `&tog 13` ボタン1つで オン/オフ。
 - **電源再投入で QWERTY に戻らない**（ZMK はデフォルトで `&tog` 状態をフラッシュ保存）。BLE層に「QWERTY 戻し `&to MAC`」を必ず用意すること。
 - 薙刀式には**不向き**（同時打鍵が単純なレイヤー置換では実現できない）。
 
