@@ -54,7 +54,6 @@
         combo_tab {
             bindings = <&kp TAB>;
             key-positions = <11 12>;
-            layers = <WIN MAC>;
         };
 
         // D+F = Shift+Tab
@@ -62,15 +61,13 @@
         combo_stab {
             bindings = <&kp LS(TAB)>;
             key-positions = <12 13>;
-            layers = <WIN MAC>;
         };
 
         // 英数+かな = tap:Esc / hold:BLE層 (sayu-hub意識)
 
         combo_esc_ble {
-            bindings = <&lt BLE ESC>;
+            bindings = <&lt 0 ESC>;
             key-positions = <38 39>;
-            layers = <WIN MAC>;
         };
 
         // J+K = コピー / K+L = ペースト (OS別に修飾を分岐)
@@ -78,29 +75,25 @@
         combo_copy_mac {
             bindings = <&kp LG(C)>;
             key-positions = <17 18>;
-            layers = <MAC>;
         };
 
         combo_copy_win {
             bindings = <&kp LC(C)>;
             key-positions = <17 18>;
-            layers = <WIN>;
         };
 
         combo_paste_mac {
             bindings = <&kp LG(V)>;
             key-positions = <18 19>;
-            layers = <MAC>;
         };
 
         combo_paste_win {
             bindings = <&kp LC(V)>;
             key-positions = <18 19>;
-            layers = <WIN>;
         };
 
         combo_toO24 {
-            bindings = <&tog 12>;
+            bindings = <&tog 2>;
             key-positions = <0 9>;
         };
     };
@@ -111,21 +104,21 @@
         bt_mac0: bt_mac0 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to MAC &bt BT_SEL 0>;
+            bindings = <&to 0 &bt BT_SEL 0>;
             label = "BT_MAC0";
         };
 
         bt_win1: bt_win1 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to WIN &bt BT_SEL 1>;
+            bindings = <&to 0 &bt BT_SEL 1>;
             label = "BT_WIN1";
         };
 
         bt_win2: bt_win2 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to WIN &bt BT_SEL 2>;
+            bindings = <&to 0 &bt BT_SEL 2>;
             label = "BT_WIN2";
         };
 
@@ -217,10 +210,10 @@
         mac_layer {
             display-name = "MAC";
             bindings = <
-&lt GESTURE_SNAP_MAC Q  &kp W      &kp E     &kp R               &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
-&kp A                   &kp S      &kp D     &kp F               &kp G                               &kp JIS_AT         &kp H          &kp J  &kp K      &kp L    &mt RGUI JIS_MINUS
-&mt LSHFT Z             &kp X      &kp C     &kp V               &kp B          &caps_word           &kp JIS_UNDER      &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LGUI                &kp LCTRL  &kp LALT  &mt_bspc LGUI BSPC  &lt SYM SPACE  &lt NAV_MAC LANG2    &lt NAV_MAC LANG1  &lt NUM ENTER                             &kp DEL
+&lt 0 Q      &kp W      &kp E     &kp R               &kp T                                      &kp Y        &kp U  &kp I      &kp O    &lt 0 P
+&kp A        &kp S      &kp D     &kp F               &kp G                       &kp JIS_AT     &kp H        &kp J  &kp K      &kp L    &mt RGUI JIS_MINUS
+&mt LSHFT Z  &kp X      &kp C     &kp V               &kp B        &caps_word     &kp JIS_UNDER  &kp N        &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
+&kp LGUI     &kp LCTRL  &kp LALT  &mt_bspc LGUI BSPC  &lt 0 SPACE  &lt 0 LANG2    &lt 0 LANG1    &lt 0 ENTER                             &kp DEL
             >;
 
             sensor-bindings = <&scroll_up_down>;
@@ -229,13 +222,22 @@
         win_layer {
             display-name = "WIN";
             bindings = <
-&lt GESTURE_SNAP_WIN Q  &kp W     &kp E     &kp R                &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
-&kp A                   &kp S     &kp D     &kp F                &kp G                               &kp JIS_AT         &kp H          &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
-&mt LSHFT Z             &kp X     &kp C     &kp V                &kp B          &caps_word           &kp JIS_UNDER      &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LCTRL               &kp LGUI  &kp LALT  &mt_bspc LCTRL BSPC  &lt SYM SPACE  &lt NAV_WIN LANG2    &lt NAV_WIN LANG1  &lt NUM ENTER                             &kp DEL
+&lt 0 Q      &kp W     &kp E     &kp R                &kp T                                      &kp Y        &kp U  &kp I      &kp O    &lt 0 P
+&kp A        &kp S     &kp D     &kp F                &kp G                       &kp JIS_AT     &kp H        &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
+&mt LSHFT Z  &kp X     &kp C     &kp V                &kp B        &caps_word     &kp JIS_UNDER  &kp N        &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
+&kp LCTRL    &kp LGUI  &kp LALT  &mt_bspc LCTRL BSPC  &lt 0 SPACE  &lt 0 LANG2    &lt 0 LANG1    &lt 0 ENTER                             &kp DEL
             >;
 
             sensor-bindings = <&scroll_up_down>;
+        };
+
+        O24 {
+            bindings = <
+&kp Q     &kp L   &kp U   &kp COMMA  &kp DOT                      &kp F   &kp W  &kp R  &kp Y  &kp P
+&kp E     &kp I   &kp A   &kp O      &kp MINUS            &trans  &kp K   &kp T  &kp N  &kp S  &kp H
+&kp FSLH  &kp Z   &kp X   &kp C      &kp V      &trans    &trans  &kp G   &kp D  &kp M  &kp J  &kp B
+&trans    &trans  &trans  &trans     &trans     &trans    &trans  &trans                       &trans
+            >;
         };
 
         sym_layer {
@@ -356,15 +358,6 @@
             >;
 
             sensor-bindings = <&scroll_up_down>;
-        };
-
-        O24 {
-            bindings = <
-&kp Q     &kp L   &kp U   &kp COMMA  &kp COMMA                    &kp F   &kp W  &kp R  &kp Y  &kp P
-&kp E     &kp I   &kp A   &kp O      &kp MINUS            &trans  &kp K   &kp T  &kp N  &kp S  &kp H
-&kp FSLH  &kp Z   &kp X   &kp C      &kp V      &trans    &trans  &kp G   &kp D  &kp M  &kp J  &kp B
-&trans    &trans  &trans  &trans     &trans     &trans    &trans  &trans                       &trans
-            >;
         };
     };
 };
