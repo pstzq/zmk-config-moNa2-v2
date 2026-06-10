@@ -24,16 +24,17 @@
 
 #define MAC          0   // ベース(Mac)        — デフォルト
 #define WIN          1   // ベース(Windows)
-#define SYM          2   // 記号
-#define NUM          3   // 数字(右手テンキー)
-#define NAV_MAC      4   // 矢印/ナビ(Mac)     — P=Cmd+Shift+3
-#define NAV_WIN      5   // 矢印/ナビ(Windows) — P=PrtSc
-#define MOUSE        6   // マウス(オートマウスレイヤー)
-#define BLE          7   // BT/設定
-#define GESTURE_PAN  8   // P長押し → 2D自由スクロール(パン)
-#define GESTURE_SNAP_MAC 9   // Q長押し(Mac) → ウィンドウスナップ(Rectangle)
-#define GESTURE_SNAP_WIN 10  // Q長押し(Win) → ウィンドウスナップ(Win+矢印)
-#define CURSOR       11  // (現在未使用)  長押し → トラックボールで矢印キー入力
+#define O24          2   // 代替アルファ（Q+Pトグル）
+#define SYM          3   // 記号
+#define NUM          4   // 数字(右手テンキー)
+#define NAV_MAC      5   // 矢印/ナビ(Mac)     — P=Cmd+Shift+3
+#define NAV_WIN      6   // 矢印/ナビ(Windows) — P=PrtSc
+#define MOUSE        7   // マウス(オートマウスレイヤー)
+#define BLE          8   // BT/設定
+#define GESTURE_PAN  9   // P長押し → 2D自由スクロール(パン)
+#define GESTURE_SNAP_MAC 10  // Q長押し(Mac) → ウィンドウスナップ(Rectangle)
+#define GESTURE_SNAP_WIN 11  // Q長押し(Win) → ウィンドウスナップ(Win+矢印)
+#define CURSOR       12  // (現在未使用)  長押し → トラックボールで矢印キー入力
 
 &mt {
     flavor = "balanced";
@@ -66,7 +67,7 @@
         // 英数+かな = tap:Esc / hold:BLE層 (sayu-hub意識)
 
         combo_esc_ble {
-            bindings = <&lt 0 ESC>;
+            bindings = <&lt BLE ESC>;
             key-positions = <38 39>;
         };
 
@@ -93,7 +94,7 @@
         };
 
         combo_toO24 {
-            bindings = <&tog 2>;
+            bindings = <&tog O24>;
             key-positions = <0 9>;
         };
     };
@@ -111,14 +112,14 @@
         bt_win1: bt_win1 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to 0 &bt BT_SEL 1>;
+            bindings = <&to WIN &bt BT_SEL 1>;
             label = "BT_WIN1";
         };
 
         bt_win2: bt_win2 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to 0 &bt BT_SEL 2>;
+            bindings = <&to WIN &bt BT_SEL 2>;
             label = "BT_WIN2";
         };
 
@@ -210,10 +211,10 @@
         mac_layer {
             display-name = "MAC";
             bindings = <
-&lt 0 Q      &kp W      &kp E     &kp R               &kp T                                      &kp Y        &kp U  &kp I      &kp O    &lt 0 P
-&kp A        &kp S      &kp D     &kp F               &kp G                       &kp JIS_AT     &kp H        &kp J  &kp K      &kp L    &mt RGUI JIS_MINUS
-&mt LSHFT Z  &kp X      &kp C     &kp V               &kp B        &caps_word     &kp JIS_UNDER  &kp N        &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LGUI     &kp LCTRL  &kp LALT  &mt_bspc LGUI BSPC  &lt 0 SPACE  &lt 0 LANG2    &lt 0 LANG1    &lt 0 ENTER                             &kp DEL
+&lt GESTURE_SNAP_MAC Q  &kp W      &kp E     &kp R               &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
+&kp A                   &kp S      &kp D     &kp F               &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RGUI JIS_MINUS
+&mt LSHFT Z             &kp X      &kp C     &kp V               &kp B        &caps_word     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
+&kp LGUI                &kp LCTRL  &kp LALT  &mt_bspc LGUI BSPC  &lt SYM SPACE  &lt NAV_MAC LANG2    &lt NAV_MAC LANG1  &lt NUM ENTER                             &kp DEL
             >;
 
             sensor-bindings = <&scroll_up_down>;
@@ -222,22 +223,25 @@
         win_layer {
             display-name = "WIN";
             bindings = <
-&lt 0 Q      &kp W     &kp E     &kp R                &kp T                                      &kp Y        &kp U  &kp I      &kp O    &lt 0 P
-&kp A        &kp S     &kp D     &kp F                &kp G                       &kp JIS_AT     &kp H        &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
-&mt LSHFT Z  &kp X     &kp C     &kp V                &kp B        &caps_word     &kp JIS_UNDER  &kp N        &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LCTRL    &kp LGUI  &kp LALT  &mt_bspc LCTRL BSPC  &lt 0 SPACE  &lt 0 LANG2    &lt 0 LANG1    &lt 0 ENTER                             &kp DEL
+&lt GESTURE_SNAP_WIN Q  &kp W     &kp E     &kp R                &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
+&kp A                  &kp S     &kp D     &kp F                &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
+&mt LSHFT Z            &kp X     &kp C     &kp V                &kp B        &caps_word     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
+&kp LCTRL              &kp LGUI  &kp LALT  &mt_bspc LCTRL BSPC  &lt SYM SPACE  &lt NAV_WIN LANG2    &lt NAV_WIN LANG1  &lt NUM ENTER                             &kp DEL
             >;
 
             sensor-bindings = <&scroll_up_down>;
         };
 
         O24 {
+            display-name = "O24";
             bindings = <
 &kp Q     &kp L   &kp U   &kp COMMA  &kp DOT                      &kp F   &kp W  &kp R  &kp Y  &kp P
 &kp E     &kp I   &kp A   &kp O      &kp MINUS            &trans  &kp K   &kp T  &kp N  &kp S  &kp H
 &kp FSLH  &kp Z   &kp X   &kp C      &kp V      &trans    &trans  &kp G   &kp D  &kp M  &kp J  &kp B
 &trans    &trans  &trans  &trans     &trans     &trans    &trans  &trans                       &trans
             >;
+
+            sensor-bindings = <&scroll_up_down>;
         };
 
         sym_layer {
