@@ -1,6 +1,6 @@
-# moNa2 キーマップ — Phase 1 実装まとめ
+# moNa2 キーマップ — 設計・実装ドキュメント
 
-> このドキュメントは `claude/keymap-rework` ブランチで実装した内容のまとめです。
+> 現行実装の設計思想・実装詳細・今後の拡張案をまとめたドキュメントです。
 > **キーマップ図**は GitHub Actions(`draw.yml`)が push 毎に自動生成（2種類）：
 > - US(ANSI)準拠: [`keymap-drawer/mona2.svg`](../keymap-drawer/mona2.svg)（keymap-drawer標準。記号は `Sft+1` `[` 等のUS表記）
 > - **JIS準拠**: [`keymap-drawer/mona2_jis.svg`](../keymap-drawer/mona2_jis.svg)（`scripts/jis_relabel.py` で JIS で実際に出る記号 `@ : ^ ¥` 等に変換した版）
@@ -38,6 +38,8 @@
 | 8 | GESTURE PAN | P 長押し | 2D自由スクロール（パン） |
 | 9 | GESTURE SNAP (Mac) | Q 長押し（MACベース時） | ウィンドウスナップ（Rectangle） |
 | 10 | GESTURE SNAP (Win) | Q 長押し（WINベース時） | ウィンドウスナップ（Win+矢印） |
+| 11 | CURSOR（予約） | — （未実装） | トラックボールで矢印キー入力（将来実装候補） |
+| 12 | O24 | `Q`+`P` 同時押しトグル | 代替キーレイアウト |
 
 ---
 
@@ -174,7 +176,7 @@ F11  F12  —    —    —         0  1  2  3  .
   inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅
   inertial-scroll-decay-pct = <97>;   // 1回ごとの速度残存率(%) ≈ 0.5〜0.7秒で停止
   inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
-  inertial-scroll-threshold = <4>;    // 停止判定の下限値
+  inertial-scroll-threshold = <8>;    // 停止判定の下限値
   ```
 - **元に戻す場合**: `west.yml` の `razilyis` エントリをコメントアウトして `badjeff` エントリを復活させ、`mona2_r.overlay` の `inertial-scroll*` 行をコメントアウトするだけ（2ファイル、数行の変更）。
 
@@ -238,7 +240,7 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 
 **共通前提**
 - OS側配列は引き続き JIS 固定。
-- 現状のレイヤー番号 0〜10 は変更しない。追加は 11 番以降。
+- Layer 11（CURSOR）・Layer 12（O24）は既に実装済み。今後の追加は 13 番以降。
 - BLE層からの切替ボタンとして実装する想定。
 
 #### 案 A: `&tog` オーバーレイ方式（大西配列向き・最小コスト）
