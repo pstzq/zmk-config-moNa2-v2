@@ -101,7 +101,7 @@
 
         combo_toO24 {
             bindings = <&tog 12>;
-            key-positions = <10 20>;
+            key-positions = <0 9>;
         };
     };
 
