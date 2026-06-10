@@ -148,6 +148,6 @@
 <line x1="52" y1="594" x2="52" y2="638" stroke="#c9cccf" stroke-width="1"/>
 <line x1="170" y1="594" x2="170" y2="638" stroke="#c9cccf" stroke-width="1"/>
 <line x1="450" y1="594" x2="450" y2="638" stroke="#c9cccf" stroke-width="1"/>
-<rect x="0" y="0" width="788" height="620" fill="none" rx="6" stroke="#c9cccf" stroke-width="1"/>
+<rect x="0" y="0" width="788" height="664" fill="none" rx="6" stroke="#c9cccf" stroke-width="1"/>
 <text x="12" y="650" text-anchor="start" font-size="10" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#6a737d">★ = デフォルト層（電源投入時）　　スクロール = NUM / NAV 層で有効</text>
 </svg>
