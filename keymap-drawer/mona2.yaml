@@ -581,5 +581,5 @@ combos:
 - p: [18, 19]
   k: Ctl+V
   l: [WIN]
-- p: [10, 20]
+- p: [0, 9]
   k: {t: O24, h: toggle}
