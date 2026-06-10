@@ -15,9 +15,9 @@
 <text x="26" y="93" text-anchor="middle" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#ffffff">0</text>
 <text x="60" y="93" text-anchor="start" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#0366d6">MAC ★</text>
 <text x="180" y="93" text-anchor="start" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#24292e">default  /  BT0</text>
-<rect x="460" y="77" width="72" height="22" fill="#ddf4ff" rx="11" stroke="#0366d6" stroke-width="0.8"/>
-<text x="496" y="92" text-anchor="middle" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#0366d6">カーソル</text>
-<text x="540" y="92" text-anchor="start" font-size="10" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#28a745">→ 自動で MOUSE へ</text>
+<rect x="460" y="77" width="72" height="22" fill="#f0f0f0" rx="11" stroke="#aaaaaa" stroke-width="0.8"/>
+<text x="496" y="92" text-anchor="middle" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#0366d6">（なし）</text>
+<text x="540" y="92" text-anchor="start" font-size="10" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#28a745"></text>
 <line x1="52" y1="66" x2="52" y2="110" stroke="#c9cccf" stroke-width="1"/>
 <line x1="170" y1="66" x2="170" y2="110" stroke="#c9cccf" stroke-width="1"/>
 <line x1="450" y1="66" x2="450" y2="110" stroke="#c9cccf" stroke-width="1"/>
@@ -110,7 +110,7 @@
 <rect x="12" y="471" width="28" height="26" fill="#d03592" rx="4"/>
 <text x="26" y="489" text-anchor="middle" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#ffffff">9</text>
 <text x="60" y="489" text-anchor="start" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#d03592">SNAP-M</text>
-<text x="180" y="489" text-anchor="start" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#24292e">Del 長押し  (MAC ベース時)</text>
+<text x="180" y="489" text-anchor="start" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#24292e">Q 長押し  (MAC ベース時)</text>
 <rect x="460" y="473" width="318" height="22" fill="#ffe8cc" rx="11" stroke="#e36209" stroke-width="0.8"/><text x="619" y="488" text-anchor="middle" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#e36209">ジェスチャー（ウィンドウスナップ）</text>
 <line x1="52" y1="462" x2="52" y2="506" stroke="#c9cccf" stroke-width="1"/>
 <line x1="170" y1="462" x2="170" y2="506" stroke="#c9cccf" stroke-width="1"/>
@@ -120,7 +120,7 @@
 <rect x="12" y="515" width="28" height="26" fill="#d03592" rx="4"/>
 <text x="26" y="533" text-anchor="middle" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#ffffff">10</text>
 <text x="60" y="533" text-anchor="start" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#d03592">SNAP-W</text>
-<text x="180" y="533" text-anchor="start" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#24292e">Del 長押し  (WIN ベース時)</text>
+<text x="180" y="533" text-anchor="start" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#24292e">Q 長押し  (WIN ベース時)</text>
 <rect x="460" y="517" width="318" height="22" fill="#ffe8cc" rx="11" stroke="#e36209" stroke-width="0.8"/><text x="619" y="532" text-anchor="middle" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#e36209">ジェスチャー（ウィンドウスナップ）</text>
 <line x1="52" y1="506" x2="52" y2="550" stroke="#c9cccf" stroke-width="1"/>
 <line x1="170" y1="506" x2="170" y2="550" stroke="#c9cccf" stroke-width="1"/>
@@ -130,7 +130,7 @@
 <rect x="12" y="559" width="28" height="26" fill="#0075ca" rx="4"/>
 <text x="26" y="577" text-anchor="middle" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#ffffff">11</text>
 <text x="60" y="577" text-anchor="start" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#0075ca">CURSOR</text>
-<text x="180" y="577" text-anchor="start" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#24292e">Q 長押し  (MAC / WIN 共通)</text>
+<text x="180" y="577" text-anchor="start" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#24292e">— （未実装・予約済み）</text>
 <rect x="460" y="561" width="72" height="22" fill="#ddf4ff" rx="11" stroke="#0366d6" stroke-width="0.8"/>
 <text x="496" y="576" text-anchor="middle" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#0366d6">カーソル</text>
 <text x="540" y="576" text-anchor="start" font-size="10" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#28a745">→ 自動で MOUSE へ</text>
