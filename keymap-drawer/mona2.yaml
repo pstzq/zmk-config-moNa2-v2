@@ -1,7 +1,7 @@
 layout: {zmk_keyboard: mona2}
 layers:
   MAC:
-  - {t: Q, h: MAC}
+  - {t: Q, h: SNAP-M}
   - W
   - E
   - R
@@ -10,7 +10,7 @@ layers:
   - U
   - I
   - O
-  - {t: P, h: MAC}
+  - {t: P, h: PAN}
   - A
   - S
   - D
@@ -38,13 +38,13 @@ layers:
   - LCTRL
   - LALT
   - {t: BSPC, h: LGUI}
-  - {t: SPACE, h: MAC}
-  - {t: LANG2, h: MAC, type: held}
-  - {t: LANG1, h: MAC, type: held}
-  - {t: ENTER, h: MAC}
+  - {t: SPACE, h: SYM}
+  - {t: LANG2, h: NAV-M}
+  - {t: LANG1, h: NAV-M}
+  - {t: ENTER, h: NUM}
   - DEL
   WIN:
-  - {t: Q, h: MAC}
+  - {t: Q, h: SNAP-W}
   - W
   - E
   - R
@@ -53,7 +53,7 @@ layers:
   - U
   - I
   - O
-  - {t: P, h: MAC}
+  - {t: P, h: PAN}
   - A
   - S
   - D
@@ -81,10 +81,10 @@ layers:
   - LGUI
   - LALT
   - {t: BSPC, h: LCTRL}
-  - {t: SPACE, h: MAC}
-  - {t: LANG2, h: MAC}
-  - {t: LANG1, h: MAC}
-  - {t: ENTER, h: MAC}
+  - {t: SPACE, h: SYM}
+  - {t: LANG2, h: NAV-W}
+  - {t: LANG1, h: NAV-W}
+  - {t: ENTER, h: NUM}
   - DEL
   O24:
   - Q
@@ -167,7 +167,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - BSPC
-  - {t: ▽, type: trans}
+  - {type: held}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - ENTER
@@ -213,7 +213,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - ENTER
+  - {t: ENTER, type: held}
   - DEL
   NAV-M:
   - ESC
@@ -254,7 +254,7 @@ layers:
   - {t: ▽, type: trans}
   - BSPC
   - SPACE
-  - {t: ▽, type: trans}
+  - {type: held}
   - {t: ▽, type: trans}
   - ENTER
   - DEL
@@ -297,7 +297,7 @@ layers:
   - {t: ▽, type: trans}
   - BSPC
   - SPACE
-  - {t: ▽, type: trans}
+  - {type: held}
   - {t: ▽, type: trans}
   - ENTER
   - DEL
@@ -383,8 +383,8 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - {type: held}
+  - {type: held}
   - {t: ▽, type: trans}
   - BT CLR ALL
   PAN:
@@ -397,7 +397,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - {type: held}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -431,7 +431,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   SNAP-M:
-  - {t: ▽, type: trans}
+  - {type: held}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -474,7 +474,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   SNAP-W:
-  - {t: ▽, type: trans}
+  - {type: held}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -565,7 +565,7 @@ combos:
 - p: [12, 13]
   k: Sft+TAB
 - p: [38, 39]
-  k: {t: ESC, h: MAC}
+  k: {t: ESC, h: BLE}
 - p: [17, 18]
   k: Gui+C
 - p: [17, 18]
