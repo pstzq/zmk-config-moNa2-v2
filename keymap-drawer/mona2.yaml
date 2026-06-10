@@ -1,7 +1,7 @@
 layout: {zmk_keyboard: mona2}
 layers:
   MAC:
-  - {t: Q, h: SNAP-M}
+  - {t: Q, h: MAC}
   - W
   - E
   - R
@@ -10,7 +10,7 @@ layers:
   - U
   - I
   - O
-  - {t: P, h: PAN}
+  - {t: P, h: MAC}
   - A
   - S
   - D
@@ -38,13 +38,13 @@ layers:
   - LCTRL
   - LALT
   - {t: BSPC, h: LGUI}
-  - {t: SPACE, h: SYM}
-  - {t: LANG2, h: NAV-M}
-  - {t: LANG1, h: NAV-M}
-  - {t: ENTER, h: NUM}
+  - {t: SPACE, h: MAC}
+  - {t: LANG2, h: MAC, type: held}
+  - {t: LANG1, h: MAC, type: held}
+  - {t: ENTER, h: MAC}
   - DEL
   WIN:
-  - {t: Q, h: SNAP-W}
+  - {t: Q, h: MAC}
   - W
   - E
   - R
@@ -53,7 +53,7 @@ layers:
   - U
   - I
   - O
-  - {t: P, h: PAN}
+  - {t: P, h: MAC}
   - A
   - S
   - D
@@ -81,11 +81,54 @@ layers:
   - LGUI
   - LALT
   - {t: BSPC, h: LCTRL}
-  - {t: SPACE, h: SYM}
-  - {t: LANG2, h: NAV-W}
-  - {t: LANG1, h: NAV-W}
-  - {t: ENTER, h: NUM}
+  - {t: SPACE, h: MAC}
+  - {t: LANG2, h: MAC}
+  - {t: LANG1, h: MAC}
+  - {t: ENTER, h: MAC}
   - DEL
+  O24:
+  - Q
+  - L
+  - U
+  - ','
+  - .
+  - F
+  - W
+  - R
+  - Y
+  - P
+  - E
+  - I
+  - A
+  - O
+  - '-'
+  - {t: ▽, type: trans}
+  - K
+  - T
+  - N
+  - S
+  - H
+  - /
+  - Z
+  - X
+  - C
+  - V
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - G
+  - D
+  - M
+  - J
+  - B
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   SYM:
   - Sft+1
   - Sft+2
@@ -124,7 +167,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - BSPC
-  - {type: held}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - ENTER
@@ -170,7 +213,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ENTER, type: held}
+  - ENTER
   - DEL
   NAV-M:
   - ESC
@@ -211,7 +254,7 @@ layers:
   - {t: ▽, type: trans}
   - BSPC
   - SPACE
-  - {type: held}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - ENTER
   - DEL
@@ -254,7 +297,7 @@ layers:
   - {t: ▽, type: trans}
   - BSPC
   - SPACE
-  - {type: held}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - ENTER
   - DEL
@@ -340,8 +383,8 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {type: held}
-  - {type: held}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - BT CLR ALL
   PAN:
@@ -354,7 +397,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {type: held}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -388,7 +431,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   SNAP-M:
-  - {type: held}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -431,7 +474,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   SNAP-W:
-  - {type: held}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -516,70 +559,20 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  O24:
-  - Q
-  - L
-  - U
-  - ','
-  - ','
-  - F
-  - W
-  - R
-  - Y
-  - P
-  - E
-  - I
-  - A
-  - O
-  - '-'
-  - {t: ▽, type: trans}
-  - K
-  - T
-  - N
-  - S
-  - H
-  - /
-  - Z
-  - X
-  - C
-  - V
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - G
-  - D
-  - M
-  - J
-  - B
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
 combos:
 - p: [11, 12]
   k: TAB
-  l: [WIN, MAC]
 - p: [12, 13]
   k: Sft+TAB
-  l: [WIN, MAC]
 - p: [38, 39]
-  k: {t: ESC, h: BLE}
-  l: [WIN, MAC]
+  k: {t: ESC, h: MAC}
 - p: [17, 18]
   k: Gui+C
-  l: [MAC]
 - p: [17, 18]
   k: Ctl+C
-  l: [WIN]
 - p: [18, 19]
   k: Gui+V
-  l: [MAC]
 - p: [18, 19]
   k: Ctl+V
-  l: [WIN]
 - p: [0, 9]
   k: {t: O24, h: toggle}
