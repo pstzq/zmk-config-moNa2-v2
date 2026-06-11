@@ -562,17 +562,25 @@ layers:
 combos:
 - p: [11, 12]
   k: TAB
+  l: [WIN, MAC]
 - p: [12, 13]
   k: Sft+TAB
+  l: [WIN, MAC]
 - p: [38, 39]
   k: {t: ESC, h: BLE}
+  l: [WIN, MAC, O24]
 - p: [17, 18]
   k: Gui+C
+  l: [MAC]
 - p: [17, 18]
   k: Ctl+C
+  l: [WIN]
 - p: [18, 19]
   k: Gui+V
+  l: [MAC]
 - p: [18, 19]
   k: Ctl+V
+  l: [WIN]
 - p: [0, 9]
   k: {t: O24, h: toggle}
+  l: [MAC, WIN, O24]
