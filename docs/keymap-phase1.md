@@ -140,12 +140,15 @@ F11  F12  —    —    —         0  1  2  3  .
 
 ### GESTURE PAN（P長押し・層9）
 - トラックボールで **縦横自由にスクロール**（2Dパン）。
-- `zip_xy_to_scroll_mapper` → `zip_scroll_scaler 1 4` で速度調整（通常スクロール `scroller` と同一速度）。`scroll_runtime_input_processor` でスクロールイベントを確実に伝達。
+- `zip_xy_to_scroll_mapper` → `zip_scroll_scaler 1 5` で速度調整（通常スクロール `scroller` と同一速度。cpi=800 への補正込み）。`scroll_runtime_input_processor` でスクロールイベントを確実に伝達。
 - キー入力はすべて `&trans` で素通り。
 
 ### GESTURE SNAP（Q長押し・層10/11）
 - トラックボールをストロークするとウィンドウをスナップ。
-- `stroke-size = <150>`、`enable-eager-mode`、`gesture-cooldown-ms = <200>`。
+- `stroke-size = <200>`、`enable-eager-mode`、`gesture-cooldown-ms = <200>`。
+- **`always-active`（必須）**: kot149 モジュールは既定では起動キー（`&mouse_gesture` 等）を押している間しか認識しない。本構成は `&lt` のレイヤー起動＋listener の `layers` 指定で発動を制御しているため、`always-active` が無いとプロセッサが常に非アクティブとなり、ジェスチャー不発火＆イベント素通り（カーソルが動く）になる。
+- **`suppress-movement`**: 認識中は X/Y イベントを消費し、カーソルを動かさない（MX Ergo 的挙動）。
+- gesturer チェーンには scroller/panner と同じ `zip_xy_transform INPUT_TRANSFORM_X_INVERT` を入れること（無いと左右ストロークが反転判定される）。
 
 | ストローク | Mac（Rectangle） | Windows |
 |---|---|---|
@@ -179,7 +182,7 @@ F11  F12  —    —    —         0  1  2  3  .
   inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅
   inertial-scroll-decay-pct = <93>;   // 1回ごとの速度残存率(%) ≈ 0.4〜0.7秒で停止
   inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
-  inertial-scroll-threshold = <8>;    // 停止判定の下限値
+  inertial-scroll-threshold = <10>;   // 停止判定の下限値 (cpi 600→800 に合わせ比例補正)
   ```
 - **元に戻す場合**: `west.yml` の `razilyis` エントリをコメントアウトして `badjeff` エントリを復活させ、`mona2_r.overlay` の `inertial-scroll*` 行をコメントアウトするだけ（2ファイル、数行の変更）。
 
@@ -197,22 +200,22 @@ F11  F12  —    —    —         0  1  2  3  .
 
     scroller {        // NUM/NAV 層: スクロール
         layers = <4 5 6>;
-        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 4>;
+        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 5>;
     };
 
     panner {          // GESTURE_PAN(9): 2D スクロール
         layers = <9>;
-        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 4 &scroll_runtime_input_processor>;
+        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 5 &scroll_runtime_input_processor>;
     };
 
     gesturer_mac {    // GESTURE_SNAP_MAC(10): Rectangle スナップ (Q長押し・MAC)
         layers = <10>;
-        input-processors = <&zip_mouse_gesture>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_mouse_gesture>;
     };
 
     gesturer_win {    // GESTURE_SNAP_WIN(11): Win スナップ (Q長押し・WIN)
         layers = <11>;
-        input-processors = <&zip_mouse_gesture_win>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_mouse_gesture_win>;
     };
 };
 ```

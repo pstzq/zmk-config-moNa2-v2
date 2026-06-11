@@ -11,6 +11,22 @@
 
 ---
 
+## 2026-06-11  ウィンドウスナップ ジェスチャー不発火の修正 & センサー感度アップ
+
+（by チャット依頼）
+
+### バグ修正（Q長押しスナップが発動せず、カーソルがX反転で動く問題）
+- 原因1: kot149 ジェスチャープロセッサは既定で「起動キー（`&mouse_gesture` 等）押下中のみアクティブ」仕様。本構成は `&lt` レイヤー起動のため常に非アクティブ → イベント素通り。`&zip_mouse_gesture` / `&zip_mouse_gesture_win` に **`always-active`** を追加して解消
+- 原因2: gesturer チェーンに X 反転補正が無く、素通りしたイベントが X 反転のままカーソルを動かしていた。`gesturer_mac` / `gesturer_win` に **`zip_xy_transform INPUT_TRANSFORM_X_INVERT`** を追加（ストローク左右判定の正常化も兼ねる）
+- **`suppress-movement`** を追加し、ジェスチャー認識中はカーソルが動かないように（MX Ergo 的挙動）
+
+### センサー感度アップ（cpi 600→800）と連動補正
+- `zip_scroll_scaler` 1/4→1/5（scroller / panner。スクロール体感速度を維持）
+- `inertial-scroll-threshold` 8→10（慣性の余韻長を維持）
+- `stroke-size` 150→200（ジェスチャーの物理フリック距離を維持）
+
+---
+
 ## 2026-06-11  ゼロベースレビューに基づく修正・改善
 
 （by チャット依頼）

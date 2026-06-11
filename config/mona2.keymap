@@ -389,9 +389,11 @@
 // Mac: Rectangle のデフォルトショートカット (Ctrl+Option+矢印)。変更する場合はここを修正。
 
 &zip_mouse_gesture {
-    stroke-size = <150>;
+    stroke-size = <200>;          // cpi=800 でフリック距離が従来(150@600cpi)と同等になる値
     enable-eager-mode;
     gesture-cooldown-ms = <200>;
+    always-active;                // &lt によるレイヤー起動のみで動作させる(起動キー &mouse_gesture 不要)
+    suppress-movement;            // 認識中はカーソル移動イベントを消費(カーソルを動かさない)
 
     snap_left {
         pattern = <GESTURE_LEFT>;
@@ -437,9 +439,11 @@
 // Win: 標準スナップ (Win+矢印)
 
 &zip_mouse_gesture_win {
-    stroke-size = <150>;
+    stroke-size = <200>;          // cpi=800 でフリック距離が従来(150@600cpi)と同等になる値
     enable-eager-mode;
     gesture-cooldown-ms = <200>;
+    always-active;                // &lt によるレイヤー起動のみで動作させる(起動キー &mouse_gesture 不要)
+    suppress-movement;            // 認識中はカーソル移動イベントを消費(カーソルを動かさない)
 
     snap_left_w {
         pattern = <GESTURE_LEFT>;
