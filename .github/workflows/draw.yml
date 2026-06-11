@@ -6,7 +6,7 @@ on:
     paths:
       - "config/mona2.keymap"
       - "keymap_drawer.config.yaml"
-      - "config/mona2.dtsi"
+      - "boards/shields/mona2/mona2.dtsi"
       - "scripts/jis_relabel.py"
       - "scripts/mona2_info.json"
       - "scripts/draw_behavior.py"
@@ -111,5 +111,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add keymap-drawer/mona2_jis.svg
-          git diff --cached --quiet || git commit -m "[Draw] JIS版キーマップ図を更新"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes to JIS drawing."
+          else
+            git commit -m "[Draw] JIS版キーマップ図を更新"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push
+          fi

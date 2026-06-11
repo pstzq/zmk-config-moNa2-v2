@@ -11,6 +11,30 @@
 
 ---
 
+## 2026-06-11  ゼロベースレビューに基づく修正・改善
+
+（by チャット依頼）
+
+### バグ修正
+- **コンボの `layers` プロパティを復元**: keymap-editor のコミット（211da6f）が全コンボの `layers` を削除し、Mac/Win のコピペ分岐（J+K / K+L）が機能していなかった。Tab / Shift+Tab / 英数+かな も全レイヤーで発火する状態だった。
+  - `combo_tab` / `combo_stab`: `layers = <WIN MAC>`（復元）
+  - `combo_esc_ble`: `layers = <WIN MAC O24>`（O24 トグル中も BLE 層へ入れるよう改善）
+  - コピペ 4 コンボ: `layers = <MAC>` / `<WIN>`（復元）
+  - `combo_toO24`: `layers = <MAC WIN O24>`（新規。機能層での Q+P 誤爆を防止）
+- `bt_mac0` マクロを `&to 0` → `&to MAC` に復元（keymap-editor 起因の劣化）
+- `.github/workflows/no build.yml` を削除（名前に反して有効で、build.yml と同一ビルドを毎 push 二重実行していた）
+
+### 改善
+- mod-tap 誤爆対策: `&mt` / `mt_bspc` に `require-prior-idle-ms = <125>` を追加。`config/mona2.keymap` 冒頭の `MT_REQUIRE_PRIOR_IDLE_MS` で調整・無効化（0）が可能
+- `config/west.yml`: 浮動 `main` だった 4 モジュール（battery-history / settings-rpc / runtime-sensor-rotate / input-processor-keybind）を 2026-06-11 時点の HEAD SHA に pin
+- `draw.yml`: 存在しない `config/mona2.dtsi` のパス参照を `boards/shields/mona2/mona2.dtsi` に修正、draw-jis ジョブの push 前に `git pull --rebase` を追加
+
+### ドキュメント
+- README.md のレイヤー表を現行番号（O24=2, SYM=3, …, CURSOR=12）に修正
+- docs/keymap-phase1.md: `inertial-scroll-decay-pct` 97→93、PAN の `zip_scroll_scaler 1 5`→`1 4`、`zip_mouse_gesture_win` の定義場所（mona2.dtsi）を実装に一致させ、コンボ layers / require-prior-idle-ms / 追加 pin の記述を追加
+
+---
+
 ## 2026-06-10  O24 バグ修正 & レイヤー番号再編
 
 （by チャット依頼）
