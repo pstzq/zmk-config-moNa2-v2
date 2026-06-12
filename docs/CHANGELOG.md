@@ -11,6 +11,17 @@
 
 ---
 
+## 2026-06-12  LED レイヤー配色の整理
+
+（by チャット依頼）
+
+- rgbled-widget のレイヤー色をデフォルト任せから明示的な配色に変更（`config/mona2_r.conf`）
+  - ベース層 MAC / WIN / O24 = 消灯（WIN・O24 が常時点灯してしまう問題の解消）
+  - SYM=緑 / NUM=青 / NAV-M・NAV-W=シアン / MOUSE=白 / BLE=赤(橙に見える) / PAN=黄 / SNAP-M・SNAP-W=マゼンタ
+- docs/keymap-phase1.md に LED 配色表の節を追加
+
+---
+
 ## 2026-06-11  ウィンドウスナップ ジェスチャー不発火の修正 & センサー感度アップ
 
 （by チャット依頼）

@@ -159,6 +159,25 @@ F11  F12  —    —    —         0  1  2  3  .
 
 ---
 
+## LED レイヤー配色（rgbled-widget）
+
+`CONFIG_RGBLED_WIDGET_SHOW_LAYER_COLORS` は**最上位のアクティブ層**の色を常時表示する
+（点滅ではない。レイヤー状態が変わるたびに再評価）。表示はセントラル＝右手側のみ。
+配色は `config/mona2_r.conf` の `CONFIG_RGBLED_WIDGET_LAYER_<N>_COLOR` で定義
+（0=消灯 1=赤 2=緑 3=黄 4=青 5=マゼンタ 6=シアン 7=白。原色8色のみで中間色は不可）。
+
+| # | レイヤー | 色 |
+|---|---|---|
+| 0/1/2 | MAC / WIN / O24 | 消灯（ベース層は常時点灯させない） |
+| 3 | SYM | 緑 |
+| 4 | NUM | 青 |
+| 5/6 | NAV-M / NAV-W | シアン |
+| 7 | MOUSE (AML) | 白 |
+| 8 | BLE | 赤（拡散でオレンジに見える） |
+| 9 | PAN | 黄 |
+| 10/11 | SNAP-M / SNAP-W | マゼンタ |
+| 12 | CURSOR（未使用） | 消灯 |
+
 ## OS切替（BTプロファイル連動）
 - マクロ `bt_mac0` / `bt_win1` / `bt_win2` が「ベース層切替(`&to`)＋`&bt BT_SEL`」をまとめて実行。
   - BT0 → MAC ベース、BT1/BT2 → WIN ベース。
