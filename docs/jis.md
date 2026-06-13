@@ -99,6 +99,23 @@ ls -lh firmware_jis.bin
 - binwalk -A の出力（アーキテクチャ）:
 ```
 
+## 実測値（記録日: 2026-06-13 / Windows / PD-KB820B）
+
+- モデル: HHKB Professional HYBRID Type-S 日本語配列（`serial`=`PD-KB820BS`）
+- **Product ID: `0x0022`（JIS 確定）**
+- **プログラミング IF: あり**（`list` の [5]: `MI_02`, `usage_page=0xff00`, `usage=0x0001`）
+- GET_INFO (0x02): **応答あり**。ただし JIS ではオフセットが ANSI と異なる
+  - `serial`(offset 6-17) は正しく `PD-KB820BS` を返す
+  - `app_firmware`/`boot_firmware`(offset 18-23) は正常時でも `0.0.0` → **ANSI 用パーサのオフセット誤り。実バージョンは別位置**
+- **DUMP_FIRMWARE (0xD0): 🛑 危険。ダンプにならず更新モード移行を誘発**
+  - Enter 連打のゴミ HID 出力 → `running: bootloader`, fw=`255.255.255`(=0xFF)
+  - **書き込みを一切しなかったため自己復帰**（`running: app` に回復、打鍵正常化）
+  - GET_KEYMAP/probe-keymap, firmware.bin サイズ: **未取得（0xD0 が危険と判明したため中断）**
+
+### 次にやるなら（安全側の再検討が必要）
+- `0xD0` 経由のダンプ路線は JIS では危険。安全な吸い出し経路が別にあるか、
+  あるいは **ソフト側 mod-tap（Karabiner/Kanata）やコントローラ換装（ZMK）** に切り替えるか要判断。
+
 ## 6. JIS 先行事例の調査
 
 ANSI の happy-hacking-gnu 相当の JIS 版が存在するかを確認する。
