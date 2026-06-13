@@ -86,7 +86,7 @@ def get_info(dev: hid.Device) -> dict:
     """GET_KEYBOARD_INFO (0x02) — キーボード情報を取得する。"""
     dev.write(make_packet(CMD_GET_INFO))
     time.sleep(0.05)
-    r = dev.read(64, timeout_ms=2000)
+    r = dev.read(64, timeout=2000)
     if not r:
         raise RuntimeError("No response from keyboard")
     return {
@@ -114,7 +114,7 @@ def dump_firmware(dev: hid.Device, output_path: str = 'firmware.bin') -> bytes:
     MAX_PACKETS = 6000   # 300KB / 56bytes ≒ 5357、余裕を持たせる
 
     while packet_count < MAX_PACKETS:
-        resp = dev.read(64, timeout_ms=3000)
+        resp = dev.read(64, timeout=3000)
         if not resp:
             print(f"\nTimeout after {packet_count} packets")
             break
@@ -151,7 +151,7 @@ def probe_keymap_raw(dev: hid.Device):
 
     total = bytearray()
     for i in range(6):
-        resp = dev.read(64, timeout_ms=500)
+        resp = dev.read(64, timeout=500)
         if not resp:
             print(f"Pass {i+1}: timeout (no more data)")
             break
@@ -177,7 +177,7 @@ def get_keymap(dev: hid.Device, output_path: str = None) -> list:
     read_sizes = [58, 58, 12]
 
     for expected_size in read_sizes:
-        resp = dev.read(64, timeout_ms=2000)
+        resp = dev.read(64, timeout=2000)
         if not resp:
             raise RuntimeError("No response while reading keymap")
         keymap_raw.extend(resp[6:6 + expected_size])
