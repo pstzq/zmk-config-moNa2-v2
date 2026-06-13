@@ -1,36 +1,39 @@
 #!/usr/bin/env python3
 """
-HHKB Professional Hybrid / Hybrid Type-S — macOS HID Tool
+HHKB Professional Hybrid / Hybrid Type-S - HID Tool (Windows / macOS / Linux)
 
-インストール:
-    pip3 install hid
+Install:
+    pip install hid
+    # Windows also needs hidapi.dll next to python.exe (libusb/hidapi releases)
 
-使い方:
-    sudo python3 hhkb_hid.py info
-    sudo python3 hhkb_hid.py list          # 接続中の HHKB インターフェース一覧
-    sudo python3 hhkb_hid.py dump-firmware [output.bin]
-    sudo python3 hhkb_hid.py get-keymap    [output.json]
+Usage:
+    python hhkb_hid.py list           # list connected HHKB interfaces
+    python hhkb_hid.py info           # keyboard info (read-only, safe)
+    python hhkb_hid.py dump-firmware [output.bin]
+    python hhkb_hid.py get-keymap     [output.json]
+    python hhkb_hid.py probe-keymap   # raw GET_KEYMAP dump (JIS structure check)
 
-注意: macOS では sudo が必要な場合があります。
+Notes:
+    - macOS may require sudo.
+    - Windows: run terminal as Administrator.
 """
 
 import hid
 import sys
 import time
 import json
-import struct
 from pathlib import Path
 
-# ── デバイス定数 ───────────────────────────────────────────
+# -- Device constants --------------------------------------
 VENDOR_ID    = 0x04FE
-# 0x0020-0x0021: ANSI 確認済み
-# 0x0022: JIS の可能性あり（list コマンドで実機確認が必要）
+# 0x0020-0x0021: ANSI confirmed
+# 0x0022: JIS (confirmed via real hardware, PID=0x0022)
 PRODUCT_IDS  = [0x0020, 0x0021, 0x0022]
-USAGE_PAGE   = 0xFF00   # Interface #2（ベンダー固有）
+USAGE_PAGE   = 0xFF00   # Interface #2 (vendor-specific)
 MAGIC        = 0xAA
 BUF_SIZE     = 65       # report ID(1) + payload(64)
 
-# ── コマンド ID ────────────────────────────────────────────
+# -- Command IDs -------------------------------------------
 CMD_GET_INFO      = 0x02
 CMD_GET_DIP       = 0x05
 CMD_GET_MODE      = 0x06
@@ -42,10 +45,10 @@ CMD_FIRMUP_SEND   = 0xE2
 CMD_FIRMUP_END    = 0xE3
 
 
-# ── デバイス検索 ───────────────────────────────────────────
+# -- Device discovery --------------------------------------
 
 def enumerate_hhkb():
-    """接続中の HHKB インターフェースをすべて列挙する。"""
+    """List all connected HHKB interfaces."""
     found = []
     for pid in PRODUCT_IDS:
         for dev in hid.enumerate(VENDOR_ID, pid):
@@ -55,9 +58,8 @@ def enumerate_hhkb():
 
 def find_programming_interface():
     """
-    キーマップ/ファームウェア操作用インターフェース（#2）を探す。
-    macOS では usage_page=0xFF00 で識別する。
-    見つからない場合は None を返す。
+    Find the keymap/firmware interface (#2).
+    Identified by usage_page == 0xFF00. Returns path or None.
     """
     for pid in PRODUCT_IDS:
         for dev in hid.enumerate(VENDOR_ID, pid):
@@ -66,10 +68,10 @@ def find_programming_interface():
     return None
 
 
-# ── パケット操作 ───────────────────────────────────────────
+# -- Packet helpers ----------------------------------------
 
 def make_packet(cmd: int, payload: bytes = b'') -> bytes:
-    """65 バイトの HID 送信パケットを作成する。"""
+    """Build a 65-byte HID output packet."""
     buf = bytearray(BUF_SIZE)
     buf[0] = 0x00   # report ID
     buf[1] = MAGIC
@@ -80,10 +82,10 @@ def make_packet(cmd: int, payload: bytes = b'') -> bytes:
     return bytes(buf)
 
 
-# ── 各操作 ────────────────────────────────────────────────
+# -- Operations --------------------------------------------
 
 def get_info(dev: hid.Device) -> dict:
-    """GET_KEYBOARD_INFO (0x02) — キーボード情報を取得する。"""
+    """GET_KEYBOARD_INFO (0x02) - read keyboard info."""
     dev.write(make_packet(CMD_GET_INFO))
     time.sleep(0.05)
     r = dev.read(64, timeout=2000)
@@ -101,9 +103,9 @@ def get_info(dev: hid.Device) -> dict:
 
 def dump_firmware(dev: hid.Device, output_path: str = 'firmware.bin') -> bytes:
     """
-    DUMP_FIRMWARE (0xD0) — ファームウェアを丸ごと吸い出す。
-    データはオフセット +8 から 56 バイト/パケット。
-    56 バイト未満のパケットで終端。
+    DUMP_FIRMWARE (0xD0) - dump the whole firmware.
+    Data is 56 bytes/packet starting at offset +8.
+    A packet shorter than 56 bytes ends the stream.
     """
     print("Sending DUMP_FIRMWARE command...")
     dev.write(make_packet(CMD_DUMP_FIRMWARE))
@@ -111,7 +113,7 @@ def dump_firmware(dev: hid.Device, output_path: str = 'firmware.bin') -> bytes:
 
     firmware = bytearray()
     packet_count = 0
-    MAX_PACKETS = 6000   # 300KB / 56bytes ≒ 5357、余裕を持たせる
+    MAX_PACKETS = 6000   # 300KB / 56bytes ~= 5357, with margin
 
     while packet_count < MAX_PACKETS:
         resp = dev.read(64, timeout=3000)
@@ -135,16 +137,15 @@ def dump_firmware(dev: hid.Device, output_path: str = 'firmware.bin') -> bytes:
 
     print(f"\nDone: {len(firmware):,} bytes ({packet_count} packets)")
     Path(output_path).write_bytes(firmware)
-    print(f"Saved → {output_path}")
+    print(f"Saved -> {output_path}")
     return bytes(firmware)
 
 
 def probe_keymap_raw(dev: hid.Device):
     """
-    GET_KEYMAP の生レスポンスをそのまま表示する。
-    JIS 配列では ANSI と構造が異なる可能性があるため、
-    まずこれを実行してパス数・バイト数を確認すること。
-    docs/jis.md 参照。
+    Dump the raw GET_KEYMAP response as-is.
+    JIS layout may differ from ANSI; run this first to check
+    pass count and byte structure.
     """
     dev.write(make_packet(CMD_GET_KEYMAP))
     time.sleep(0.05)
@@ -164,17 +165,16 @@ def probe_keymap_raw(dev: hid.Device):
 
 def get_keymap(dev: hid.Device, output_path: str = None) -> list:
     """
-    GET_KEYMAP (0x87) — キーマップを読み取る。
+    GET_KEYMAP (0x87) - read the keymap.
 
-    ANSI: 128 bytes（3パス: 58+58+12、各オフセット +6）
-    JIS:  未確認。まず probe-keymap で実測すること。
+    ANSI: 128 bytes (3 passes: 58+58+12, each offset +6)
+    JIS:  unverified. Run probe-keymap first.
     """
     dev.write(make_packet(CMD_GET_KEYMAP))
     time.sleep(0.05)
 
     keymap_raw = bytearray()
-    # ANSI 用デフォルト。JIS では変更が必要な可能性がある。
-    read_sizes = [58, 58, 12]
+    read_sizes = [58, 58, 12]   # ANSI defaults; JIS may differ
 
     for expected_size in read_sizes:
         resp = dev.read(64, timeout=2000)
@@ -187,11 +187,11 @@ def get_keymap(dev: hid.Device, output_path: str = None) -> list:
 
     if output_path:
         Path(output_path).write_text(json.dumps(keymap, indent=2))
-        print(f"Keymap saved → {output_path}")
+        print(f"Keymap saved -> {output_path}")
     return keymap
 
 
-# ── CLI ───────────────────────────────────────────────────
+# -- CLI ---------------------------------------------------
 
 def cmd_list():
     devices = enumerate_hhkb()
@@ -218,7 +218,6 @@ def main():
     if not path:
         print("Programming interface (usage_page=0xFF00) not found.")
         print("Try 'list' to see all connected HHKB interfaces.")
-        print("May need: sudo python3 hhkb_hid.py list")
         sys.exit(1)
 
     with hid.Device(path=path) as dev:
@@ -237,12 +236,11 @@ def main():
                 print(json.dumps(km))
 
         elif cmd == 'probe-keymap':
-            # JIS 配列の構造確認用。docs/jis.md 参照。
             probe_keymap_raw(dev)
 
         else:
             print(f"Unknown command: {cmd}")
-            print("Commands: info, list, dump-firmware [out.bin], get-keymap [out.json], probe-keymap")
+            print("Commands: list, info, dump-firmware [out.bin], get-keymap [out.json], probe-keymap")
             sys.exit(1)
 
 
