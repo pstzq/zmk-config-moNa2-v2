@@ -55,7 +55,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        cpi = <600>;
+        cpi = <800>;  // 600→800: センサー感度アップ。スクロール/ジェスチャー側は scaler・threshold・stroke-size で補正済み
         // swap-xy;
         // invert-x;
         // invert-y;
@@ -66,7 +66,7 @@
         inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅。軽いスワイプでも慣性感を体感できる量にする
         inertial-scroll-decay-pct = <93>;   // 1回ごとの速度残存率(%)。約0.4〜0.7秒でスーッと停止
         inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
-        inertial-scroll-threshold = <8>;    // 停止判定の下限値
+        inertial-scroll-threshold = <10>;   // 停止判定の下限値 (cpi 600→800 に合わせ 8→10 に比例補正)
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
     };
@@ -91,8 +91,8 @@
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
-             &zip_scroll_scaler 1 4
-             &scroll_runtime_input_processor>;
+             &zip_scroll_scaler 1 5
+             &scroll_runtime_input_processor>;   // scaler 1/4→1/5: cpi 600→800 の補正(体感速度ほぼ同等)
     };
 
     // P長押し(layer 9): 2D自由スクロール(パン)。scroller と同構成・同速度
@@ -102,20 +102,21 @@
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
-             &zip_scroll_scaler 1 4
-             &scroll_runtime_input_processor>;
+             &zip_scroll_scaler 1 5
+             &scroll_runtime_input_processor>;   // scaler 1/4→1/5: cpi 600→800 の補正(体感速度ほぼ同等)
     };
 
     // Q長押し(layer 10): Mac ウィンドウスナップ(Rectangle)
+    // X_INVERT はデフォルトチェーンと同じ向き補正(無いと左右ストロークが反転する)
     gesturer_mac {
         layers = <10>;
-        input-processors = <&zip_mouse_gesture>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_mouse_gesture>;
     };
 
     // Q長押し(layer 11): Win ウィンドウスナップ(Win+矢印)
     gesturer_win {
         layers = <11>;
-        input-processors = <&zip_mouse_gesture_win>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_mouse_gesture_win>;
     };
 
 };

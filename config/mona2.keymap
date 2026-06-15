@@ -20,6 +20,11 @@
 
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 30
 
+/* mod-tap 誤爆対策 (&mt / mt_bspc):
+ * 直前のキー入力からこの時間(ms)以内は hold(修飾キー)が発動せず tap 扱いになる。
+ * 0 にすると無効化(従来挙動) */
+#define MT_REQUIRE_PRIOR_IDLE_MS 125
+
 /* ---- レイヤー定義 ---- */
 
 #define MAC          0   // ベース(Mac)        — デフォルト
@@ -39,6 +44,9 @@
 &mt {
     flavor = "balanced";
     quick-tap-ms = <0>;
+#if MT_REQUIRE_PRIOR_IDLE_MS > 0
+    require-prior-idle-ms = <MT_REQUIRE_PRIOR_IDLE_MS>;
+#endif
 };
 
 &lt {
@@ -55,6 +63,7 @@
         combo_tab {
             bindings = <&kp TAB>;
             key-positions = <11 12>;
+            layers = <WIN MAC>;
         };
 
         // D+F = Shift+Tab
@@ -62,6 +71,7 @@
         combo_stab {
             bindings = <&kp LS(TAB)>;
             key-positions = <12 13>;
+            layers = <WIN MAC>;
         };
 
         // 英数+かな = tap:Esc / hold:BLE層 (sayu-hub意識)
@@ -69,6 +79,7 @@
         combo_esc_ble {
             bindings = <&lt BLE ESC>;
             key-positions = <38 39>;
+            layers = <WIN MAC O24>;  // O24 トグル中も BLE 層へ入れるよう含める
         };
 
         // J+K = コピー / K+L = ペースト (OS別に修飾を分岐)
@@ -76,26 +87,31 @@
         combo_copy_mac {
             bindings = <&kp LG(C)>;
             key-positions = <17 18>;
+            layers = <MAC>;
         };
 
         combo_copy_win {
             bindings = <&kp LC(C)>;
             key-positions = <17 18>;
+            layers = <WIN>;
         };
 
         combo_paste_mac {
             bindings = <&kp LG(V)>;
             key-positions = <18 19>;
+            layers = <MAC>;
         };
 
         combo_paste_win {
             bindings = <&kp LC(V)>;
             key-positions = <18 19>;
+            layers = <WIN>;
         };
 
         combo_toO24 {
             bindings = <&tog O24>;
             key-positions = <0 9>;
+            layers = <MAC WIN O24>;  // 機能層での Q+P 誤爆を防止
         };
     };
 
@@ -105,7 +121,7 @@
         bt_mac0: bt_mac0 {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&to 0 &bt BT_SEL 0>;
+            bindings = <&to MAC &bt BT_SEL 0>;
             label = "BT_MAC0";
         };
 
@@ -184,6 +200,9 @@
             flavor = "balanced";
             tapping-term-ms = <200>;
             quick-tap-ms = <200>;
+#if MT_REQUIRE_PRIOR_IDLE_MS > 0
+            require-prior-idle-ms = <MT_REQUIRE_PRIOR_IDLE_MS>;
+#endif
         };
 
         // エンコーダ: runtime-sensor-rotate (DYA Studioから動的変更可)
@@ -370,9 +389,11 @@
 // Mac: Rectangle のデフォルトショートカット (Ctrl+Option+矢印)。変更する場合はここを修正。
 
 &zip_mouse_gesture {
-    stroke-size = <150>;
+    stroke-size = <200>;          // cpi=800 でフリック距離が従来(150@600cpi)と同等になる値
     enable-eager-mode;
     gesture-cooldown-ms = <200>;
+    always-active;                // &lt によるレイヤー起動のみで動作させる(起動キー &mouse_gesture 不要)
+    suppress-movement;            // 認識中はカーソル移動イベントを消費(カーソルを動かさない)
 
     snap_left {
         pattern = <GESTURE_LEFT>;
@@ -418,9 +439,11 @@
 // Win: 標準スナップ (Win+矢印)
 
 &zip_mouse_gesture_win {
-    stroke-size = <150>;
+    stroke-size = <200>;          // cpi=800 でフリック距離が従来(150@600cpi)と同等になる値
     enable-eager-mode;
     gesture-cooldown-ms = <200>;
+    always-active;                // &lt によるレイヤー起動のみで動作させる(起動キー &mouse_gesture 不要)
+    suppress-movement;            // 認識中はカーソル移動イベントを消費(カーソルを動かさない)
 
     snap_left_w {
         pattern = <GESTURE_LEFT>;

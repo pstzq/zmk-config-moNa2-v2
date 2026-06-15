@@ -28,16 +28,16 @@ manifest:
       revision: 851661c   # v4移行前にpin (shakupan準拠。main非互換回避)
     - name: zmk-module-battery-history
       remote: cormoran
-      revision: main
+      revision: 307755dd2ad4   # 2026-06-11時点のmain HEADにpin (浮動による突然のビルド破損を防止)
     - name: zmk-module-settings-rpc
       remote: cormoran
-      revision: main
+      revision: ad1c995cf910   # 2026-06-11時点のmain HEADにpin
     - name: zmk-module-runtime-input-processor
       remote: cormoran
       revision: dbf92f7   # v4移行前にpin (zmk fork v0.3系と互換。これが今回の失敗原因)
     - name: zmk-behavior-runtime-sensor-rotate
       remote: cormoran
-      revision: main
+      revision: 3bbd99204671   # 2026-06-11時点のmain HEADにpin
     # - name: zmk-pmw3610-driver  # 慣性スクロール無効版に戻す場合はこちらのコメントを外す
     #   remote: badjeff
     #   revision: zmk-0.3
@@ -52,7 +52,7 @@ manifest:
       revision: v0.3-branch
     - name: zmk-input-processor-keybind
       remote: zettaface
-      revision: main
+      revision: 64303bd3932b   # 2026-06-11時点のmain HEADにpin
     - name: zmk-mouse-gesture
       remote: kot149
       revision: 855a6e80f18f4b19ea2181648ac062ec72876ece   # masterブランチHEAD相当(mainなし)

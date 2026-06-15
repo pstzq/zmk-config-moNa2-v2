@@ -52,6 +52,7 @@
 - `Z` = mod-tap Shift（`&mt LSHFT Z`）
 - `L` の右隣 = **長音「ー」**（`JIS_MINUS`、hold=Ctrl/⌘）
 - **Backspace** は専用 hold-tap `mt_bspc`（`quick-tap-ms=200`）。タップ→すぐ長押しで **BS をオートリピート**（連続削除）。修飾キー(⌘/Ctrl)の hold はそのまま。他の mod-tap には quick-tap を付けていない。
+- **mod-tap 誤爆対策**: `&mt` と `mt_bspc` に `require-prior-idle-ms = <125>` を設定。直前のキー入力から 125ms 以内は hold（修飾）が発動せず tap になり、高速タイピング中のロール打ちでの誤 Shift 等を防ぐ。値は `config/mona2.keymap` 冒頭の `MT_REQUIRE_PRIOR_IDLE_MS` で一括変更でき、`0` にすると無効化（従来挙動）。
 - **Q** = `&lt GESTURE_SNAP_MAC Q` / `&lt GESTURE_SNAP_WIN Q`（tap=Q / hold=スナップモード。OSベース層に応じて自動分岐）
 - **P** = `&lt GESTURE_PAN P`（tap=P / hold=パンモード）
 - **Del** = `&kp DEL`（通常の Delete キー）
@@ -83,6 +84,8 @@
 | `J`+`K` | コピー（MAC=⌘C / WIN=CtrlC、OS別に分岐） |
 | `K`+`L` | ペースト（MAC=⌘V / WIN=CtrlV、OS別に分岐） |
 - コピペは `layers = <MAC>` / `<WIN>` で同位置コンボを2本ずつ定義し、ベース層に応じて修飾を自動で出し分け。
+- Tab/Shift+Tab は `layers = <WIN MAC>`（ベース層のみ）。`英数`+`かな` は `layers = <WIN MAC O24>`（O24 トグル中も BLE 層へ入れる）。`Q`+`P` トグルは `layers = <MAC WIN O24>`（機能層での誤爆を防止）。
+- **注意**: [keymap-editor](https://nickcoutsos.github.io/keymap-editor/) はコンボの `layers` プロパティを削除してしまう（2026-06 に実際に発生し、Win コピペが壊れた）。keymap-editor での編集は避けること。
 
 ### SYM（記号）
 - `config/jis.h` のエイリアスで JIS-OS でも記号が正しく出る。
@@ -137,12 +140,15 @@ F11  F12  —    —    —         0  1  2  3  .
 
 ### GESTURE PAN（P長押し・層9）
 - トラックボールで **縦横自由にスクロール**（2Dパン）。
-- `zip_xy_to_scroll_mapper` → `zip_scroll_scaler 1 5` で速度調整（通常スクロール `scroller` と同一速度）。`scroll_runtime_input_processor` でスクロールイベントを確実に伝達。
+- `zip_xy_to_scroll_mapper` → `zip_scroll_scaler 1 5` で速度調整（通常スクロール `scroller` と同一速度。cpi=800 への補正込み）。`scroll_runtime_input_processor` でスクロールイベントを確実に伝達。
 - キー入力はすべて `&trans` で素通り。
 
 ### GESTURE SNAP（Q長押し・層10/11）
 - トラックボールをストロークするとウィンドウをスナップ。
-- `stroke-size = <150>`、`enable-eager-mode`、`gesture-cooldown-ms = <200>`。
+- `stroke-size = <200>`、`enable-eager-mode`、`gesture-cooldown-ms = <200>`。
+- **`always-active`（必須）**: kot149 モジュールは既定では起動キー（`&mouse_gesture` 等）を押している間しか認識しない。本構成は `&lt` のレイヤー起動＋listener の `layers` 指定で発動を制御しているため、`always-active` が無いとプロセッサが常に非アクティブとなり、ジェスチャー不発火＆イベント素通り（カーソルが動く）になる。
+- **`suppress-movement`**: 認識中は X/Y イベントを消費し、カーソルを動かさない（MX Ergo 的挙動）。
+- gesturer チェーンには scroller/panner と同じ `zip_xy_transform INPUT_TRANSFORM_X_INVERT` を入れること（無いと左右ストロークが反転判定される）。
 
 | ストローク | Mac（Rectangle） | Windows |
 |---|---|---|
@@ -152,6 +158,25 @@ F11  F12  —    —    —         0  1  2  3  .
 | ↓ | 中央/1/2 `Ctrl+Opt+C` | 元に戻す `Win+↓` |
 
 ---
+
+## LED レイヤー配色（rgbled-widget）
+
+`CONFIG_RGBLED_WIDGET_SHOW_LAYER_COLORS` は**最上位のアクティブ層**の色を常時表示する
+（点滅ではない。レイヤー状態が変わるたびに再評価）。表示はセントラル＝右手側のみ。
+配色は `config/mona2_r.conf` の `CONFIG_RGBLED_WIDGET_LAYER_<N>_COLOR` で定義
+（0=消灯 1=赤 2=緑 3=黄 4=青 5=マゼンタ 6=シアン 7=白。原色8色のみで中間色は不可）。
+
+| # | レイヤー | 色 |
+|---|---|---|
+| 0/1/2 | MAC / WIN / O24 | 消灯（ベース層は常時点灯させない） |
+| 3 | SYM | 緑 |
+| 4 | NUM | 青 |
+| 5/6 | NAV-M / NAV-W | シアン |
+| 7 | MOUSE (AML) | 白 |
+| 8 | BLE | 赤（拡散でオレンジに見える） |
+| 9 | PAN | 黄 |
+| 10/11 | SNAP-M / SNAP-W | マゼンタ |
+| 12 | CURSOR（未使用） | 消灯 |
 
 ## OS切替（BTプロファイル連動）
 - マクロ `bt_mac0` / `bt_win1` / `bt_win2` が「ベース層切替(`&to`)＋`&bt BT_SEL`」をまとめて実行。
@@ -174,9 +199,9 @@ F11  F12  —    —    —         0  1  2  3  .
   inertial-scroll;
   inertial-scroll-layers = <4 5 6>;
   inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅
-  inertial-scroll-decay-pct = <97>;   // 1回ごとの速度残存率(%) ≈ 0.5〜0.7秒で停止
+  inertial-scroll-decay-pct = <93>;   // 1回ごとの速度残存率(%) ≈ 0.4〜0.7秒で停止
   inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
-  inertial-scroll-threshold = <8>;    // 停止判定の下限値
+  inertial-scroll-threshold = <10>;   // 停止判定の下限値 (cpi 600→800 に合わせ比例補正)
   ```
 - **元に戻す場合**: `west.yml` の `razilyis` エントリをコメントアウトして `badjeff` エントリを復活させ、`mona2_r.overlay` の `inertial-scroll*` 行をコメントアウトするだけ（2ファイル、数行の変更）。
 
@@ -194,22 +219,22 @@ F11  F12  —    —    —         0  1  2  3  .
 
     scroller {        // NUM/NAV 層: スクロール
         layers = <4 5 6>;
-        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 4>;
+        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 5>;
     };
 
     panner {          // GESTURE_PAN(9): 2D スクロール
         layers = <9>;
-        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 4 &scroll_runtime_input_processor>;
+        input-processors = <...zip_xy_to_scroll_mapper... &zip_scroll_scaler 1 5 &scroll_runtime_input_processor>;
     };
 
     gesturer_mac {    // GESTURE_SNAP_MAC(10): Rectangle スナップ (Q長押し・MAC)
         layers = <10>;
-        input-processors = <&zip_mouse_gesture>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_mouse_gesture>;
     };
 
     gesturer_win {    // GESTURE_SNAP_WIN(11): Win スナップ (Q長押し・WIN)
         layers = <11>;
-        input-processors = <&zip_mouse_gesture_win>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_mouse_gesture_win>;
     };
 };
 ```
@@ -217,13 +242,21 @@ F11  F12  —    —    —         0  1  2  3  .
 ### Mac / Win 分離の理由
 - Mac: Rectangle の `Ctrl+Opt+矢印` / Win: OS標準 `Win+矢印` でショートカットが異なる。
 - 層を分けることでベース層（MAC/WIN）に応じて `&lt` が自動で正しい層を起動する。
-- `zip_mouse_gesture_win` は Mac 版と同一ノード型だが別インスタンスとして `mona2_r.overlay`（および `mona2_l.overlay`）に定義。左側ビルド時にも `mona2.keymap` からの参照が解決できるよう両 overlay に定義を配置している。
+- `zip_mouse_gesture_win` は Mac 版と同一ノード型だが別インスタンスとして `mona2.dtsi` に定義。左右どちらのビルドでも `mona2.keymap` からの参照が解決できるよう、両 overlay が include する共通 dtsi に配置している。
 
 ## 依存モジュールのpin（重要）
 DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-processor` が **2026-04-30 に zmk v4 へ移行** → fork(`v0.3-branch+dya`)と非互換になりビルド失敗(`too many arguments to zmk_keymap_layer_activate`)。shakupan版に倣い `config/west.yml` で v4移行前にpin：
 - `zmk-module-runtime-input-processor`: `main` → `dbf92f7`
 - `zmk-module-ble-management`: `main` → `851661c`
 - `zmk-mouse-gesture`: `main` なし → `855a6e80f18f4b19ea2181648ac062ec72876ece`（masterブランチHEAD）
+
+2026-06-11、残っていた浮動 `main` も同様の破損を防ぐため全て pin 済み:
+- `zmk-module-battery-history`: `main` → `307755dd2ad4`
+- `zmk-module-settings-rpc`: `main` → `ad1c995cf910`
+- `zmk-behavior-runtime-sensor-rotate`: `main` → `3bbd99204671`
+- `zmk-input-processor-keybind`: `main` → `64303bd3932b`
+
+モジュールを更新したい場合は `git ls-remote <リポジトリURL> main` で新しい SHA を確認し、ビルドが通ることを確認してから pin を進めること。
 
 ---
 
@@ -279,7 +312,7 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 ---
 
 ### その他の検討事項
-- ホームローMod 本格導入（閾値チューニング込み）
+- ホームローMod 本格導入（閾値チューニング込み。誤爆対策の `require-prior-idle-ms` は導入済み）
 - LANG切替の `eager_tap_dance` 方式（kot版）併存
 - BT3/BT4 に OS連動マクロを追加（現在はプロファイル切替のみ）
 - roBaへの横展開
