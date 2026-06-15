@@ -17,9 +17,11 @@
 
 ### バグ修正（Q長押し中にカーソルが動く問題）
 
-- **根本原因**: `&lt`（balanced flavor, tapping-term 200ms）はキーダウンからタップ/ホールドが確定するまでの約 200ms 間、レイヤーを未確定状態にする。この期間のトラックボール入力はデフォルトチェーンを通り `mouse_runtime_input_processor` がカーソルを移動させていた。`suppress-movement` はレイヤー確定後にしか効かないため、カーソルが動いてしまっていた
-- **修正**: `snap_lt` カスタムビヘイビアを追加（`hold-while-undecided` 付き）。Q はコンボ (`combo_toO24`, Q+P) に含まれるため、コンボタイムアウト（約 30〜50ms）の後に即座にホールドレイヤーが確定する。200ms 待つ必要がなくなりカーソル移動ウィンドウが大幅短縮
-- MAC/WIN レイヤーの Q (`&lt GESTURE_SNAP_MAC/WIN Q`) を `&snap_lt` に変更（`config/mona2.keymap`）
+- **根本原因**: `suppress-movement` が `ZMK_INPUT_PROC_STOP` を返してもカーソル移動が止まらない DYA fork の挙動が原因。PAN（P長押し）はカーソルが止まるがそれは `suppress-movement` のためではなく、チェーン内の `zip_xy_to_scroll_mapper` が REL_X/Y イベントを WHEEL/HWHEEL に型変換するため HID 側でカーソル移動として解釈されないため。SNAP チェーンにはこの型変換がなく REL_X/Y がそのままカーソルを動かしていた。
+- **修正**: `gesturer_mac` / `gesturer_win` の `input-processors` にジェスチャープロセッサの**後ろ**に `&zip_xy_to_scroll_mapper` と `&zip_scroll_scaler 0 1` を追加（`boards/shields/mona2/mona2_r.overlay`）。ジェスチャープロセッサはイベントを async キューに積んでから return するため、後続の型変換はジェスチャー認識に影響しない。
+  - `zip_xy_to_scroll_mapper`: REL_X/Y → WHEEL/HWHEEL に型変換（カーソル移動しなくなる）
+  - `zip_scroll_scaler 0 1`: スクロール値を 0 にして意図しないスクロールを防ぐ
+- `suppress-movement` を `&zip_mouse_gesture` / `&zip_mouse_gesture_win` から削除（型変換で不要になった）（`config/mona2.keymap`）
 
 ---
 

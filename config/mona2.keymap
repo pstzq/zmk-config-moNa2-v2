@@ -223,17 +223,6 @@
             tap-ms = <100>;
         };
 
-        // スナップジェスチャー専用 layer-tap: hold-while-undecided でレイヤーをキーダウン直後(コンボタイムアウト後 ~30ms)に確定し、
-        // tapping-term 待ち中(~200ms)にトラックボールを動かしてもカーソルが動かないようにする
-        snap_lt: snap_layer_tap {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            flavor = "balanced";
-            tapping-term-ms = <200>;
-            quick-tap-ms = <200>;
-            hold-while-undecided;
-            bindings = <&mo>, <&kp>;
-        };
     };
 
     keymap {
@@ -242,7 +231,7 @@
         mac_layer {
             display-name = "MAC";
             bindings = <
-&snap_lt GESTURE_SNAP_MAC Q  &kp W      &kp E     &kp R               &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
+&lt GESTURE_SNAP_MAC Q  &kp W      &kp E     &kp R               &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
 &kp A                   &kp S      &kp D     &kp F               &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RGUI JIS_MINUS
 &mt LSHFT Z             &kp X      &kp C     &kp V               &kp B        &caps_word     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
 &kp LGUI                &kp LCTRL  &kp LALT  &mt_bspc LGUI BSPC  &lt SYM SPACE  &lt NAV_MAC LANG2    &lt NAV_MAC LANG1  &lt NUM ENTER                             &kp DEL
@@ -254,7 +243,7 @@
         win_layer {
             display-name = "WIN";
             bindings = <
-&snap_lt GESTURE_SNAP_WIN Q  &kp W     &kp E     &kp R                &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
+&lt GESTURE_SNAP_WIN Q  &kp W     &kp E     &kp R                &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
 &kp A                  &kp S     &kp D     &kp F                &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
 &mt LSHFT Z            &kp X     &kp C     &kp V                &kp B        &caps_word     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
 &kp LCTRL              &kp LGUI  &kp LALT  &mt_bspc LCTRL BSPC  &lt SYM SPACE  &lt NAV_WIN LANG2    &lt NAV_WIN LANG1  &lt NUM ENTER                             &kp DEL
@@ -405,7 +394,6 @@
     enable-eager-mode;
     gesture-cooldown-ms = <200>;
     always-active;                // &lt によるレイヤー起動のみで動作させる(起動キー &mouse_gesture 不要)
-    suppress-movement;            // 認識中はカーソル移動イベントを消費(カーソルを動かさない)
 
     snap_left {
         pattern = <GESTURE_LEFT>;
@@ -455,7 +443,6 @@
     enable-eager-mode;
     gesture-cooldown-ms = <200>;
     always-active;                // &lt によるレイヤー起動のみで動作させる(起動キー &mouse_gesture 不要)
-    suppress-movement;            // 認識中はカーソル移動イベントを消費(カーソルを動かさない)
 
     snap_left_w {
         pattern = <GESTURE_LEFT>;

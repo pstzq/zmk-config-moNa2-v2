@@ -108,15 +108,27 @@
 
     // Q長押し(layer 10): Mac ウィンドウスナップ(Rectangle)
     // X_INVERT はデフォルトチェーンと同じ向き補正(無いと左右ストロークが反転する)
+    // zip_xy_to_scroll_mapper + scaler 0/1: REL_X/Y を WHEEL に型変換し値を0にすることでカーソル移動を防ぐ
+    // (PAN と同じ原理。suppress-movement の STOP と違い、排他チェーン内での型変換は確実にカーソルをロックする)
     gesturer_mac {
         layers = <10>;
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_mouse_gesture>;
+        input-processors = <
+            &zip_xy_transform INPUT_TRANSFORM_X_INVERT
+            &zip_mouse_gesture
+            &zip_xy_to_scroll_mapper
+            &zip_scroll_scaler 0 1
+        >;
     };
 
     // Q長押し(layer 11): Win ウィンドウスナップ(Win+矢印)
     gesturer_win {
         layers = <11>;
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_mouse_gesture_win>;
+        input-processors = <
+            &zip_xy_transform INPUT_TRANSFORM_X_INVERT
+            &zip_mouse_gesture_win
+            &zip_xy_to_scroll_mapper
+            &zip_scroll_scaler 0 1
+        >;
     };
 
 };
