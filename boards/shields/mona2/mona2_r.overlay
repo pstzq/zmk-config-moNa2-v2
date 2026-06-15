@@ -75,7 +75,7 @@
 // 20260404
 &zip_temp_layer {
     excluded-positions = <0 10 17 18 19 21 29 31>;
-    require-prior-idle-ms = <300>;  // 好きなmsに調整（例: 300ms）
+    require-prior-idle-ms = <500>;  // 300→500: タイピング中の振動でAMLが誤発火するのを抑制(打鍵後この時間はボールが動いてもMOUSE層へ移行しない)
 };
 
 // Runtime input listener for right-side trackball
@@ -95,15 +95,15 @@
              &scroll_runtime_input_processor>;   // scaler 1/4→1/5: cpi 600→800 の補正(体感速度ほぼ同等)
     };
 
-    // P長押し(layer 9): 2D自由スクロール(パン)。scroller と同構成・同速度
+    // P長押し(layer 9): 2D自由スクロール(パン)。ざっと移動する用途なので scroller より高速
     panner {
         layers = <9>;
         input-processors =
             <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
              &zip_xy_to_scroll_mapper
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
-             &zip_scroll_scaler 1 5
-             &scroll_runtime_input_processor>;   // scaler 1/4→1/5: cpi 600→800 の補正(体感速度ほぼ同等)
+             &zip_scroll_scaler 3 5
+             &scroll_runtime_input_processor>;   // scaler 3/5: scroller(1/5)の3倍。広範囲をざっと移動する用途
     };
 
     // Q長押し(layer 10): Mac ウィンドウスナップ(Rectangle)

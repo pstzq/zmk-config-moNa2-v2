@@ -11,6 +11,18 @@
 
 ---
 
+## 2026-06-15  PAN スクロール量 3 倍 & AML 発火閾値の調整
+
+（by チャット依頼）
+
+### PAN（P長押し）のスクロール量を 3 倍に
+- panner の `zip_scroll_scaler` を `1 5`（1/5）→ `3 5`（3/5）に変更（`boards/shields/mona2/mona2_r.overlay`）。広範囲をざっと移動する用途のため。scroller（NAV 層スクロール）は従来どおり据え置き
+
+### AML 誤発火（タイピング中の振動）対策
+- `&zip_temp_layer` の `require-prior-idle-ms` を `300` → `500` に増加（`boards/shields/mona2/mona2_r.overlay`）。打鍵直後 500ms 間はトラックボールが動いても MOUSE 層へ移行しないため、タイピング中の振動による誤発火を抑制。効きが弱ければ 600〜700ms へ追加調整可能
+
+---
+
 ## 2026-06-15  Q長押しスナップ中のカーソル移動問題を修正
 
 （by チャット依頼）
