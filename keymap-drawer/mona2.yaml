@@ -241,7 +241,7 @@ layers:
   - PG UP
   - PG DN
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - ENTER
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - BRI DN
@@ -284,7 +284,7 @@ layers:
   - PG UP
   - PG DN
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - ENTER
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - BRI DN
