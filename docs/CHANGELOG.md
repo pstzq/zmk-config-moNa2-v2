@@ -11,6 +11,32 @@
 
 ---
 
+## 2026-06-15  PAN スクロール量 3 倍 & AML 発火閾値の調整
+
+（by チャット依頼）
+
+### PAN（P長押し）のスクロール量を 3 倍に
+- panner の `zip_scroll_scaler` を `1 5`（1/5）→ `3 5`（3/5）に変更（`boards/shields/mona2/mona2_r.overlay`）。広範囲をざっと移動する用途のため。scroller（NAV 層スクロール）は従来どおり据え置き
+
+### AML 誤発火（タイピング中の振動）対策
+- `&zip_temp_layer` の `require-prior-idle-ms` を `300` → `500` に増加（`boards/shields/mona2/mona2_r.overlay`）。打鍵直後 500ms 間はトラックボールが動いても MOUSE 層へ移行しないため、タイピング中の振動による誤発火を抑制。効きが弱ければ 600〜700ms へ追加調整可能
+
+---
+
+## 2026-06-15  Q長押しスナップ中のカーソル移動問題を修正
+
+（by チャット依頼）
+
+### バグ修正（Q長押し中にカーソルが動く問題）
+
+- **根本原因**: `suppress-movement` が `ZMK_INPUT_PROC_STOP` を返してもカーソル移動が止まらない DYA fork の挙動が原因。PAN（P長押し）はカーソルが止まるがそれは `suppress-movement` のためではなく、チェーン内の `zip_xy_to_scroll_mapper` が REL_X/Y イベントを WHEEL/HWHEEL に型変換するため HID 側でカーソル移動として解釈されないため。SNAP チェーンにはこの型変換がなく REL_X/Y がそのままカーソルを動かしていた。
+- **修正**: `gesturer_mac` / `gesturer_win` の `input-processors` にジェスチャープロセッサの**後ろ**に `&zip_xy_to_scroll_mapper` と `&zip_scroll_scaler 0 1` を追加（`boards/shields/mona2/mona2_r.overlay`）。ジェスチャープロセッサはイベントを async キューに積んでから return するため、後続の型変換はジェスチャー認識に影響しない。
+  - `zip_xy_to_scroll_mapper`: REL_X/Y → WHEEL/HWHEEL に型変換（カーソル移動しなくなる）
+  - `zip_scroll_scaler 0 1`: スクロール値を 0 にして意図しないスクロールを防ぐ
+- `suppress-movement` を `&zip_mouse_gesture` / `&zip_mouse_gesture_win` から削除（型変換で不要になった）（`config/mona2.keymap`）
+
+---
+
 ## 2026-06-12  LED レイヤー配色の整理
 
 （by チャット依頼）

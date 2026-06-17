@@ -222,6 +222,7 @@
             ccw-binding = <&kp C_VOL_UP>;
             tap-ms = <100>;
         };
+
     };
 
     keymap {
@@ -393,7 +394,6 @@
     enable-eager-mode;
     gesture-cooldown-ms = <200>;
     always-active;                // &lt によるレイヤー起動のみで動作させる(起動キー &mouse_gesture 不要)
-    suppress-movement;            // 認識中はカーソル移動イベントを消費(カーソルを動かさない)
 
     snap_left {
         pattern = <GESTURE_LEFT>;
@@ -443,7 +443,6 @@
     enable-eager-mode;
     gesture-cooldown-ms = <200>;
     always-active;                // &lt によるレイヤー起動のみで動作させる(起動キー &mouse_gesture 不要)
-    suppress-movement;            // 認識中はカーソル移動イベントを消費(カーソルを動かさない)
 
     snap_left_w {
         pattern = <GESTURE_LEFT>;
