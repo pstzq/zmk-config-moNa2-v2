@@ -11,6 +11,17 @@
 
 ---
 
+## 2026-06-21  四隅スナップ不発火を既知の制限としてドキュメント化
+
+（by チャット依頼）
+
+- **根本原因**: `kot149/zmk-mouse-gesture` の `detect_direction()` が `abs(x) > abs(y)` で常に1方向を選択し斜め合成値を返さない。`direction_to_index()` が `GESTURE_UP_LEFT`(=5) 等を `-1` 判定して trie 構築時に黙って破棄するため、四隅パターンが永続的に発火しない。
+- `README.md`: スナップ表から四隅4行（↖↗↙↘）を削除し、「モジュールが4方向のみ認識するため発火しない（既知の制限）」注記を追加。
+- `docs/keymap-phase1.md`: GESTURE SNAP節に四隅未対応の注記追加。また `suppress-movement` の記述を現行実装（`zip_xy_to_scroll_mapper` + `zip_scroll_scaler 0 1` による REL→WHEEL 型変換）に更新。
+- `config/mona2.keymap`: Mac/Win 両方の四隅パターン群に「現状発火しない（将来対応時に備えて残置）」コメントを追加。
+
+---
+
 ## 2026-06-21  クリック層(CLICK=13)を追加（AMLと共存）
 
 （by チャット依頼）

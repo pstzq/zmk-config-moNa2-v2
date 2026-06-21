@@ -153,7 +153,7 @@ F11  F12  —    —    —         0  1  2  3  .
 - トラックボールをストロークするとウィンドウをスナップ。
 - `stroke-size = <200>`、`enable-eager-mode`、`gesture-cooldown-ms = <200>`。
 - **`always-active`（必須）**: kot149 モジュールは既定では起動キー（`&mouse_gesture` 等）を押している間しか認識しない。本構成は `&lt` のレイヤー起動＋listener の `layers` 指定で発動を制御しているため、`always-active` が無いとプロセッサが常に非アクティブとなり、ジェスチャー不発火＆イベント素通り（カーソルが動く）になる。
-- **`suppress-movement`**: 認識中は X/Y イベントを消費し、カーソルを動かさない（MX Ergo 的挙動）。
+- **カーソル固定**: gesturer チェーンの後段に `zip_xy_to_scroll_mapper` + `zip_scroll_scaler 0 1` を追加。REL_X/Y イベントを WHEEL/HWHEEL に型変換することで HID がカーソル移動として解釈しなくなる。ジェスチャープロセッサは async キューにイベントを積んでから return するため後続の型変換はジェスチャー認識を妨げない。（旧 `suppress-movement` は `ZMK_INPUT_PROC_STOP` を返してもカーソルが止まらない DYA fork の挙動があり廃止）
 - gesturer チェーンには scroller/panner と同じ `zip_xy_transform INPUT_TRANSFORM_X_INVERT` を入れること（無いと左右ストロークが反転判定される）。
 
 | ストローク | Mac（Rectangle） | Windows |
@@ -162,6 +162,8 @@ F11  F12  —    —    —         0  1  2  3  .
 | → | 右半分 `Ctrl+Opt+→` | 右半分 `Win+→` |
 | ↑ | 最大化 `Ctrl+Opt+Enter` | 最大化 `Win+↑` |
 | ↓ | 中央/1/2 `Ctrl+Opt+C` | 元に戻す `Win+↓` |
+
+> **四隅（斜め）について**: キーマップには `GESTURE_UP_LEFT` 等の四隅パターンを定義しているが、現状発火しない。モジュール（kot149/zmk-mouse-gesture）の `detect_direction()` が `abs(x) > abs(y)` の比較で常に1方向を選択するため斜め合成値が返らず、`direction_to_index()` が斜め定数（例: `GESTURE_UP_LEFT` = 5）を `-1` として trie 構築時に破棄するため。パターン定義はモジュールが対応した際に備えて残置。
 
 ---
 

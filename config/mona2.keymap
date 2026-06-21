@@ -442,6 +442,7 @@
         bindings = <&kp LC(LA(C))>;
     };
 
+    // 四隅(↖↗↙↘): モジュールが4方向のみ認識するため現状発火しない（将来対応時に備えて残置）
     snap_tl {
         pattern = <GESTURE_UP_LEFT>;
         bindings = <&kp LC(LA(U))>;
@@ -491,6 +492,7 @@
         bindings = <&kp LG(DOWN)>;
     };
 
+    // 四隅(↖↗↙↘): モジュールが4方向のみ認識するため現状発火しない（将来対応時に備えて残置）
     snap_tl_w {
         pattern = <GESTURE_UP_LEFT>;
         bindings = <&snap_w_tl>;
