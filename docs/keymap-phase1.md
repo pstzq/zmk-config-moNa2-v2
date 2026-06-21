@@ -40,6 +40,7 @@
 | 10 | GESTURE SNAP (Mac) | Q 長押し（MACベース時） | ウィンドウスナップ（Rectangle） |
 | 11 | GESTURE SNAP (Win) | Q 長押し（WINベース時） | ウィンドウスナップ（Win+矢印） |
 | 12 | CURSOR（予約） | — （未実装） | トラックボールで矢印キー入力（将来実装候補） |
+| 13 | CLICK | Del 長押し or B の一つ右(caps_word位置)長押し | 両手にクリック＋戻る/進む。AMLと独立 |
 
 ---
 
@@ -130,6 +131,11 @@ F11  F12  —    —    —         0  1  2  3  .
 - 右手に `LCLK / RCLK / MCLK / MB4(戻) / MB5(進)`。
 - トラックボール操作で MOUSE 層(=7)へ自動遷移（AML）。
 
+### CLICK（クリック層・層13）
+- 起動: `Del`（右手・`&lt CLICK DEL`）または `B` の一つ右＝caps_word の位置（左手・カスタム hold-tap `clk_caps`、タップで caps_word）。
+- 配置: 左手 `S/D/F`=左/中/右クリック・`X/V`=戻る(MB4)/進む(MB5)、右手 `J/K/L`=左/中/右クリック・`M/.`=戻る/進む。片手で起動し反対の手でクリックできる。
+- **AMLと独立して共存**: CLICK層は trackball listener のどのサブノードにも含めないため、層中もボール入力はデフォルトチェーンを通りカーソルは普通に動く。クリックは層13の `&mkp` が供給するので AML の発火/タイムアウトに依存しない。
+
 ### BLE/設定（Bluetooth・端末管理に限定）
 - **雑多なキーは置かず Bluetooth まわりに集中**：BT0〜BT4 の選択（Y〜P 位置）。
   - BT0=Mac / BT1=Win / BT2=Win はマクロでレイヤー自動切替付き。
@@ -140,7 +146,7 @@ F11  F12  —    —    —         0  1  2  3  .
 
 ### GESTURE PAN（P長押し・層9）
 - トラックボールで **縦横自由にスクロール**（2Dパン）。
-- `zip_xy_to_scroll_mapper` → `zip_scroll_scaler 1 5` で速度調整（通常スクロール `scroller` と同一速度。cpi=800 への補正込み）。`scroll_runtime_input_processor` でスクロールイベントを確実に伝達。
+- `zip_xy_to_scroll_mapper` → `zip_scroll_scaler 3 5` で速度調整（通常スクロール `scroller` の3倍。広範囲をざっと移動する用途）。`scroll_runtime_input_processor` でスクロールイベントを確実に伝達。
 - キー入力はすべて `&trans` で素通り。
 
 ### GESTURE SNAP（Q長押し・層10/11）
@@ -177,6 +183,7 @@ F11  F12  —    —    —         0  1  2  3  .
 | 9 | PAN | 黄 |
 | 10/11 | SNAP-M / SNAP-W | マゼンタ |
 | 12 | CURSOR（未使用） | 消灯 |
+| 13 | CLICK | 白 |
 
 ## OS切替（BTプロファイル連動）
 - マクロ `bt_mac0` / `bt_win1` / `bt_win2` が「ベース層切替(`&to`)＋`&bt BT_SEL`」をまとめて実行。
@@ -273,7 +280,7 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 
 **共通前提**
 - OS側配列は引き続き JIS 固定。
-- Layer 2（O24）実装済み。Layer 12（CURSOR）は予約済み。今後の追加は 13 番以降。
+- Layer 2（O24）実装済み。Layer 12（CURSOR）は予約済み、Layer 13（CLICK）実装済み。今後の追加は 14 番以降。
 - BLE層からの切替ボタンとして実装する想定。
 
 #### 案 A: `&tog` オーバーレイ方式（大西配列向き・最小コスト）
