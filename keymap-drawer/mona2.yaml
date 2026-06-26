@@ -27,7 +27,7 @@ layers:
   - C
   - V
   - B
-  - '&caps_word'
+  - {t: '&caps_word', h: CLICK}
   - Sft+INT1
   - N
   - M
@@ -42,7 +42,7 @@ layers:
   - {t: LANG2, h: NAV-M}
   - {t: LANG1, h: NAV-M}
   - {t: ENTER, h: NUM}
-  - DEL
+  - {t: DEL, h: CLICK}
   WIN:
   - {t: Q, h: SNAP-W}
   - W
@@ -70,7 +70,7 @@ layers:
   - C
   - V
   - B
-  - '&caps_word'
+  - {t: '&caps_word', h: CLICK}
   - Sft+INT1
   - N
   - M
@@ -85,7 +85,7 @@ layers:
   - {t: LANG2, h: NAV-W}
   - {t: LANG1, h: NAV-W}
   - {t: ENTER, h: NUM}
-  - DEL
+  - {t: DEL, h: CLICK}
   O24:
   - Q
   - L
@@ -549,6 +549,49 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  CLICK:
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '&mkp MB1'
+  - '&mkp MB3'
+  - '&mkp MB2'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '&mkp MB1'
+  - '&mkp MB3'
+  - '&mkp MB2'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '&mkp MB4'
+  - {t: ▽, type: trans}
+  - '&mkp MB5'
+  - {t: ▽, type: trans}
+  - {type: held}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '&mkp MB4'
+  - {t: ▽, type: trans}
+  - '&mkp MB5'
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}

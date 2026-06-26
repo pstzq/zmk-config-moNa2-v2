@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="788" height="664" viewBox="0 0 788 664">
-<rect x="0" y="0" width="788" height="664" fill="#ffffff" rx="6"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="788" height="708" viewBox="0 0 788 708">
+<rect x="0" y="0" width="788" height="708" fill="#ffffff" rx="6"/>
 <text x="12" y="24" text-anchor="start" font-size="14" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#24292e">moNa2 — Layer &amp; Trackball Behavior</text>
 <line x1="0" y1="36" x2="788" y2="36" stroke="#c9cccf" stroke-width="1"/>
 <rect x="0" y="36" width="788" height="30" fill="#f6f8fa"/>
@@ -148,6 +148,18 @@
 <line x1="52" y1="594" x2="52" y2="638" stroke="#c9cccf" stroke-width="1"/>
 <line x1="170" y1="594" x2="170" y2="638" stroke="#c9cccf" stroke-width="1"/>
 <line x1="450" y1="594" x2="450" y2="638" stroke="#c9cccf" stroke-width="1"/>
-<rect x="0" y="0" width="788" height="664" fill="none" rx="6" stroke="#c9cccf" stroke-width="1"/>
-<text x="12" y="650" text-anchor="start" font-size="10" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#6a737d">★ = デフォルト層（電源投入時）　　スクロール = NUM / NAV 層で有効</text>
+<rect x="0" y="638" width="788" height="44" fill="#f6f8fa"/>
+<line x1="0" y1="682" x2="788" y2="682" stroke="#c9cccf" stroke-width="1"/>
+<rect x="12" y="647" width="28" height="26" fill="#6a737d" rx="4"/>
+<text x="26" y="665" text-anchor="middle" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#ffffff">13</text>
+<text x="60" y="665" text-anchor="start" font-size="12" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#6a737d">CLICK</text>
+<text x="180" y="665" text-anchor="start" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#24292e">—</text>
+<rect x="460" y="649" width="72" height="22" fill="#ddf4ff" rx="11" stroke="#0366d6" stroke-width="0.8"/>
+<text x="496" y="664" text-anchor="middle" font-size="11" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="bold" fill="#0366d6">カーソル</text>
+<text x="540" y="664" text-anchor="start" font-size="10" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#28a745">→ 自動で MOUSE へ</text>
+<line x1="52" y1="638" x2="52" y2="682" stroke="#c9cccf" stroke-width="1"/>
+<line x1="170" y1="638" x2="170" y2="682" stroke="#c9cccf" stroke-width="1"/>
+<line x1="450" y1="638" x2="450" y2="682" stroke="#c9cccf" stroke-width="1"/>
+<rect x="0" y="0" width="788" height="708" fill="none" rx="6" stroke="#c9cccf" stroke-width="1"/>
+<text x="12" y="694" text-anchor="start" font-size="10" font-family="SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace" font-weight="normal" fill="#6a737d">★ = デフォルト層（電源投入時）　　スクロール = NUM / NAV 層で有効</text>
 </svg>

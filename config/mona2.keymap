@@ -40,6 +40,7 @@
 #define GESTURE_SNAP_MAC 10  // Q長押し(Mac) → ウィンドウスナップ(Rectangle)
 #define GESTURE_SNAP_WIN 11  // Q長押し(Win) → ウィンドウスナップ(Win+矢印)
 #define CURSOR       12  // (現在未使用)  長押し → トラックボールで矢印キー入力
+#define CLICK        13  // 長押し → クリック層（カーソル移動はそのまま、指でクリック）
 
 &mt {
     flavor = "balanced";
@@ -223,6 +224,17 @@
             tap-ms = <100>;
         };
 
+        // クリック層用 hold-tap: タップ=caps_word / 長押し=クリック層(CLICK)
+        // caps_word は #binding-cells=0 のため、起動時はタップ側パラメータ(0)を渡すが caps_word は無視する
+        clk_caps: clk_caps {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            bindings = <&mo>, <&caps_word>;
+        };
+
     };
 
     keymap {
@@ -233,8 +245,8 @@
             bindings = <
 &lt GESTURE_SNAP_MAC Q  &kp W      &kp E     &kp R               &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
 &kp A                   &kp S      &kp D     &kp F               &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RGUI JIS_MINUS
-&mt LSHFT Z             &kp X      &kp C     &kp V               &kp B        &caps_word     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LGUI                &kp LCTRL  &kp LALT  &mt_bspc LGUI BSPC  &lt SYM SPACE  &lt NAV_MAC LANG2    &lt NAV_MAC LANG1  &lt NUM ENTER                             &kp DEL
+&mt LSHFT Z             &kp X      &kp C     &kp V               &kp B        &clk_caps CLICK 0     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
+&kp LGUI                &kp LCTRL  &kp LALT  &mt_bspc LGUI BSPC  &lt SYM SPACE  &lt NAV_MAC LANG2    &lt NAV_MAC LANG1  &lt NUM ENTER                             &lt CLICK DEL
             >;
 
             sensor-bindings = <&scroll_up_down>;
@@ -245,8 +257,8 @@
             bindings = <
 &lt GESTURE_SNAP_WIN Q  &kp W     &kp E     &kp R                &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
 &kp A                  &kp S     &kp D     &kp F                &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
-&mt LSHFT Z            &kp X     &kp C     &kp V                &kp B        &caps_word     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
-&kp LCTRL              &kp LGUI  &kp LALT  &mt_bspc LCTRL BSPC  &lt SYM SPACE  &lt NAV_WIN LANG2    &lt NAV_WIN LANG1  &lt NUM ENTER                             &kp DEL
+&mt LSHFT Z            &kp X     &kp C     &kp V                &kp B        &clk_caps CLICK 0     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
+&kp LCTRL              &kp LGUI  &kp LALT  &mt_bspc LCTRL BSPC  &lt SYM SPACE  &lt NAV_WIN LANG2    &lt NAV_WIN LANG1  &lt NUM ENTER                             &lt CLICK DEL
             >;
 
             sensor-bindings = <&scroll_up_down>;
@@ -383,6 +395,21 @@
 
             sensor-bindings = <&scroll_up_down>;
         };
+
+        // クリック層: DEL長押し or 「Bの一つ右」長押しで起動。両手にクリッククラスタ。
+        // トラックボールはデフォルトチェーンを通るのでカーソルは普通に動き、AMLと独立して共存する。
+        // 左手 S/D/F=左/中/右クリック・X/V=戻る/進む / 右手 J/K/L=左/中/右クリック・M/.=戻る/進む
+        click_layer {
+            display-name = "CLICK";
+            bindings = <
+&trans  &trans    &trans    &trans    &trans                              &trans  &trans    &trans    &trans    &trans
+&trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans            &trans            &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
+&trans  &mkp MB4  &trans    &mkp MB5  &trans  &trans    &trans            &trans  &mkp MB4  &trans    &mkp MB5  &trans
+&trans  &trans    &trans    &trans    &trans  &trans    &trans  &trans                                          &trans
+            >;
+
+            sensor-bindings = <&scroll_up_down>;
+        };
     };
 };
 
@@ -415,6 +442,7 @@
         bindings = <&kp LC(LA(C))>;
     };
 
+    // 四隅(↖↗↙↘): モジュールが4方向のみ認識するため現状発火しない（将来対応時に備えて残置）
     snap_tl {
         pattern = <GESTURE_UP_LEFT>;
         bindings = <&kp LC(LA(U))>;
@@ -464,6 +492,7 @@
         bindings = <&kp LG(DOWN)>;
     };
 
+    // 四隅(↖↗↙↘): モジュールが4方向のみ認識するため現状発火しない（将来対応時に備えて残置）
     snap_tl_w {
         pattern = <GESTURE_UP_LEFT>;
         bindings = <&snap_w_tl>;
