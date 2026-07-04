@@ -602,6 +602,49 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  NAGI:
+  - '&ng Q'
+  - '&ng W'
+  - '&ng E'
+  - '&ng R'
+  - '&ng T'
+  - '&ng Y'
+  - '&ng U'
+  - '&ng I'
+  - '&ng O'
+  - '&ng P'
+  - '&ng A'
+  - '&ng S'
+  - '&ng D'
+  - '&ng F'
+  - '&ng G'
+  - {t: ▽, type: trans}
+  - '&ng H'
+  - '&ng J'
+  - '&ng K'
+  - '&ng L'
+  - '&ng SEMI'
+  - '&ng Z'
+  - '&ng X'
+  - '&ng C'
+  - '&ng V'
+  - '&ng B'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '&ng N'
+  - '&ng M'
+  - '&ng COMMA'
+  - '&ng DOT'
+  - '&ng SLASH'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - BSPC
+  - '&ng SPACE'
+  - ''
+  - ''
+  - '&ng ENTER'
+  - DEL
 combos:
 - p: [11, 12]
   k: TAB
@@ -627,3 +670,9 @@ combos:
 - p: [0, 9]
   k: {t: O24, h: toggle}
   l: [MAC, WIN, O24]
+- p: [25, 28]
+  k: '&ng_on'
+  l: [MAC, WIN]
+- p: [38, 39]
+  k: '&ng_off'
+  l: [NAGI]
