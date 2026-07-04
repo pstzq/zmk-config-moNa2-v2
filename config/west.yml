@@ -18,6 +18,8 @@ manifest:
       url-base: https://github.com/zettaface
     - name: kot149    # <-- Mouse Gesture
       url-base: https://github.com/kot149
+    - name: eswai     # <-- Naginata (薙刀式)
+      url-base: https://github.com/eswai
   projects:
     - name: zmk
       remote: cormoran
@@ -56,5 +58,8 @@ manifest:
     - name: zmk-mouse-gesture
       remote: kot149
       revision: 855a6e80f18f4b19ea2181648ac062ec72876ece   # masterブランチHEAD相当(mainなし)
+    - name: zmk-naginata
+      remote: eswai
+      revision: a11b4c12d6bc6922557470ff171fe70127c8bb9d   # 薙刀式。ZMK公式main前提のためv0.3フォーク互換はCIで要検証
   self:
     path: config

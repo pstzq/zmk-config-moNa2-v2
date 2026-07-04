@@ -11,6 +11,29 @@
 
 ---
 
+## 2026-07-04  薙刀式(NAGINATA=14)レイヤーを追加（遊び用トグル層）
+
+（by チャット依頼）
+
+### 目的
+日本語入力法「薙刀式」を試せるトグル層を追加。O24（代替アルファ）と同じくコンボで出入りする実験用レイヤー。QWERTY英語・各記号層の現行運用はそのまま。
+
+### 追加内容
+- モジュール `eswai/zmk-naginata`（`&ng` ビヘイビア）を `config/west.yml` に追加（remote `eswai` / SHA `a11b4c12` pin）。
+- **NAGINATA層(14)** を新設（`config/mona2.keymap`）。全アルファ30＋`SEMI/,/./` を `&ng` で包み、`Space`＋`Enter` を薙刀のシフトに（忠実版・32キー）。
+- 出入りは**コンボ・トグル**:
+  - ON = `B`+`N` 同時押し（左右人差し指クロスハンド）→ `ng_on` マクロ（かな/IME ON ＋ `&to NAGINATA`）
+  - OFF = `英数`+`かな` 同時押し（薙刀層内のみ）→ `ng_off` マクロ（英数/IME OFF ＋ `&to MAC`）
+  - OFFを別チョードにしたのは、薙刀層で `B`/`N` が `&ng` のため B+N が薙刀の同時押しkana入力と衝突しうるのを避けるため。
+- 既定OS=macOS（`CONFIG_NAGINATA_DEFAULT_OS_MACOS=y`）。実行時 F15/F16/F17 で切替可。
+- LED配色: NAGINATA=緑（`config/mona2_r.conf`、`LAYER_14_COLOR=2`）。
+- 薙刀式はローマ字を吐く方式のため、OS IMEをローマ字入力モードにして使う。
+
+### 注意（互換性）
+`eswai/zmk-naginata` は ZMK 公式 main 前提。moNa2 は `cormoran/zmk v0.3-branch+dya` にpinしているため、ビルド互換は GitHub Actions で要検証（`&ng` は大きめのC実装で非互換リスクあり）。
+
+---
+
 ## 2026-06-21  四隅スナップ不発火を既知の制限としてドキュメント化
 
 （by チャット依頼）

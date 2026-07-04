@@ -41,6 +41,7 @@
 | 11 | GESTURE SNAP (Win) | Q 長押し（WINベース時） | ウィンドウスナップ（Win+矢印） |
 | 12 | CURSOR（予約） | — （未実装） | トラックボールで矢印キー入力（将来実装候補） |
 | 13 | CLICK | Del 長押し or B の一つ右(caps_word位置)長押し | 両手にクリック＋戻る/進む。AMLと独立 |
+| 14 | NAGINATA | B+N 同時押しでトグル | 薙刀式かな入力（遊び用）。eswai/zmk-naginata |
 
 ---
 
@@ -135,6 +136,17 @@ F11  F12  —    —    —         0  1  2  3  .
 - 起動: `Del`（右手・`&lt CLICK DEL`）または `B` の一つ右＝caps_word の位置（左手・カスタム hold-tap `clk_caps`、タップで caps_word）。
 - 配置: 左手 `S/D/F`=左/中/右クリック・`X/V`=戻る(MB4)/進む(MB5)、右手 `J/K/L`=左/中/右クリック・`M/.`=戻る/進む。片手で起動し反対の手でクリックできる。
 - **AMLと独立して共存**: CLICK層は trackball listener のどのサブノードにも含めないため、層中もボール入力はデフォルトチェーンを通りカーソルは普通に動く。クリックは層13の `&mkp` が供給するので AML の発火/タイムアウトに依存しない。
+
+### NAGINATA（薙刀式・層14・遊び用）
+- 日本語入力法「薙刀式」を試すトグル層。モジュール `eswai/zmk-naginata` の `&ng <keycode>` ビヘイビアを使用。同時押し（同時打鍵）判定は**モジュールがC側で処理**し、ローマ字を吐いて OS 側 IME に変換させる。→ **OS の IME をローマ字入力モード**にして使う前提。
+- 全アルファ30＋`SEMI/COMMA/DOT/SLASH` を `&ng` で包む。**`Space`＝シフト、`Enter`＝第2シフト**（忠実版・32キー薙刀）。中央キーと未使用親指は `&trans`/`&none`、`BSPC`/`DEL` は素通しで保持。
+- 出入りは**コンボ・トグル**:
+  - ON = `B`+`N`（pos 25,28。`layers = <MAC WIN>`）→ `ng_on` マクロ（`&macro_tap &kp LANGUAGE_1 &kp INTERNATIONAL_4 &to NAGINATA`）
+  - OFF = `英数`+`かな`（pos 38,39。`layers = <NAGINATA>`）→ `ng_off` マクロ（`&macro_tap &kp LANGUAGE_2 &kp INTERNATIONAL_5 &to MAC`）
+  - **OFFを別チョードにした理由**: 薙刀層では `B`/`N` が `&ng` のため、B+N 同時押しが薙刀式の有効な kana 入力と衝突しうる。OFFは `&ng` を持たない親指ペア(38/39)に逃がして衝突を回避。この 38/39 は base の `combo_esc_ble` と同位置だが層スコープが違うので非干渉。
+  - `&to MAC` 固定のため、WINベースから入って抜けると MAC 層に戻る（BTプロファイルは WIN のまま）。遊び用途では許容。
+- 既定OS=macOS（`CONFIG_NAGINATA_DEFAULT_OS_MACOS=y`）。実行時 `F15`(Win)/`F16`(Mac)/`F17`(Linux) で切替可。LED=緑。
+- **互換性の注意**: `eswai/zmk-naginata` は ZMK 公式 main 前提。本構成は `cormoran/zmk v0.3-branch+dya` にpinしているため、`&ng`（約43KBのC実装）がv0.3系でビルドできるかは GitHub Actions で要検証。
 
 ### BLE/設定（Bluetooth・端末管理に限定）
 - **雑多なキーは置かず Bluetooth まわりに集中**：BT0〜BT4 の選択（Y〜P 位置）。
