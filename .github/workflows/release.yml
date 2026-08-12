@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "リリースするタグ名 (例: v1.0.0)。既存のタグを指定すること"
+        description: "リリースするタグ名 (例: v1.0.0)。未作成のタグ名でよい(実行したrefのコミットに作られる)"
         required: true
       prerelease:
         description: "プレリリースとして作成する (実機未確認のうちは true 推奨)"
@@ -110,8 +110,14 @@ jobs:
             echo "既存のリリースに uf2 を上書きします"
             gh release upload "${{ steps.tag.outputs.name }}" dist/*.uf2 --clobber
           else
+            # workflow_dispatch の場合はタグが未作成でも、実行した ref の
+            # コミットにタグを作ってからリリースする (--target)
+            TARGET=""
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              TARGET="--target ${{ github.sha }}"
+            fi
             gh release create "${{ steps.tag.outputs.name }}" dist/*.uf2 \
               --title "moNa2 ${{ steps.tag.outputs.name }}" \
               --notes-file notes.md \
-              $FLAGS
+              $FLAGS $TARGET
           fi
