@@ -10,6 +10,8 @@ manifest:
       url-base: https://github.com/kot149
     - name: shakushakupanda  # <-- Mouse Gesture フォーク + RPC/慣性スクロールモジュール
       url-base: https://github.com/shakushakupanda
+    - name: eswai       # <-- 薙刀式 (試験導入中)
+      url-base: https://github.com/eswai
   projects:
     # ── ZMK 本体 ────────────────────────────────────────────────
     # DYA Studio のコンボ/マクロ編集は cormoran 氏の custom Studio RPC
@@ -107,6 +109,18 @@ manifest:
     - name: zmk-module-mouse-gesture-rpc
       remote: shakushakupanda
       revision: 1374f1d487d5   # main @ 2026-08-12
+
+    # ── 薙刀式 (試験導入。keymap へは未組込) ────────────────────
+    # ZMK v0.4 移行で使えるようになったか確認するための試験。
+    # CONFIG_NAGINATA は既定 y なのでモジュール本体はコンパイルされるが、
+    # behavior ノードは /omit-if-no-ref/ なので keymap から &ng を参照するまで
+    # 実際のキー動作には影響しない。
+    # 使うと決めたら keymap へ &ng を配置し、既存コンボとの同時打鍵競合
+    # (S+D / D+F / J+K / K+L) を薙刀レイヤーで無効化する設計が要る。
+    # 見送る場合はこのブロックと eswai remote をまとめて削除すること。
+    - name: zmk-naginata
+      remote: eswai
+      revision: 316bcb5b76b5   # main @ 2026-08-12
 
     # ── その他 ──────────────────────────────────────────────────
     # v0.3-branch は Zephyr 3.5 向けなので main へ切替
