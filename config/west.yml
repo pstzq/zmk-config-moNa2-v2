@@ -19,7 +19,7 @@ manifest:
     # からメジャーバージョンが上がっている。
     - name: zmk
       remote: cormoran
-      revision: main+dya
+      revision: e5c9b6915b56   # main+dya @ 2026-08-12
       import: app/west.yml
 
     # ── DYA Studio 共通基盤 ─────────────────────────────────────
@@ -27,57 +27,57 @@ manifest:
     # runtime-input-processor が全てこの上に乗るため必須。
     - name: zmk-feature-custom-settings
       remote: cormoran
-      revision: main
+      revision: c6a7fef3a3be   # main @ 2026-08-12
     - name: zmk-module-ble-management
       remote: cormoran
-      revision: main
+      revision: 57738cc4fc6b   # main @ 2026-08-12
     - name: zmk-module-settings-rpc
       remote: cormoran
-      revision: main
+      revision: 78f86df9e6c5   # main @ 2026-08-12
     - name: zmk-module-runtime-input-processor
       remote: cormoran
-      revision: main
+      revision: 43618985f8c9   # main @ 2026-08-12
     - name: zmk-behavior-runtime-sensor-rotate
       remote: cormoran
-      revision: main
+      revision: 8b1125ed676c   # main @ 2026-08-12
     - name: zmk-module-battery-history
       remote: cormoran
-      revision: main
+      revision: 307755dd2ad4   # main @ 2026-08-12
 
     # ── コンボ / マクロのランタイム編集 (今回の主目的) ──────────
     - name: zmk-feature-runtime-combo
       remote: cormoran
-      revision: main
+      revision: d9490e7b5d41   # main @ 2026-08-12
     - name: zmk-feature-runtime-macro
       remote: cormoran
-      revision: main
+      revision: 38530962eb70   # main @ 2026-08-12
 
     # ── DYA Studio 診断タブ ─────────────────────────────────────
     - name: zmk-feature-kscan-diagnostics
       remote: cormoran
-      revision: main
+      revision: 1432f7fe0cfe   # main @ 2026-08-12
     - name: zmk-feature-input-stream
       remote: cormoran
-      revision: main
+      revision: aeb015908a42   # main @ 2026-08-12
     - name: zmk-module-devtool
       remote: cormoran
-      revision: main
+      revision: 9938a2c73c06   # main @ 2026-08-12
     - name: zmk-feature-device-info
       remote: cormoran
-      revision: main
+      revision: 8cedd2dd9f04   # main @ 2026-08-12
     - name: zmk-feature-watchdog
       remote: cormoran
-      revision: main
+      revision: 84ad14c6c364   # main @ 2026-08-12
 
     # ── OS ごとのデフォルトレイヤー ─────────────────────────────
     # NOTE: main ブランチには custom Studio RPC が入っておらず DYA Studio
     #       のパネルから操作できないため、dya2 v2.0 と同じブランチを使う。
     - name: zmk-feature-default-layer
       remote: cormoran
-      revision: codex/custom-rpc-rewrite
+      revision: b25cb5b324da   # codex/custom-rpc-rewrite @ 2026-08-12
     - name: zmk-feature-os-detection
       remote: cormoran
-      revision: main
+      revision: 3052679f645b   # main @ 2026-08-12
 
     # ── トラックボール (PMW3610) ────────────────────────────────
     # Zephyr 4.1 が純正 "pixart,pmw3610" ドライバを取り込んだため、旧
@@ -87,29 +87,31 @@ manifest:
     # (DYA Studio から実行時変更も可能)。
     - name: zmk-driver-pmw3610-with-custom-studio-rpc
       remote: cormoran
-      revision: main
+      revision: 5c34ea0eec24   # main @ 2026-08-12
     # - name: zmk-driver-paw3222   # センサーを PAW3222 に載せ替える場合
     #   remote: sekigon-gonnoc
     #   revision: main
 
     # ── Mouse Gesture (PAN / SNAP) ──────────────────────────────
-    # kot149 本家ではなく shakupan フォークを使う:
-    #  - suppress-cursor-while-active: ジェスチャー認識中のカーソル移動を
-    #    モジュール側で抑止 (旧構成の zip_xy_to_scroll_mapper ハックが不要)
+    # kot149 本家ではなく shakupan フォークを使う (shakupan 版 moNa2 で実績のある組合せ):
     #  - zmk-module-mouse-gesture-rpc: DYA Studio からのジェスチャー登録に
     #    加え、慣性スクロールの入力プロセッサ
-    #    (zmk,input-processor-inertial-scroll) を提供する
+    #    (zmk,input-processor-inertial-scroll) を提供する。こちらが本命
+    #  - suppress-cursor-while-active: ジェスチャー中のカーソル移動をモジュール側で抑止。
+    #    ただし抑止フラグは &mouse_gesture 等の起動キーの押下状態から立つ実装のため、
+    #    always-active で起動キーを使わない本構成には効かない。よって
+    #    mona2_r.overlay の zip_xy_to_scroll_mapper による抑止は温存すること
     - name: zmk-mouse-gesture
       remote: shakushakupanda
-      revision: suppress-cursor-while-active
+      revision: 10597a47ed60   # suppress-cursor-while-active @ 2026-08-12
     - name: zmk-module-mouse-gesture-rpc
       remote: shakushakupanda
-      revision: main
+      revision: 1374f1d487d5   # main @ 2026-08-12
 
     # ── その他 ──────────────────────────────────────────────────
     # v0.3-branch は Zephyr 3.5 向けなので main へ切替
     - name: zmk-rgbled-widget
       remote: caksoylar
-      revision: main
+      revision: e6b467792a1d   # main @ 2026-08-12
   self:
     path: config
