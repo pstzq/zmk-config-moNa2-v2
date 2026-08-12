@@ -7,7 +7,8 @@
 #include <input/processors.dtsi>
 #include <input/processors/runtime-input-processor.dtsi>
 #include <behaviors/runtime-sensor-rotate.dtsi>
-#include <behaviors/battery_history_request.dtsi>
+// DYA Studio で作ったマクロを &rmacro <slot> でキーに割り当てられるようにする
+#include <behaviors/runtime_macro.dtsi>
 #include <dt-bindings/zmk/input_transform.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include "jis.h"
@@ -56,60 +57,89 @@
 };
 
 / {
-    combos {
-        compatible = "zmk,combos";
+    /* ---- コンボ (DYA Studio から編集可能) ----
+     *
+     * 旧 `combos { compatible = "zmk,combos"; }` はコンパイル時固定で DYA Studio
+     * から編集できないため、zmk-feature-runtime-combo の「コンパイル時デフォルト」
+     * ノードへ移行した。ここに書いた内容はフラッシュ直後から有効で、
+     * settings_reset をかけても復活する。
+     *
+     * 【重要】DYA Studio 側で編集するとそのスロットだけフラッシュ上で上書きされ、
+     * 以後 .keymap を書き換えても反映されない。ファーム側の値へ戻すには
+     * Web UI の "Reset to Default" か settings_reset.uf2 が必要。
+     *
+     * スロット総数は CONFIG_ZMK_RUNTIME_COMBO_MAX_COMBOS (=16)。
+     * 未使用スロット 8〜15 は DYA Studio から自由に追加できる。
+     * timeout の既定は CONFIG_ZMK_RUNTIME_COMBO_DEFAULT_TIMEOUT_MS (=50、旧 zmk,combos と同値)。
+     */
+    runtime_combo_defaults {
+        compatible = "cormoran,runtime-combo-defaults";
 
         // S+D = Tab
-
         combo_tab {
+            slot = <0>;
+            display-name = "Tab";
             bindings = <&kp TAB>;
             key-positions = <11 12>;
             layers = <WIN MAC>;
         };
 
         // D+F = Shift+Tab
-
         combo_stab {
+            slot = <1>;
+            display-name = "Shift+Tab";
             bindings = <&kp LS(TAB)>;
             key-positions = <12 13>;
             layers = <WIN MAC>;
         };
 
         // 英数+かな = tap:Esc / hold:BLE層 (sayu-hub意識)
-
+        // NOTE: BLE 層は studio_unlock の唯一の入口。Studio でこのスロットを
+        //       壊すと Studio に入れなくなるが、settings_reset.uf2 で復旧できる。
         combo_esc_ble {
+            slot = <2>;
+            display-name = "Esc / BLE";
             bindings = <&lt BLE ESC>;
             key-positions = <38 39>;
             layers = <WIN MAC O24>;  // O24 トグル中も BLE 層へ入れるよう含める
         };
 
         // J+K = コピー / K+L = ペースト (OS別に修飾を分岐)
-
         combo_copy_mac {
+            slot = <3>;
+            display-name = "Copy (Mac)";
             bindings = <&kp LG(C)>;
             key-positions = <17 18>;
             layers = <MAC>;
         };
 
         combo_copy_win {
+            slot = <4>;
+            display-name = "Copy (Win)";
             bindings = <&kp LC(C)>;
             key-positions = <17 18>;
             layers = <WIN>;
         };
 
         combo_paste_mac {
+            slot = <5>;
+            display-name = "Paste (Mac)";
             bindings = <&kp LG(V)>;
             key-positions = <18 19>;
             layers = <MAC>;
         };
 
         combo_paste_win {
+            slot = <6>;
+            display-name = "Paste (Win)";
             bindings = <&kp LC(V)>;
             key-positions = <18 19>;
             layers = <WIN>;
         };
 
         combo_toO24 {
+            slot = <7>;
+            display-name = "O24 toggle";
             bindings = <&tog O24>;
             key-positions = <0 9>;
             layers = <MAC WIN O24>;  // 機能層での Q+P 誤爆を防止

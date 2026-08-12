@@ -2,9 +2,27 @@
 #include <input/processors.dtsi>
 #include <input/processors/runtime-input-processor.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
-#include <input/processors/zmk-input-processor-keybind.dtsi>
 
 // zip_mouse_gesture_win / mouse-gesture.dtsi は mona2.dtsi で定義・include 済み。
+
+/ {
+    // 慣性スクロール (shakushakupanda/zmk-module-mouse-gesture-rpc)
+    // ZMK v0.4 移行に伴い、razilyis の PMW3610 ドライバフォークが持っていた
+    // inertial-scroll-* プロパティ (ドライバ機能) から、入力プロセッサ方式へ移行した。
+    // 有効範囲は inertial-scroll-layers ではなく「どのチェーンに挿すか」で決まるため、
+    // 下の scroller (layers = <4 5 6>) の末尾にのみ挿してある。
+    inertial_scroll: inertial_scroll {
+        compatible = "zmk,input-processor-inertial-scroll";
+        status = "okay";
+        #input-processor-cells = <0>;
+        enabled;                    // 既定で有効 (モジュール既定はオフ)
+        impulse-percent = <200>;    // 旧 inertial-scroll-gain-pct = 200
+        decay-percent = <93>;       // 旧 inertial-scroll-decay-pct = 93
+        tick-ms = <10>;             // 旧 inertial-scroll-interval-ms = 10
+        // min-velocity-q8 は旧 inertial-scroll-threshold (=10) と尺度が異なるため
+        // 既定値 96 のまま様子を見る。余韻が長すぎる/短すぎる場合はここを増減する。
+    };
+};
 
 &default_transform {
     col-offset = <6>;
@@ -51,24 +69,24 @@
 
     trackball_central: trackball_central@0 {
         status = "okay";
-        compatible = "pixart,pmw3610";
+        // ZMK v0.4 (Zephyr 4.1) が純正 "pixart,pmw3610" ドライバを取り込んだため、
+        // 旧 compatible は衝突して使えない。cormoran 氏の custom Studio RPC 対応版
+        // (compatible = "cormoran,pmw3610") へ移行した。
+        // 慣性スクロールはこのドライバには無いので、入力プロセッサ &inertial_scroll
+        // (このファイル冒頭で定義) が肩代わりする。
+        compatible = "cormoran,pmw3610";
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         cpi = <800>;  // 600→800: センサー感度アップ。スクロール/ジェスチャー側は scaler・threshold・stroke-size で補正済み
-        // swap-xy;
-        // invert-x;
-        // invert-y;
         evt-type = <INPUT_EV_REL>;
-        // 慣性スクロール設定（無効にする場合は以下をコメントアウト）
-        inertial-scroll;
-        inertial-scroll-layers = <4 5 6>;   // NUM/NAV_MAC/NAV_WIN でスクロール有効
-        inertial-scroll-gain-pct = <200>;   // 初速を2倍に増幅。軽いスワイプでも慣性感を体感できる量にする
-        inertial-scroll-decay-pct = <93>;   // 1回ごとの速度残存率(%)。約0.4〜0.7秒でスーッと停止
-        inertial-scroll-interval-ms = <10>; // 慣性更新周期(ms)
-        inertial-scroll-threshold = <10>;   // 停止判定の下限値 (cpi 600→800 に合わせ 8→10 に比例補正)
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
+        // DYA Studio 上でこのセンサーを識別するための短い ID
+        settings-id = "tball";
+        // 軸の反転は CONFIG_PMW3610_SWAP_XY / _INVERT_X / _INVERT_Y (mona2_r.conf) で指定する。
+        // ただし現行は入力チェーン側の zip_xy_transform で X 反転を効かせているため未設定。
+        // COROPIT を使う場合は README の手順を参照。
     };
 };
 
@@ -92,7 +110,9 @@
              &zip_xy_to_scroll_mapper
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
              &zip_scroll_scaler 1 5
-             &scroll_runtime_input_processor>;   // scaler 1/4→1/5: cpi 600→800 の補正(体感速度ほぼ同等)
+             &scroll_runtime_input_processor
+             &inertial_scroll>;   // scaler 1/4→1/5: cpi 600→800 の補正(体感速度ほぼ同等)
+                                  // 慣性スクロールはこのチェーンにのみ挿す(=旧 inertial-scroll-layers <4 5 6> 相当)
     };
 
     // P長押し(layer 9): 2D自由スクロール(パン)。ざっと移動する用途なので scroller より高速
