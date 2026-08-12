@@ -102,7 +102,7 @@ BLE 層（`英数`+`かな` 同時押し）の最上段で切替：
 | ↑ | 最大化 | 最大化 |
 | ↓ | 中央（1/2） | 元のサイズに戻す |
 
-> **斜め（↖↗↙↘）について**: キーマップ設定上は四隅スナップを定義しているが、利用中のジェスチャーモジュール（kot149/zmk-mouse-gesture）が上下左右の **4方向のみ**を認識する実装のため、現状は発火しない（既知の制限）。
+> **斜め（↖↗↙↘）について**: キーマップ設定上は四隅スナップを定義しているが、利用中のジェスチャーモジュールが上下左右の **4方向のみ**を認識する実装のため、現状は発火しない（既知の制限）。本家 kot149 に `v1-8way` ブランチが存在するため、将来解消できる可能性がある（未検証）。
 
 > Mac は [Rectangle](https://rectangleapp.com/) が必要です（デフォルトショートカット `Ctrl+Option+矢印`）。
 
@@ -136,15 +136,53 @@ Shift PgUp PgDn  —   —                              🔅  ⏮   ⏯   ⏭  �
 
 1. このリポジトリへ push すると GitHub Actions が自動でファームウェアをビルド
 2. Actions の完了後、実行ページ下部の **Artifacts > firmware** をダウンロード
-3. `mona2_l-seeeduino_xiao_ble.uf2` → 左手、`mona2_r-seeeduino_xiao_ble.uf2` → 右手
-4. **初回またはキーマップ構造を大きく変更した場合は `settings_reset.uf2` も先に書き込む**
+3. **`settings_reset.uf2` を左右両方に先に書き込む**
+4. `mona2_l-*.uf2` → 左手、`mona2_r-*.uf2` → 右手
+5. BLE を再ペアリング（BT0=Mac / BT1・BT2=Windows）
+
+> **ZMK v0.4 移行版（2026-08）を初めて書き込むときは手順3が必須です。** Zephyr 3.5 → 4.1 で設定領域の構造が変わっているため、`settings_reset` を挟まないと起動しない・挙動が壊れる可能性があります。BLE ペアリングは全消去されます。
 
 ---
 
 ## DYA Studio でのキーマップ変更
 
-[DYA Studio](https://studio.dya.cormoran.works/) を使うと GUI でキーマップを変更できます。
-接続前に BLE 層の `studio_unlock` キーを押してください（`L` の右隣）。
+[DYA Studio](https://studio.dya.cormoran.works/) を使うと、**ファームウェアを焼き直さずに**ブラウザから設定を変更できます。
+
+### 接続手順
+
+1. **右手側**を USB ケーブルで PC に接続（Studio は中央側とだけ通信します）
+2. Chrome / Edge など WebUSB 対応ブラウザで <https://studio.dya.cormoran.works/> を開く
+3. `英数`+`かな` で BLE 層に入り、**`studio_unlock`**（`L` の右隣）を押して解錠
+4. DYA Studio 側で「Connect」→ USB デバイスとして mona2 を選択
+
+### 編集できるもの
+
+| タブ | 内容 |
+|---|---|
+| Keymap | キーマップとレイヤー |
+| **Combo** | **コンボの追加・編集・削除**（スロット0〜7が下表の既定、8〜15が自由枠） |
+| **Macro** | **マクロの作成・編集・削除**。キーへの割当は `&rmacro <スロット番号>` |
+| Trackball | 感度・軸の向き・オートマウスレイヤー |
+| Encoder | ノブの回転動作をレイヤーごとに |
+| Connection | BLE プロファイル、OSごとのデフォルトレイヤー |
+| 診断 | チャタリング検出、センサー状態、デバイス情報、フリーズ履歴、スタック使用量 |
+
+### コンボの既定スロット
+
+`config/mona2.keymap` の `runtime_combo_defaults` で定義され、フラッシュ直後から有効です。
+
+| Slot | 動作 | キー位置 |
+|---|---|---|
+| 0 | Tab | `S`+`D` |
+| 1 | Shift+Tab | `D`+`F` |
+| 2 | tap=Esc / hold=BLE層 | `英数`+`かな` |
+| 3 / 4 | コピー（Mac / Win） | `J`+`K` |
+| 5 / 6 | ペースト（Mac / Win） | `K`+`L` |
+| 7 | O24 トグル | `Q`+`P` |
+
+> **⚠️ DYA Studio で保存した内容は `.keymap` より常に優先されます。** リポジトリ側の値へ戻すには Web UI の "Reset to Default"、または `settings_reset.uf2` を書き込んでください。
+>
+> スロット2（`英数`+`かな`）は **BLE層＝`studio_unlock` への唯一の入口**です。Studio でこれを壊すと Studio に入れなくなりますが、`settings_reset.uf2` で復旧できます。
 
 詳細: [`docs/keymap-phase1.md`](docs/keymap-phase1.md)
 

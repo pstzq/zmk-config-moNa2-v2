@@ -253,19 +253,37 @@ F11  F12  —    —    —         0  1  2  3  .
 - 層を分けることでベース層（MAC/WIN）に応じて `&lt` が自動で正しい層を起動する。
 - `zip_mouse_gesture_win` は Mac 版と同一ノード型だが別インスタンスとして `mona2.dtsi` に定義。左右どちらのビルドでも `mona2.keymap` からの参照が解決できるよう、両 overlay が include する共通 dtsi に配置している。
 
-## 依存モジュールのpin（重要）
-DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-processor` が **2026-04-30 に zmk v4 へ移行** → fork(`v0.3-branch+dya`)と非互換になりビルド失敗(`too many arguments to zmk_keymap_layer_activate`)。shakupan版に倣い `config/west.yml` で v4移行前にpin：
-- `zmk-module-runtime-input-processor`: `main` → `dbf92f7`
-- `zmk-module-ble-management`: `main` → `851661c`
-- `zmk-mouse-gesture`: `main` なし → `855a6e80f18f4b19ea2181648ac062ec72876ece`（masterブランチHEAD）
+## 依存モジュールの世代（重要）
 
-2026-06-11、残っていた浮動 `main` も同様の破損を防ぐため全て pin 済み:
-- `zmk-module-battery-history`: `main` → `307755dd2ad4`
-- `zmk-module-settings-rpc`: `main` → `ad1c995cf910`
-- `zmk-behavior-runtime-sensor-rotate`: `main` → `3bbd99204671`
-- `zmk-input-processor-keybind`: `main` → `64303bd3932b`
+### 2026-08-12: ZMK v0.4 へ世代移行（凍結の解除）
 
-モジュールを更新したい場合は `git ls-remote <リポジトリURL> main` で新しい SHA を確認し、ビルドが通ることを確認してから pin を進めること。
+DYA Studio のコンボ／マクロ編集は cormoran 氏の **custom Studio RPC プロトコル**を要求し、それは `cormoran/zmk` の **`main+dya`（ZMK v0.4 / Zephyr 4.1）**系にしか無い。旧 `v0.3-branch+dya`（Zephyr 3.5）では `zmk-feature-runtime-combo` がそもそもビルドできない（`ZMK_BEHAVIOR_LOCAL_IDS` と custom-settings の BEHAVIOR 値型が無いため）。
+
+したがって下記の「v4移行前 pin」は**役目を終えた**。全モジュールを v4 世代（`main`）へ進めた。
+
+移行に伴う非互換で、対処が必要だった点:
+
+| 事象 | 対処 |
+|---|---|
+| Zephyr 4.1 が純正 `pixart,pmw3610` ドライバを取り込み、compatible が衝突 | `cormoran/zmk-driver-pmw3610-with-custom-studio-rpc`（`compatible = "cormoran,pmw3610"`）へ移行 |
+| 慣性スクロール（razilyis フォークのドライバ機能）が v0.3 系にしか無い | 入力プロセッサ `zmk,input-processor-inertial-scroll` へ再実装（shakupan の mouse-gesture-rpc モジュール提供） |
+| HWMv2 でボード名変更 | `seeeduino_xiao_ble` → `xiao_ble/nrf52840/zmk`（バリアント指定が無いと CI が "Missing ZMK Compat" で落ちる） |
+| `runtime-input-processor.dtsi` が `modifiers.h` 経由で `RC()` を1引数マクロとして再定義し、マトリクスの `RC(row,col)` と衝突 | 同 dtsi は必ず `#include "mona2.dtsi"` の**後ろ**で include する（左右両 overlay） |
+| `zmk-feature-default-layer` の `main` に custom Studio RPC が無い | `codex/custom-rpc-rewrite` ブランチを使う（dya2 v2.0 と同じ） |
+
+### pin 方針
+
+移行作業中は全て `main` で回している。**ビルドが緑になった時点で全プロジェクトを SHA へ pin し直すこと**（浮動 `main` による突然のビルド破損を防ぐため。下記の 2026-06 の経緯を参照）。
+
+更新したい場合は `git ls-remote <リポジトリURL> main` で新しい SHA を確認し、ビルドが通ることを確認してから pin を進める。
+
+### 参考: 2026-06 時点の凍結（履歴）
+
+DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-processor` が **2026-04-30 に zmk v4 へ移行** → fork(`v0.3-branch+dya`)と非互換になりビルド失敗(`too many arguments to zmk_keymap_layer_activate`)。shakupan版に倣い v4移行前に pin していた：
+- `zmk-module-runtime-input-processor`: `dbf92f7` / `zmk-module-ble-management`: `851661c`
+- `zmk-module-battery-history`: `307755dd2ad4` / `zmk-module-settings-rpc`: `ad1c995cf910`
+- `zmk-behavior-runtime-sensor-rotate`: `3bbd99204671` / `zmk-input-processor-keybind`: `64303bd3932b`
+- `zmk-mouse-gesture`: `855a6e80f18f4b19ea2181648ac062ec72876ece`
 
 ---
 
@@ -332,17 +350,22 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 
 | リソース | 用途 |
 |---|---|
-| [DYA Studio](https://studio.dya.cormoran.works/) | GUI でキーマップ編集（ZMK Studio 系） |
-| [cormoran/zmk](https://github.com/cormoran/zmk) `v0.3-branch+dya` | ZMK 本体フォーク（DYA Studio 対応） |
-| [badjeff/zmk-pmw3610-driver](https://github.com/badjeff/zmk-pmw3610-driver) | PMW3610 トラックボールドライバ（慣性スクロール無効版） |
-| [razilyis/zmk-pmw3610-driver](https://github.com/razilyis/zmk-pmw3610-driver) `Dev-v0.3_inertial-scroll` | PMW3610 トラックボールドライバ（慣性スクロール対応フォーク） |
-| [cormoran/zmk-module-runtime-input-processor](https://github.com/cormoran/zmk-module-runtime-input-processor) `dbf92f7` | 入力処理パイプライン拡張（v4移行前にpin） |
+| [DYA Studio](https://studio.dya.cormoran.works/) | GUI でキーマップ／コンボ／マクロ編集（ZMK Studio 系） |
+| [cormoran/zmk](https://github.com/cormoran/zmk) `main+dya` | ZMK 本体フォーク（custom Studio RPC 対応。ZMK v0.4 / Zephyr 4.1） |
+| [cormoran/zmk-feature-custom-settings](https://github.com/cormoran/zmk-feature-custom-settings) | 設定永続化の共通基盤（runtime-combo/macro が依存） |
+| [cormoran/zmk-feature-runtime-combo](https://github.com/cormoran/zmk-feature-runtime-combo) | **コンボのランタイム編集**（今回の主目的） |
+| [cormoran/zmk-feature-runtime-macro](https://github.com/cormoran/zmk-feature-runtime-macro) | マクロのランタイム編集（`&rmacro <slot>`） |
+| [cormoran/zmk-driver-pmw3610-with-custom-studio-rpc](https://github.com/cormoran/zmk-driver-pmw3610-with-custom-studio-rpc) | PMW3610 ドライバ（`compatible = "cormoran,pmw3610"`） |
+| [shakushakupanda/zmk-mouse-gesture](https://github.com/shakushakupanda/zmk-mouse-gesture) `suppress-cursor-while-active` | マウスジェスチャー（kot149 のフォーク） |
+| [shakushakupanda/zmk-module-mouse-gesture-rpc](https://github.com/shakushakupanda/zmk-module-mouse-gesture-rpc) | ジェスチャーの Studio 連携＋**慣性スクロールの入力プロセッサ** |
+| [cormoran/zmk-module-runtime-input-processor](https://github.com/cormoran/zmk-module-runtime-input-processor) | 入力処理パイプライン拡張 |
 | [cormoran/zmk-behavior-runtime-sensor-rotate](https://github.com/cormoran/zmk-behavior-runtime-sensor-rotate) | エンコーダを DYA Studio から動的変更可能にする |
-| [caksoylar/zmk-rgbled-widget](https://github.com/caksoylar/zmk-rgbled-widget) `v0.3-branch` | RGB LED ウィジェット |
-| [zettaface/zmk-input-processor-keybind](https://github.com/zettaface/zmk-input-processor-keybind) | 入力プロセッサ keybind |
-| [kot149/zmk-mouse-gesture](https://github.com/kot149/zmk-mouse-gesture) `855a6e80...` | マウスジェスチャー（ストロークでキー発火） |
-| [cormoran/zmk-module-ble-management](https://github.com/cormoran/zmk-module-ble-management) `851661c` | BLE 管理（v4移行前にpin） |
+| [cormoran/zmk-feature-default-layer](https://github.com/cormoran/zmk-feature-default-layer) `codex/custom-rpc-rewrite` | OS ごとのデフォルトレイヤー |
+| [caksoylar/zmk-rgbled-widget](https://github.com/caksoylar/zmk-rgbled-widget) `main` | RGB LED ウィジェット（レイヤー配色） |
+| [cormoran/zmk-module-ble-management](https://github.com/cormoran/zmk-module-ble-management) | BLE 管理 |
 | [cormoran/zmk-module-battery-history](https://github.com/cormoran/zmk-module-battery-history) | バッテリー履歴 |
 | [cormoran/zmk-module-settings-rpc](https://github.com/cormoran/zmk-module-settings-rpc) | Settings RPC |
+| [shakupan 版 moNa2 `dya-studio-v1.0.0`](https://github.com/shakushakupanda/zmk-config-moNa2-v2/releases/tag/dya-studio-v1.0.0) | 同一ハードの先行移行事例（本移行の参照元） |
+| [kot149/zmk-mouse-gesture](https://github.com/kot149/zmk-mouse-gesture) | ジェスチャー本家。`v1-8way` ブランチは四隅対応の可能性あり（未検証） |
 | [note: razilyis 慣性スクロール記事](https://note.com/razily/n/nea1575614710) | 慣性スクロール実装の参考記事 |
 | [keymap-drawer](https://github.com/caksoylar/keymap-drawer) | キーマップ SVG 自動生成ツール |
