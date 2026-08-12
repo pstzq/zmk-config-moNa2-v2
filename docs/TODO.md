@@ -29,17 +29,55 @@ LED配色・依存モジュール構成・今後の拡張案まで載る**総合
 案C（`zmk-naginata` モジュール方式）は **DYAフォーク `v0.3-branch+dya` との互換性が
 未確認**という理由で保留していた。
 
-**今回の v0.4（`main+dya` / Zephyr 4.1）移行で前提が変わった可能性がある**ので、
-次の点を調べて報告する:
+### 調査結果（2026-08-12 時点）— 見通しは大きく好転した
 
-- `zmk-naginata`（nickcoutsos 他）が ZMK v0.4 / Zephyr 4.1 に対応しているか
-- 対応していれば、`main+dya` フォーク上でビルドが通るか（まず keymap へ組み込まずに
-  west.yml へ足すだけで通るか確認する）
-- `zmk-module-runtime-input-processor` との入力処理パイプライン競合の有無
-- ランタイムコンボ（`cormoran,runtime-combo-defaults`）と薙刀式の同時打鍵ロジックが
-  衝突しないか。**これは新しい論点**で、v0.3 時代には無かった検討事項
-- 併せて、案A（大西配列の `&tog` オーバーレイ）についても既存コンボの暴発問題が
-  ランタイムコンボ移行でどう変わるか整理する
+本家モジュールは **[`eswai/zmk-naginata`](https://github.com/eswai/zmk-naginata)**
+（`main` = `316bcb5b76b5`、最終更新 2026-07-05）。以前検討したときの懸念は
+ほぼ解消している。
+
+| 確認項目 | 結果 |
+|---|---|
+| 想定する ZMK | `zmkfirmware/zmk` の **`main`**（= v0.4 系）。旧 v0.3 前提ではない |
+| 保守状況 | 2026-07-05 更新。濁音連続の不具合修正や Windows 対応が入っており活発 |
+| 使用している ZMK API | `drivers/behavior.h` / `zmk/behavior.h` / `zmk/behavior_queue.h` / `zmk/event_manager.h` / `zmk/events/keycode_state_changed.h` |
+| **`main+dya`（我々の pin）側での API 存在確認** | **5ヘッダすべて存在**。`raise_zmk_keycode_state_changed_from_encoded()` も `behavior_driver_api.binding_pressed/released` もシグネチャ一致 |
+
+つまり **v0.3 時代に保留した理由（DYAフォークとの互換性が不明）は解消**している。
+`v0.3-branch+dya` に留まっていたら逆に使えなかった可能性が高く、今回の v0.4 移行が
+そのまま前提条件を満たした形。
+
+### 残っている確認事項（着手時にやること）
+
+1. **試験ビルド**（決定打）: `config/west.yml` に足すだけ・keymap へは組み込まない
+   状態でビルドが通るか。API の静的一致は確認済みだが、これは実ビルドでしか確定しない
+2. `zmk-module-runtime-input-processor` との入力処理パイプライン競合の有無
+3. **ランタイムコンボとの衝突**（v0.3 時代には無かった新論点）:
+   `cormoran,runtime-combo-defaults` のコンボ判定と薙刀式の同時打鍵ロジックが
+   同じキーイベントを取り合わないか。現行8スロットのうち特に
+   `S`+`D`(Tab) / `D`+`F`(Shift+Tab) / `J`+`K`・`K`+`L`(コピペ) は薙刀式の
+   打鍵範囲と重なるため、薙刀レイヤーでは無効化する設計が要る
+4. 案A（大西配列の `&tog` オーバーレイ）についても、コンボ暴発問題が
+   ランタイムコンボ移行でどう変わるか整理する
+
+> なお `eswai` 氏は macOS / Windows / Linux 版の薙刀式実装も公開しているので、
+> OS 側実装（案D）との比較検討にも使える。
+
+---
+
+## 0. Release の公開（実機確認後に実施）
+
+**決定日**: 2026-08-12
+
+`.github/workflows/release.yml` は作業ブランチに用意済み。ただし GitHub は
+**デフォルトブランチに存在するワークフローしか `workflow_dispatch` を受け付けない**
+ため、`main` にマージするまで手動実行できない（タグ push トリガーは使える）。
+
+**方針**: お盆明けに実機で動作確認 → ファーム移行ごと `main` へマージ →
+タグ `v1.0.0-rc1` で Release を切る。ワークフローはタグ名にハイフンが含まれると
+自動でプレリリース扱いにする。
+
+それまでの間、ファームは Actions の実行ページの Artifacts から入手できる
+（`artifact-mona2_r` / `artifact-mona2_l` / `artifact-settings_reset`、保持90日）。
 
 ---
 
