@@ -36,7 +36,7 @@ draw_config:
   combo_h: 28.0
 
   # 長い凡例が潰れないように
-  shrink_wide_legends: 8
+  shrink_wide_legends: 6
 
   # NOTE: footer_text は使わない。既定CSSの .footer には stroke 指定しか無く
   # font-size が効かないため巨大な文字が図全体に重なって描画される。
@@ -100,8 +100,8 @@ parse_config:
     "&bt_win1": {t: "BT1", h: "Win"}
     "&bt_win2": {t: "BT2", h: "Win"}
     "&ss_window_mac": "範囲SS"
-    "&mkp MB1": "左クリック"
-    "&mkp MB2": "右クリック"
-    "&mkp MB3": "中クリック"
+    "&mkp MB1": "左"   # 層名が「クリック層」なので1文字で通じる。長いと隣と重なる
+    "&mkp MB2": "右"
+    "&mkp MB3": "中"
     "&mkp MB4": "戻る"
     "&mkp MB5": "進む"

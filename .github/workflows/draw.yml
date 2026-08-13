@@ -49,8 +49,12 @@ jobs:
       - name: Enrich drawer YAML and redraw
         run: |
           python scripts/drawer_enrich.py config/mona2.keymap keymap-drawer/mona2.yaml
-          keymap -c keymap_drawer.config.yaml draw keymap-drawer/mona2.yaml \
-            > keymap-drawer/mona2.svg
+          # -j/-l で物理レイアウトを明示する。YAML の `layout: {zmk_keyboard: mona2}`
+          # は外部データベースを引きにいくため、この単体実行では解決できない
+          # (本家の draw ジョブは json_path: config を渡すことで同じことをしている)
+          keymap -c keymap_drawer.config.yaml draw \
+            -j config/mona2.json -l default_layout \
+            keymap-drawer/mona2.yaml > keymap-drawer/mona2.svg
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
