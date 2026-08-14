@@ -134,8 +134,67 @@ TODO.md へ移し**、設計ドキュメント側は「現状の説明」に徹�
 **質問**: 「あるべき姿は main と作業中ブランチのみ、という理解で合っているか。
 GitHub 上で Windows のフォルダのように `old/` へまとめておくことはできないか」
 
-→ 認識は概ね正しい。回答と整理方針は下の「補足」に記載。実作業（マージ済み
-ブランチの削除／タグ化）は本人確認のうえで行う。
+**回答**: 認識は正しい。ただし Git のブランチはフォルダではなく**コミットへの
+ポインタ**なので、「しまっておく」概念が無い。`old/xxx` という名前のブランチは
+作れる（`/` はただの文字）が整理にはならない。代わりに**タグ**が正しい退避手段で、
+消す前にタグを打てば履歴は永久に残り、ブランチ一覧だけ綺麗になる。
+
+### 実行状況（2026-08-13）
+
+Claude Code の実行環境からは**リモートブランチを削除できなかった**。10本すべて
+`fatal: the remote end hung up unexpectedly`。この環境の git プロキシが ref の
+削除・作成を通さない（fast-forward 更新のみ許可）ため。タグ push が通らないのと
+同じ症状。**削除は手元の環境で実行すること。**
+
+### 削除して問題ないもの（8本）
+
+| ブランチ | 判断根拠 |
+|---|---|
+| `claude/click-layer` | main にマージ済み |
+| `claude/keymap-rework` | main にマージ済み |
+| `claude/mona2-firmware-review-s2s0vk` | main にマージ済み |
+| `claude/pan-aml-tuning` | main にマージ済み |
+| `claude/repo-main-review-5vuajq` | main にマージ済み |
+| `claude/snap-4dir-doc` | 未マージだが内容は CHANGELOG 2026-06-21 の項として main に入っており実質重複 |
+| `claude/japanese-text-check-3gAgC` | 未マージだが2コミットとも `[Draw]` の自動生成物のみ。メッセージに "8方向化" とあるのは元コミットの文言の引き写しで、実装は含まれない |
+| `DYA-Studio` | `DYA-ooshini` に内包されるため、そちらを残せば失われない |
+
+```bash
+git fetch --prune origin
+for b in claude/click-layer claude/keymap-rework \
+         claude/mona2-firmware-review-s2s0vk claude/pan-aml-tuning \
+         claude/repo-main-review-5vuajq claude/snap-4dir-doc \
+         claude/japanese-text-check-3gAgC DYA-Studio; do
+  git push origin --delete "$b"
+done
+```
+
+### 判断保留（2本）— 消す前に中身を見る価値がある
+
+- **`DYA-ooshini`（27コミット）**: 名前の "ooshini" は**大西配列**を指すと思われ、
+  上の項目2（薙刀式）と地続きの可能性がある。`DYA-Studio`(25) を内包する
+- **`hhkb-research`（6コミット）**: moNa2 とは無関係だが、HHKB のファームウェア解析
+  （STM32 Cortex-M / `.hfb` フォーマット / 実機での 0xD0 検証）という**独立した調査成果**。
+  消すと再現に手間がかかる種類のもの
+
+消すと決めた場合は、先にタグへ退避してから:
+
+```bash
+git tag archive/DYA-ooshini   origin/DYA-ooshini
+git tag archive/hhkb-research origin/hhkb-research
+git push origin archive/DYA-ooshini archive/hhkb-research
+git push origin --delete DYA-ooshini
+git push origin --delete hhkb-research
+```
+
+戻すときは `git checkout -b <名前> archive/<名前>`。
+
+### ローカルの残骸掃除
+
+```bash
+git fetch --prune origin
+git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D
+```
 
 ---
 
