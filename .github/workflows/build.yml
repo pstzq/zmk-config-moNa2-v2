@@ -1,4 +1,11 @@
-on: [push, workflow_dispatch]
+# NOTE: `on: [push]` と書くとタグの push にも反応してしまう。
+# 退避用タグ(archive/*)を打っただけでビルドが走り、しかもタグが指す
+# 古いコミットの設定でビルドしようとして失敗する。ブランチに限定する。
+# リリース用のタグ(v*)は release.yml が受け持つ。
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
 
 jobs:
   build:
