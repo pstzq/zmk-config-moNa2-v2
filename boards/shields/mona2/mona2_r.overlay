@@ -92,6 +92,20 @@
     };
 };
 
+// スクロール用 runtime input processor の初期倍率を 1/1 にする。
+// モジュール既定は 1/60 で、そのままだと DYA Studio のスライダーが
+// 0.02x 付近に張り付いて調整しづらい。固定減速は listener 側の
+// zip_scroll_scaler に任せ、ここは「Studio の表示倍率＝実効倍率」に揃える。
+// (shakupan 版 moNa2 と同じ設計)
+//
+// 注意: これは "Initial" 値。一度 Studio で保存すると以後はフラッシュ側が
+// 優先されるため、焼き直してもスライダーは前の値のまま。効かせるには
+// Studio でスケーリングを 1.00x に戻すか settings_reset をかけること。
+&scroll_runtime_input_processor {
+    scale-multiplier = <1>;
+    scale-divisor = <1>;
+};
+
 // 20260404
 &zip_temp_layer {
     excluded-positions = <0 10 17 18 19 21 29 31>;
@@ -112,7 +126,7 @@
              &zip_xy_to_scroll_mapper
              &zip_scroll_transform INPUT_TRANSFORM_X_INVERT
              &inertial_scroll
-             &zip_scroll_scaler 1 3
+             &zip_scroll_scaler 1 15
              &scroll_runtime_input_processor>;
         // 慣性スクロールはこのチェーンにのみ挿す(=旧 inertial-scroll-layers <4 5 6> 相当)
         //
@@ -123,10 +137,13 @@
         // zip_scroll_scaler には端数を蓄積する仕組みが無いため、
         // 切り捨てられた分はそのまま失われる。
         //
-        // 併せて 1/5 → 1/3 に緩めた。1/5 は旧構成(ドライバ側で初速2倍+慣性)を
-        // 前提とした値で、慣性が縮小後にかかる新構成では鈍すぎた。
-        // 速度は DYA Studio のトラックボールタブから実行時に調整できる
-        // (&scroll_runtime_input_processor がチェーン末尾にあるため)。
+        // 倍率について:
+        // scroll_runtime_input_processor はモジュール既定が 1/60 とハードコード
+        // されている(mouse 側は 1/1)。これに気づかず dts 側だけ調整していたため、
+        // 実効が 1/3 × 1/60 = 1/180 になっていて何をしても鈍かった。
+        // 下で runtime 側を 1/1 に上書きし、固定減速は dts 側のこの scaler に
+        // 一本化した。実機で好みだった 1/15 をここに置いている。
+        // これで DYA Studio のスライダーは 1.00x が基準の素直な倍率になる。
     };
 
     // P長押し(layer 9): 2D自由スクロール(パン)。ざっと移動する用途なので scroller より高速
