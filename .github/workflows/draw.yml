@@ -3,6 +3,9 @@ name: "Draw ZMK Keymap"
 on:
   workflow_dispatch:
   push:
+    # タグの push で走らないようブランチに限定する
+    # (退避タグ archive/* を打っただけで古いコミットを描画しようとして失敗する)
+    branches: ["**"]
     paths:
       - "config/mona2.keymap"
       - "keymap_drawer.config.yaml"
@@ -27,6 +30,46 @@ jobs:
       config_path: "keymap_drawer.config.yaml" # config file, ignored if not exists
       output_folder: "keymap-drawer"
       destination: "both"
+
+  # 生成された mona2.yaml に「コンボ」と「読める見出し」を足して描き直す。
+  #  - コンボ: zmk,combos から runtime-combo-defaults へ移行した結果、
+  #    keymap-drawer のパーサが拾えなくなったぶんを復元する
+  #  - 見出し: 層名だけだと役割と入り方が分からないので併記する
+  draw-enrich:
+    needs: draw
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install keymap-drawer
+        run: pip install keymap-drawer==0.21.0 pyyaml
+      - name: Enrich drawer YAML and redraw
+        run: |
+          python scripts/drawer_enrich.py config/mona2.keymap keymap-drawer/mona2.yaml
+          # -j/-l で物理レイアウトを明示する。YAML の `layout: {zmk_keyboard: mona2}`
+          # は外部データベースを引きにいくため、この単体実行では解決できない
+          # (本家の draw ジョブは json_path: config を渡すことで同じことをしている)
+          keymap -c keymap_drawer.config.yaml draw \
+            -j config/mona2.json -l default_layout \
+            keymap-drawer/mona2.yaml > keymap-drawer/mona2.svg
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add keymap-drawer/mona2.yaml keymap-drawer/mona2.svg
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "[Draw] コンボと見出しを図に反映"
+            git pull --rebase origin ${{ github.head_ref || github.ref_name }}
+            git push
+          fi
 
   # レイヤー&トラックボール動作の一覧SVGを生成
   # （keymap-drawer/mona2_behavior.svg）
@@ -89,7 +132,7 @@ jobs:
   # 上で出力された mona2.yaml を JIS グリフに差し替えて JIS版図を生成
   # （keymap-drawer/mona2_jis.svg）
   draw-jis:
-    needs: draw
+    needs: draw-enrich
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -105,7 +148,9 @@ jobs:
       - name: Generate JIS keymap drawing
         run: |
           python scripts/jis_relabel.py keymap-drawer/mona2.yaml /tmp/mona2_jis.yaml
-          keymap draw -j scripts/mona2_info.json -l LAYOUT /tmp/mona2_jis.yaml > keymap-drawer/mona2_jis.svg
+          # -c を付けないと JIS 版だけ素のデフォルト描画になり、US版と見た目が揃わない
+          keymap -c keymap_drawer.config.yaml draw -j scripts/mona2_info.json -l LAYOUT \
+            /tmp/mona2_jis.yaml > keymap-drawer/mona2_jis.svg
       - name: Commit JIS drawing
         run: |
           git config user.name "github-actions[bot]"

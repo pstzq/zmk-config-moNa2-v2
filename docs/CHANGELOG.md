@@ -11,6 +11,64 @@
 
 ---
 
+## 2026-08-12  DYA Studio 2026/08版に対応（ZMK v0.4 世代移行）
+
+（by チャット依頼）
+
+### 背景
+
+DYA Studio がアップデートされ、ブラウザからコンボ・マクロを編集できるようになった。これを使うには `cormoran/zmk-feature-runtime-combo` が必要だが、同モジュールは cormoran 氏の **custom Studio RPC プロトコル**を要求し、それは ZMK フォークの `main+dya`（**ZMK v0.4 / Zephyr 4.1**）系にしか存在しない。
+
+本リポジトリは `v0.3-branch+dya`（Zephyr 3.5）に固定し、cormoran 製モジュールを「v4移行前」の SHA に pin して**意図的に凍結**していた（2026-06-11 の項を参照）。したがって「コンボ編集だけ足す」ことは原理的に不可能で、**基盤ごとの世代移行**となった。同じ moNa2 で先行移行した shakupan 版 `dya-studio-v1.0.0` を全面的に参照している。
+
+### できるようになったこと
+
+DYA Studio に USB 接続すると、ブラウザから次を編集できる（保存先は右手側フラッシュ）。
+
+- **コンボの追加・編集・削除**（本件の主目的）
+- **マクロの作成・編集・削除**（`&rmacro <slot>` でキーに割当）
+- トラックボールの感度・軸の向き、エンコーダの回転動作
+- OS ごとのデフォルトレイヤー切替、BLE プロファイル管理
+- 各種診断（キースイッチのチャタリング、センサー状態、デバイス情報、フリーズ履歴、スタック使用量）
+
+### 移行内容
+
+- **`config/west.yml`**: `zmk` を `v0.3-branch+dya` → **`main+dya`** へ。`zmk-feature-custom-settings`（設定永続化の共通基盤）／`runtime-combo`／`runtime-macro`／診断系5種／OS別デフォルト層2種を追加。**v4移行前 pin は役目を終えたので全解除**（ビルドが緑になり次第 SHA へ再pin）。未使用だった `zmk-input-processor-keybind` を削除。
+- **トラックボールドライバ**: Zephyr 4.1 が純正 `pixart,pmw3610` ドライバを取り込み旧 compatible が衝突するため、`cormoran/zmk-driver-pmw3610-with-custom-studio-rpc`（`compatible = "cormoran,pmw3610"`）へ移行。
+- **慣性スクロール**: razilyis フォークの**ドライバ機能**（`inertial-scroll-*`）が v0.3 系にしか無いため、`zmk,input-processor-inertial-scroll`（shakupan の mouse-gesture-rpc モジュール提供）による**入力プロセッサ方式へ再実装**。有効層は `inertial-scroll-layers` ではなく「どのチェーンに挿すか」で決まるので `scroller`（`layers = <4 5 6>`）の末尾にのみ配置。
+- **マウスジェスチャー**: `kot149` 本家 → `shakushakupanda` フォーク（`suppress-cursor-while-active`）＋ `zmk-module-mouse-gesture-rpc`。`always-active` は健在なので **PAN/SNAP の2インスタンス構成はそのまま移植**。
+- **コンボ**: `zmk,combos` → **`cormoran,runtime-combo-defaults`**。現行8個をスロット0〜7へ移植（`layers` も引き継げた）、8〜15 を Studio 用の自由枠に。
+- **`build.yaml`**: HWMv2 でボード名が `seeeduino_xiao_ble` → **`xiao_ble/nrf52840/zmk`**（`/nrf52840/zmk` が無いと CI が "Missing ZMK Compat" で落ちる）。
+- **`.conf`**: Studio RPC バッファは 512/512（2048 は5層以上でキーマップ読込がフリーズする実績あり）。`CONFIG_ZMK_SPLIT_RELAY_EVENT_DATA_LEN=256` は左右で同値必須。custom-settings のフィーチャーゲート5種は既定値がバージョンで変わるため明示的に指定。
+
+### 実機確認の結果（2026-08-20）
+
+全項目クリア。確認中に見つけて直した点:
+
+- **OSごとのデフォルトレイヤーを無効化**: BLE層の `bt_mac0` / `bt_win1` / `bt_win2` が `<&to MAC &bt BT_SEL n>` でベース層を切り替える方式を既に持っており、`default-layer` を有効にすると同じものを2つの機構が奪い合う。挙動を変えないため無効化した（`os-detection` は Studio へのOS表示用に維持）。
+- **慣性スクロールの順序**: `&inertial_scroll` を `zip_scroll_scaler` の**後ろ**に置いていた。旧構成では慣性が縮小前にかかっていたので移行時の劣化。`zip_scroll_scaler` に端数を蓄積する仕組みが無いため、切り捨てられた後の値に慣性をかける形になり「ちょびちょび・カクカク」になっていた。scaler の前へ戻し、`track-remainders` を追加。
+- **スクロール倍率の基準**: `scroll_runtime_input_processor` はモジュール既定が **1/60** とハードコードされている（`mouse` 側は 1/1）。これに気づかず dts 側だけ調整していたため実効が 1/180 になっていた。runtime 側を 1/1 に上書きし、固定減速を `zip_scroll_scaler 1 15` に一本化。**DYA Studio のスライダーが 1.00x 基準の素直な倍率になる**。
+- **図からコンボが消えていた**: `zmk,combos` → `runtime_combo_defaults` への移行で keymap-drawer のパーサが拾えなくなっていた。`scripts/drawer_enrich.py` で復元（移行前の出力と完全一致を確認）。
+
+### DYA Studio は接続方式で挙動が変わる
+
+`ZMK_STUDIO_TRANSPORT_BLE` は `ZMK_BLE` があれば既定で有効なので**無線でも繋がる**が、**物理レイアウト（42キー分）のような大きい core RPC ペイロードが BLE では時間切れになる**。実機では次の切り分けだった。
+
+| 接続 | トラックボール設定（小） | キーマップ / マクロ・コンボ（大） |
+|---|---|---|
+| BLE | ✅ 動く | ❌ 「物理レイアウトを読み込み中…」のまま / Operation timed out |
+| **USB** | ✅ | **✅ 全て正常** |
+
+**キーマップ・コンボ・マクロの編集は USB 接続で行うこと。** トラックボール感度などの軽い調整は無線でも可能。
+
+### 注意点
+
+- **書き込み時は `settings_reset.uf2` が必須**（BLEペアリング全消去・再ペアリングが必要）。
+- **DYA Studio で保存した内容は `.keymap` より優先される**。ファーム側の値へ戻すには Web UI の "Reset to Default" か `settings_reset.uf2`。
+- フォークのカーソル抑止機能は起動キー方式（`&mouse_gesture` 等）でのみ効くため、`always-active` を使う本構成では**既存の `zip_xy_to_scroll_mapper` による抑止ハックを温存**している。
+
+---
+
 ## 2026-06-21  四隅スナップ不発火を既知の制限としてドキュメント化
 
 （by チャット依頼）
