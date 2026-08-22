@@ -37,12 +37,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: artifact-*
+          # pattern は指定しない。本家の再利用ワークフローはビルド毎の
+          # `artifact-<name>` を最後に `firmware` 1つへ統合して元を削除するため、
+          # このジョブが走る頃には `artifact-*` が存在しないことがある
+          # (2026-08-22 の v1.0.0-rc1 でこれに当たり、uf2 が0件で落ちた)。
+          # 全アーティファクトを取得して、下で *.uf2 を再帰的に拾う。
 
       - name: Collect uf2 files
         run: |
           set -euo pipefail
-          mkdir -p dist
+          mkdir -p dist artifacts
+          echo "--- 取得したアーティファクト ---"
+          ls -R artifacts || true
           find artifacts -name '*.uf2' -exec cp -v {} dist/ \;
           echo "--- リリースに添付する uf2 ---"
           ls -la dist
