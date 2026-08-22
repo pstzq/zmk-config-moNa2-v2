@@ -110,7 +110,25 @@ TODO.md へ移し**、設計ドキュメント側は「現状の説明」に徹�
 
 ---
 
-## 0. Release の公開（実機確認後に実施）
+## 0. Release の公開（実機確認は完了。あとはマージとタグ）
+
+**実機確認完了**: 2026-08-20。全項目クリア（起動・左右連動・カーソル・AML・
+慣性スクロール・PAN・SNAP・O24・コンボ8件・DYA Studio のコンボ/マクロ編集）。
+
+残りの手順（手元の環境で実行する）:
+
+```bash
+git checkout main
+git merge --no-ff claude/firmware-status-check-m32nx2
+git push origin main
+
+git tag v1.0.0-rc1
+git push origin v1.0.0-rc1   # release.yml が uf2 を添付したリリースを自動生成する
+```
+
+`release.yml` が main に乗って初めて `workflow_dispatch` も使えるようになる。
+
+---
 
 **決定日**: 2026-08-12
 

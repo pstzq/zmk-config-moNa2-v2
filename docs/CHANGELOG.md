@@ -41,6 +41,26 @@ DYA Studio に USB 接続すると、ブラウザから次を編集できる（�
 - **`build.yaml`**: HWMv2 でボード名が `seeeduino_xiao_ble` → **`xiao_ble/nrf52840/zmk`**（`/nrf52840/zmk` が無いと CI が "Missing ZMK Compat" で落ちる）。
 - **`.conf`**: Studio RPC バッファは 512/512（2048 は5層以上でキーマップ読込がフリーズする実績あり）。`CONFIG_ZMK_SPLIT_RELAY_EVENT_DATA_LEN=256` は左右で同値必須。custom-settings のフィーチャーゲート5種は既定値がバージョンで変わるため明示的に指定。
 
+### 実機確認の結果（2026-08-20）
+
+全項目クリア。確認中に見つけて直した点:
+
+- **OSごとのデフォルトレイヤーを無効化**: BLE層の `bt_mac0` / `bt_win1` / `bt_win2` が `<&to MAC &bt BT_SEL n>` でベース層を切り替える方式を既に持っており、`default-layer` を有効にすると同じものを2つの機構が奪い合う。挙動を変えないため無効化した（`os-detection` は Studio へのOS表示用に維持）。
+- **慣性スクロールの順序**: `&inertial_scroll` を `zip_scroll_scaler` の**後ろ**に置いていた。旧構成では慣性が縮小前にかかっていたので移行時の劣化。`zip_scroll_scaler` に端数を蓄積する仕組みが無いため、切り捨てられた後の値に慣性をかける形になり「ちょびちょび・カクカク」になっていた。scaler の前へ戻し、`track-remainders` を追加。
+- **スクロール倍率の基準**: `scroll_runtime_input_processor` はモジュール既定が **1/60** とハードコードされている（`mouse` 側は 1/1）。これに気づかず dts 側だけ調整していたため実効が 1/180 になっていた。runtime 側を 1/1 に上書きし、固定減速を `zip_scroll_scaler 1 15` に一本化。**DYA Studio のスライダーが 1.00x 基準の素直な倍率になる**。
+- **図からコンボが消えていた**: `zmk,combos` → `runtime_combo_defaults` への移行で keymap-drawer のパーサが拾えなくなっていた。`scripts/drawer_enrich.py` で復元（移行前の出力と完全一致を確認）。
+
+### DYA Studio は接続方式で挙動が変わる
+
+`ZMK_STUDIO_TRANSPORT_BLE` は `ZMK_BLE` があれば既定で有効なので**無線でも繋がる**が、**物理レイアウト（42キー分）のような大きい core RPC ペイロードが BLE では時間切れになる**。実機では次の切り分けだった。
+
+| 接続 | トラックボール設定（小） | キーマップ / マクロ・コンボ（大） |
+|---|---|---|
+| BLE | ✅ 動く | ❌ 「物理レイアウトを読み込み中…」のまま / Operation timed out |
+| **USB** | ✅ | **✅ 全て正常** |
+
+**キーマップ・コンボ・マクロの編集は USB 接続で行うこと。** トラックボール感度などの軽い調整は無線でも可能。
+
 ### 注意点
 
 - **書き込み時は `settings_reset.uf2` が必須**（BLEペアリング全消去・再ペアリングが必要）。
