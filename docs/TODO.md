@@ -5,220 +5,156 @@
 
 ---
 
-## 1. `docs/keymap-phase1.md` のファイル名を再考する
+## 1. 精密モード(PRECISE=14)の実機確認と値の調整
 
-**依頼日**: 2026-08-12
+**依頼日**: 2026-09-09 / **状態**: 実装済み・CI緑。**実機未確認**
+**ブランチ**: `claude/precision-mouse-layer`
+
+`F` を 400ms 長押しで精密モード（カーソル 1/3 速 + 右手クリック）。
+書き込みは通常どおりで、`settings_reset.uf2` は不要（フラッシュ設定領域の
+構造は変えていない）。
+
+### 確認する項目
+
+1. `F` を素早くタップ → 普通に `f` が入る
+2. `fa` `fo` `for` などを通常速度で打つ → 精密モードに落ちない
+   （`flavor = "tap-preferred"` で時間経過以外では hold にならない設計）
+3. `D`+`F` の Shift+Tab コンボが従来どおり効く
+4. `F` を 400ms 押し続ける → LED が青 / カーソルが遅くなる / 右手 J・K・L でクリック
+5. hold 確定までの後続キー遅延（`fo` の `o` が待たされる）が実用上気になるか
+
+### 調整できる値
+
+| 対象 | 場所 | 現在値 |
+|---|---|---|
+| 長押し時間 | `config/mona2.keymap` の `prec_ht` の `tapping-term-ms` | `400` |
+| カーソル速度 | `boards/shields/mona2/mona2_r.overlay` の `zip_xy_scaler` | `1 3`（1/3 速） |
+| LED色 | `config/mona2_r.conf` の `LAYER_14_COLOR` | `4`（青） |
+
+`zip_xy_scaler` を変えると動作図の「カーソル（1/3 速）」表記も自動で追従する。
+
+### 実害が出たときの逃げ道
+
+- 後続キー遅延がつらい → `prec_ht` に `hold-trigger-key-positions` を足して
+  右手キー限定にする（左手キーが続いたら即 tap に確定する）
+- そもそも `F` が合わない → キー選定の比較は CHANGELOG 2026-09-09 に残してある。
+  `B`(25) が次点（`26` の CLICK キーの隣なのでクリック系クラスタとして並ぶ）
+
+---
+
+## 2. 薙刀式の実装 — `claude/naginata` ブランチの扱いを決める
+
+**依頼日**: 2026-08-12 / **優先度**: 本人の希望は高い（「やっぱり使いたい」）
+**状態**: **実装が `claude/naginata` ブランチに存在する**（main 未マージ）
+
+`origin/claude/naginata` は main より **4コミット先行・32コミット遅れ**。
+薙刀式(NAGINATA=14)レイヤーを遊び用トグル層として追加し、`west.yml` /
+`mona2_r.conf` / キーマップ / 図まで一通り入っている。
+
+### 着手時にやること
+
+1. **レイヤー番号の衝突**: あちらは NAGINATA を **14** に置いているが、今回
+   精密モードが 14 を取った。マージするなら **15 へ振り直す**（`#define` と
+   `.conf` の `LAYER_14_COLOR`、図のスクリプトも追従）
+2. main の32コミット分を取り込む（v0.4 移行後の慣性スクロール修正・
+   スクロール倍率の整理などが全部あちらに入っていない）
+3. **ランタイムコンボとの衝突**: `S`+`D`(Tab) / `D`+`F`(Shift+Tab) /
+   `J`+`K`・`K`+`L`(コピペ) は薙刀式の打鍵範囲と重なるため、薙刀レイヤーでは
+   無効化する設計が要る。**加えて `F` が精密モードの hold-tap になったので、
+   薙刀レイヤーでの `F` の扱いも決める必要がある**（`&trans` だと hold-tap が
+   透けてくる）
+4. `zmk-module-runtime-input-processor` との入力処理パイプライン競合の有無
+
+### 前提条件は揃っている（2026-08-12 調査）
+
+本家 [`eswai/zmk-naginata`](https://github.com/eswai/zmk-naginata) は
+`zmkfirmware/zmk` の `main`（= v0.4 系）想定で、使用API 5ヘッダすべてが
+我々の pin（`main+dya`）側に存在しシグネチャも一致。試験ビルドも成功済み
+（v0.3 時代に保留した「DYAフォークとの互換性が不明」は解消）。
+
+ただし **フラッシュ消費はまだ測れていない**。`&ng` を参照するまで
+デバイス実体が生成されず gc-sections で回収されるため、実際の消費は
+keymap へ組み込んでから測ること。
+
+---
+
+## 3. ブランチの整理（次回分）
+
+**前回の整理は完了済み**（8本削除・`DYA-ooshini` と `hhkb-research` は
+`archive/*` タグへ退避）。以下は**その後に増えた分**。
+
+| ブランチ | 状態 | 判断 |
+|---|---|---|
+| `claude/firmware-status-check-m32nx2` | main にマージ済み | **削除してよい** |
+| `claude/naginata` | 未マージ・作業継続候補 | 項目2の決着まで残す |
+| `claude/precision-mouse-layer` | 未マージ・実機確認待ち | 項目1の決着まで残す |
+
+```bash
+git push origin --delete claude/firmware-status-check-m32nx2
+git fetch --prune origin
+git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D
+```
+
+> **削除は手元の環境で実行すること。** Claude Code の実行環境の git プロキシは
+> ref の削除・作成を通さない（fast-forward 更新のみ許可）。タグ push が
+> 通らないのと同じ症状。
+
+---
+
+## 4. `docs/keymap-phase1.md` のファイル名を再考する
+
+**依頼日**: 2026-08-12 / **状態**: 未着手
 
 当初は「Phase 1 の設計メモ」として作られたが、実際にはレイヤー設計・実装経緯・
 LED配色・依存モジュール構成・今後の拡張案まで載る**総合ドキュメント**になっており、
-ファイル名と中身が乖離している。
-
-### 調査結果と提案（2026-08-12）
-
-**実態**: 375行・15節。中身は「Phase 1 の設計メモ」ではなく、目的/前提/設計方針 →
-レイヤー詳細リファレンス → 実装の仕組み（LED配色・AML・慣性スクロール・ジェスチャー）
-→ 依存モジュール → ビルド手順 → 今後の構想、という**総合ドキュメント**。
-
-決定的なのは、**ファイル冒頭の H1 が既に
-`# moNa2 キーマップ — 設計・実装ドキュメント` になっている**こと。
-中身も見出しも「phase1」を名乗っていないのはファイル名だけで、乖離は明白。
+ファイル名と中身が乖離している。**ファイル冒頭の H1 は既に
+`# moNa2 キーマップ — 設計・実装ドキュメント`** で、「phase1」を名乗っているのは
+ファイル名だけ。
 
 **提案する名前**: **`docs/design.md`**
 
-理由は、既にある `docs/CHANGELOG.md`（履歴）/ `docs/TODO.md`（これから）と並べたとき、
+既にある `docs/CHANGELOG.md`（履歴）/ `docs/TODO.md`（これから）と並べたとき、
 `design.md`（今どうなっているか）で3点が綺麗に揃うから。用途で分かれていて短い。
 
-代案: `docs/keymap.md`（対象がキーマップだと明示できる）/
-`docs/keymap-design.md`（最も説明的だが冗長）
+代案: `docs/keymap.md` / `docs/keymap-design.md`
 
-**併せてやるべき構造の整理**:
-
-`keymap-phase1.md` の「Phase 2（今後の検討）」節（大西配列・薙刀式の案A〜D、
-その他の検討事項）は、この `TODO.md` と役割が重複している。**Phase 2 節は
-TODO.md へ移し**、設計ドキュメント側は「現状の説明」に徹させたい。
-そうすれば「将来の話をどっちに書くか」の迷いが無くなる。
+**併せてやるべき構造の整理**: `keymap-phase1.md` の「Phase 2（今後の検討）」節
+（大西配列・薙刀式の案A〜D）は、この TODO.md と役割が重複している。
+**Phase 2 節は TODO.md へ移し**、設計ドキュメント側は「現状の説明」に徹させたい。
 
 **改名時に追従が必要な参照**:
 
 | ファイル | 箇所 | 対応 |
 |---|---|---|
-| `README.md` | 2箇所（187行・204行） | 書き換える |
-| `docs/TODO.md` | 2箇所 | 書き換える |
+| `README.md` | 2箇所 | 書き換える |
+| `docs/TODO.md` | この節 | 書き換える |
+| `config/mona2.keymap` | 冒頭コメント（`設計: docs/keymap-phase1.md`） | 書き換える |
 | `old/README2.md` | 1箇所 | 廃止済みファイルなので放置でよい |
 | `docs/CHANGELOG.md` | 6箇所 | **書き換えない**。過去の変更記録は当時の事実なので、改名した事実を新エントリに書くほうが正しい |
 
 ---
 
-## 2. 薙刀式の実装 — ZMK v0.4 移行で状況が変わったか調査する
+## 5. 状態遷移図に CLICK / PRECISE が載っていない
 
-**依頼日**: 2026-08-12 / **優先度**: 本人の希望は高い（「やっぱり使いたい」）
+**依頼日**: 2026-09-09 / **優先度**: 低（ドキュメント整理と一緒でよい）
 
-`docs/keymap-phase1.md` の Phase 2「大西配列・薙刀式 導入案」で案A〜Dを検討し、
-案C（`zmk-naginata` モジュール方式）は **DYAフォーク `v0.3-branch+dya` との互換性が
-未確認**という理由で保留していた。
+`scripts/draw_statemachine.py` はノード座標が手置きで、**CLICK(13) が最初から
+載っていない**。2026-09-09 に PRECISE(14) を足したが、CLICK が無い状態で
+PRECISE だけ足すと不整合になるため見送った。
 
-### 調査結果（2026-08-12 時点）— 見通しは大きく好転した
+やるなら「起動キーを押している間だけのモーメンタリ層（CLICK / PRECISE、
+将来 CURSOR）」を1グループとして、SNAP/PAN と同じ扱いで下段に置くのが素直。
 
-本家モジュールは **[`eswai/zmk-naginata`](https://github.com/eswai/zmk-naginata)**
-（`main` = `316bcb5b76b5`、最終更新 2026-07-05）。以前検討したときの懸念は
-ほぼ解消している。
-
-| 確認項目 | 結果 |
-|---|---|
-| 想定する ZMK | `zmkfirmware/zmk` の **`main`**（= v0.4 系）。旧 v0.3 前提ではない |
-| 保守状況 | 2026-07-05 更新。濁音連続の不具合修正や Windows 対応が入っており活発 |
-| 使用している ZMK API | `drivers/behavior.h` / `zmk/behavior.h` / `zmk/behavior_queue.h` / `zmk/event_manager.h` / `zmk/events/keycode_state_changed.h` |
-| **`main+dya`（我々の pin）側での API 存在確認** | **5ヘッダすべて存在**。`raise_zmk_keycode_state_changed_from_encoded()` も `behavior_driver_api.binding_pressed/released` もシグネチャ一致 |
-
-つまり **v0.3 時代に保留した理由（DYAフォークとの互換性が不明）は解消**している。
-`v0.3-branch+dya` に留まっていたら逆に使えなかった可能性が高く、今回の v0.4 移行が
-そのまま前提条件を満たした形。
-
-### 試験ビルド結果（2026-08-12、コミット `115914a`）— **成功**
-
-`config/west.yml` に `eswai/zmk-naginata@316bcb5b76b5` を追加し、keymap へは
-組み込まない状態でビルド → **3ビルドすべて success**。
-
-**この結果が何を証明していて、何を証明していないか**（ここは正確に扱うこと）:
-
-- ✅ **薙刀式の C ソースは実際にコンパイルされている**。モジュールの
-  `CMakeLists.txt` は `CONFIG_NAGINATA AND (NOT CONFIG_ZMK_SPLIT OR
-  CONFIG_ZMK_SPLIT_ROLE_CENTRAL)` で `target_sources` するので、中央側＝右手
-  ビルドで4ソースすべてが対象。`CONFIG_NAGINATA` は既定 `y`。
-  → **ZMK v0.4 / Zephyr 4.1 上での API 互換性は実証された**。
-  v0.3 に留まっていたら、ここで落ちていた可能性が高い
-- ❌ **フラッシュ消費はまだ測れていない**。`DT_INST_FOREACH_STATUS_OKAY` により
-  デバイス実体は DT ノードがある時だけ生成され、behavior ノードは
-  `/omit-if-no-ref/` なので `&ng` を参照するまで生成されない。結果、
-  リンカに gc-sections で回収されて**成果物サイズはほぼ変化なし**
-  （mona2_r: 295,149 B ≒ 導入前と同等）。実際の消費は keymap へ組み込んでから測る
-
-### 残っている確認事項（着手時にやること）
-
-1. ~~試験ビルド~~ → **完了（上記）**
-2. `zmk-module-runtime-input-processor` との入力処理パイプライン競合の有無
-3. **ランタイムコンボとの衝突**（v0.3 時代には無かった新論点）:
-   `cormoran,runtime-combo-defaults` のコンボ判定と薙刀式の同時打鍵ロジックが
-   同じキーイベントを取り合わないか。現行8スロットのうち特に
-   `S`+`D`(Tab) / `D`+`F`(Shift+Tab) / `J`+`K`・`K`+`L`(コピペ) は薙刀式の
-   打鍵範囲と重なるため、薙刀レイヤーでは無効化する設計が要る
-4. 案A（大西配列の `&tog` オーバーレイ）についても、コンボ暴発問題が
-   ランタイムコンボ移行でどう変わるか整理する
-
-> なお `eswai` 氏は macOS / Windows / Linux 版の薙刀式実装も公開しているので、
-> OS 側実装（案D）との比較検討にも使える。
+> 同じ日に `scripts/draw_behavior.py` 側の**レイヤー番号が +8 ずれるバグ**は
+> 修正済み（runtime-combo 移行でコンボの `display-name` が混入していた）。
+> 状態遷移図は静的定義なのでこのバグの影響は受けていない。
 
 ---
 
-## 0. Release の公開（実機確認は完了。あとはマージとタグ）
+## 6. レイヤー・キーマップを PC 画面に表示するアプリ
 
-**実機確認完了**: 2026-08-20。全項目クリア（起動・左右連動・カーソル・AML・
-慣性スクロール・PAN・SNAP・O24・コンボ8件・DYA Studio のコンボ/マクロ編集）。
-
-残りの手順（手元の環境で実行する）:
-
-```bash
-git checkout main
-git merge --no-ff claude/firmware-status-check-m32nx2
-git push origin main
-
-git tag v1.0.0-rc1
-git push origin v1.0.0-rc1   # release.yml が uf2 を添付したリリースを自動生成する
-```
-
-`release.yml` が main に乗って初めて `workflow_dispatch` も使えるようになる。
-
----
-
-**決定日**: 2026-08-12
-
-`.github/workflows/release.yml` は作業ブランチに用意済み。ただし GitHub は
-**デフォルトブランチに存在するワークフローしか `workflow_dispatch` を受け付けない**
-ため、`main` にマージするまで手動実行できない（タグ push トリガーは使える）。
-
-**方針**: お盆明けに実機で動作確認 → ファーム移行ごと `main` へマージ →
-タグ `v1.0.0-rc1` で Release を切る。ワークフローはタグ名にハイフンが含まれると
-自動でプレリリース扱いにする。
-
-それまでの間、ファームは Actions の実行ページの Artifacts から入手できる
-（`artifact-mona2_r` / `artifact-mona2_l` / `artifact-settings_reset`、保持90日）。
-
----
-
-## 3. ブランチの整理
-
-**依頼日**: 2026-08-12
-
-**質問**: 「あるべき姿は main と作業中ブランチのみ、という理解で合っているか。
-GitHub 上で Windows のフォルダのように `old/` へまとめておくことはできないか」
-
-**回答**: 認識は正しい。ただし Git のブランチはフォルダではなく**コミットへの
-ポインタ**なので、「しまっておく」概念が無い。`old/xxx` という名前のブランチは
-作れる（`/` はただの文字）が整理にはならない。代わりに**タグ**が正しい退避手段で、
-消す前にタグを打てば履歴は永久に残り、ブランチ一覧だけ綺麗になる。
-
-### 実行状況（2026-08-13）
-
-Claude Code の実行環境からは**リモートブランチを削除できなかった**。10本すべて
-`fatal: the remote end hung up unexpectedly`。この環境の git プロキシが ref の
-削除・作成を通さない（fast-forward 更新のみ許可）ため。タグ push が通らないのと
-同じ症状。**削除は手元の環境で実行すること。**
-
-### 削除して問題ないもの（8本）
-
-| ブランチ | 判断根拠 |
-|---|---|
-| `claude/click-layer` | main にマージ済み |
-| `claude/keymap-rework` | main にマージ済み |
-| `claude/mona2-firmware-review-s2s0vk` | main にマージ済み |
-| `claude/pan-aml-tuning` | main にマージ済み |
-| `claude/repo-main-review-5vuajq` | main にマージ済み |
-| `claude/snap-4dir-doc` | 未マージだが内容は CHANGELOG 2026-06-21 の項として main に入っており実質重複 |
-| `claude/japanese-text-check-3gAgC` | 未マージだが2コミットとも `[Draw]` の自動生成物のみ。メッセージに "8方向化" とあるのは元コミットの文言の引き写しで、実装は含まれない |
-| `DYA-Studio` | `DYA-ooshini` に内包されるため、そちらを残せば失われない |
-
-```bash
-git fetch --prune origin
-for b in claude/click-layer claude/keymap-rework \
-         claude/mona2-firmware-review-s2s0vk claude/pan-aml-tuning \
-         claude/repo-main-review-5vuajq claude/snap-4dir-doc \
-         claude/japanese-text-check-3gAgC DYA-Studio; do
-  git push origin --delete "$b"
-done
-```
-
-### 判断保留（2本）— 消す前に中身を見る価値がある
-
-- **`DYA-ooshini`（27コミット）**: 名前の "ooshini" は**大西配列**を指すと思われ、
-  上の項目2（薙刀式）と地続きの可能性がある。`DYA-Studio`(25) を内包する
-- **`hhkb-research`（6コミット）**: moNa2 とは無関係だが、HHKB のファームウェア解析
-  （STM32 Cortex-M / `.hfb` フォーマット / 実機での 0xD0 検証）という**独立した調査成果**。
-  消すと再現に手間がかかる種類のもの
-
-消すと決めた場合は、先にタグへ退避してから:
-
-```bash
-git tag archive/DYA-ooshini   origin/DYA-ooshini
-git tag archive/hhkb-research origin/hhkb-research
-git push origin archive/DYA-ooshini archive/hhkb-research
-git push origin --delete DYA-ooshini
-git push origin --delete hhkb-research
-```
-
-戻すときは `git checkout -b <名前> archive/<名前>`。
-
-### ローカルの残骸掃除
-
-```bash
-git fetch --prune origin
-git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D
-```
-
----
-
-## 4. レイヤー・キーマップを PC 画面に表示するアプリ
-
-**依頼日**: 2026-08-12（以前にも相談あり）/ 本人の希望: 再開したい
+**依頼日**: 2026-08-12（以前にも相談あり）/ **優先度**: 下げ
+（2026-09-09「しばらく使ってたら慣れたから優先度下り目」）
 
 現在アクティブなレイヤーとそのキーマップを PC 上にリアルタイム表示するアプリ。
 着手時に、あらためて要件（対応OS・常駐方法・レイヤー情報の取得経路）から相談する。

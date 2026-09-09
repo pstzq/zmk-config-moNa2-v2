@@ -83,6 +83,38 @@
 
 ---
 
+## 2026-08-22  v1.0.0-rc1 リリース / ブランチ整理を完了
+
+（TODO.md から移動。作業自体は手元の環境で実行）
+
+### リリース
+
+実機確認（2026-08-20・全項目クリア）を経て ZMK v0.4 移行版を `main` へマージし、
+タグ `v1.0.0-rc1` で Release を作成。`release.yml` がハイフン入りタグを
+自動でプレリリース扱いにするため、GitHub 上もプレリリースとして公開されている。
+`release.yml` が `main` に乗ったので、以後は `workflow_dispatch` からの手動実行も
+使える（GitHub はデフォルトブランチにあるワークフローしか受け付けないため、
+それまではタグ push トリガーしか使えなかった）。
+
+### ブランチ整理
+
+不要な10本を整理し、リモートを `main` + 作業中ブランチのみの状態に戻した。
+
+- **削除（8本）**: `claude/click-layer` / `claude/keymap-rework` /
+  `claude/mona2-firmware-review-s2s0vk` / `claude/pan-aml-tuning` /
+  `claude/repo-main-review-5vuajq` / `claude/snap-4dir-doc` /
+  `claude/japanese-text-check-3gAgC` / `DYA-Studio`
+- **タグへ退避（2本）**: `archive/DYA-ooshini`（大西配列まわり・27コミット）と
+  `archive/hhkb-research`（HHKB のファームウェア解析・STM32 Cortex-M /
+  `.hfb` フォーマット / 実機での 0xD0 検証）。戻すときは
+  `git checkout -b <名前> archive/<名前>`
+
+Git のブランチはフォルダではなくコミットへのポインタなので「しまっておく」概念が
+無い。消す前にタグを打てば履歴は永久に残り、ブランチ一覧だけ綺麗になる、という
+整理方針を採った。
+
+---
+
 ## 2026-08-12  DYA Studio 2026/08版に対応（ZMK v0.4 世代移行）
 
 （by チャット依頼）
