@@ -41,6 +41,7 @@
 | 11 | GESTURE SNAP (Win) | Q 長押し（WINベース時） | ウィンドウスナップ（Win+矢印） |
 | 12 | CURSOR（予約） | — （未実装） | トラックボールで矢印キー入力（将来実装候補） |
 | 13 | CLICK | Del 長押し or B の一つ右(caps_word位置)長押し | 両手にクリック＋戻る/進む。AMLと独立 |
+| 14 | PRECISE 精密モード | F 長押し(400ms) | カーソル 1/3 速＋右手クリック |
 
 ---
 
@@ -136,6 +137,13 @@ F11  F12  —    —    —         0  1  2  3  .
 - 配置: 左手 `S/D/F`=左/中/右クリック・`X/V`=戻る(MB4)/進む(MB5)、右手 `J/K/L`=左/中/右クリック・`M/.`=戻る/進む。片手で起動し反対の手でクリックできる。
 - **AMLと独立して共存**: CLICK層は trackball listener のどのサブノードにも含めないため、層中もボール入力はデフォルトチェーンを通りカーソルは普通に動く。クリックは層13の `&mkp` が供給するので AML の発火/タイムアウトに依存しない。
 
+### PRECISE（精密モード・層14）
+- 起動: `F`（左手人差し指）を 400ms 長押し。タップは通常どおり `F` が入る。専用 hold-tap `prec_ht`。
+- 配置: 右手 `J/K/L`=左/中/右クリック・`M/.`=戻る/進む（CLICK層の右手と同一）。左手は起動キーの `F` を押さえているためクリックを持たず全て `&trans`。
+- **カーソル減速**: CLICK層と違い trackball listener に専用サブノード（`precision`, `layers = <14>`）を持ち、標準 ZMK の `&zip_xy_scaler 1 3` で 1/3 速にする。細かい位置合わせ・小さいUI要素のドラッグ用。
+- **AML は入れていない**: このチェーンに `&zip_temp_layer` を入れると MOUSE 層(7) が上に重なり、層14のクリック割り当てと取り合いになるため。F 長押しは能動的にボールを操作する場面なので自動遷移の必要もない。
+- **`flavor = "tap-preferred"` が設計の肝**: `&lt`/`&mt` が使う `balanced` は他キーの押下・解放で即 hold 判定するため、`fa` `fo` と打つだけで層に落ちる。tap-preferred は時間経過でしか hold にならないので、通常のタイピングでは原理的に発動せず、`D`+`F` コンボ（timeout 50ms）も先に成立する。代償は hold 確定までの後続キー遅延で、実害が出たら `hold-trigger-key-positions` で右手キー限定にする。
+
 ### BLE/設定（Bluetooth・端末管理に限定）
 - **雑多なキーは置かず Bluetooth まわりに集中**：BT0〜BT4 の選択（Y〜P 位置）。
   - BT0=Mac / BT1=Win / BT2=Win はマクロでレイヤー自動切替付き。
@@ -186,6 +194,7 @@ F11  F12  —    —    —         0  1  2  3  .
 | 10/11 | SNAP-M / SNAP-W | マゼンタ |
 | 12 | CURSOR（未使用） | 消灯 |
 | 13 | CLICK | 白 |
+| 14 | PRECISE | 青（400ms の長押しで入れたかを目視確認するため MOUSE/CLICK の白と変えている） |
 
 ## OS切替（BTプロファイル連動）
 - マクロ `bt_mac0` / `bt_win1` / `bt_win2` が「ベース層切替(`&to`)＋`&bt BT_SEL`」をまとめて実行。
@@ -244,6 +253,13 @@ F11  F12  —    —    —         0  1  2  3  .
     gesturer_win {    // GESTURE_SNAP_WIN(11): Win スナップ (Q長押し・WIN)
         layers = <11>;
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &zip_mouse_gesture_win>;
+    };
+
+    precision {       // PRECISE(14): カーソル減速 (F長押し)。AML は意図的に入れない
+        layers = <14>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
+                            &zip_xy_scaler 1 3
+                            &mouse_runtime_input_processor>;
     };
 };
 ```
@@ -304,7 +320,7 @@ DYAモジュールの `revision: main` が浮動で、`zmk-module-runtime-input-
 
 **共通前提**
 - OS側配列は引き続き JIS 固定。
-- Layer 2（O24）実装済み。Layer 12（CURSOR）は予約済み、Layer 13（CLICK）実装済み。今後の追加は 14 番以降。
+- Layer 2（O24）実装済み。Layer 12（CURSOR）は予約済み、Layer 13（CLICK）/ Layer 14（PRECISE）実装済み。今後の追加は 15 番以降。
 - BLE層からの切替ボタンとして実装する想定。
 
 #### 案 A: `&tog` オーバーレイ方式（大西配列向き・最小コスト）

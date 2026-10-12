@@ -16,11 +16,25 @@ OUTPUT  = ROOT / "keymap-drawer" / "mona2_behavior.svg"
 # ── Parse source files ──────────────────────────────────────────────────────────
 
 def parse_display_names(text):
-    return re.findall(r'display-name\s*=\s*"([^"]+)"', text)
+    """レイヤーの display-name を順に返す。
+
+    注意: 走査範囲を `zmk,keymap` ノード以降に限定している。2026-08-12 の
+    runtime-combo 移行でコンボ側にも display-name が付いたため、ファイル全体を
+    見ると 8 個のコンボ名が先頭にレイヤーとして混ざり、以降の層番号が全て +8
+    ずれる（Tab がレイヤー0・★デフォルト層として描かれていた）。
+    """
+    m = re.search(r'compatible\s*=\s*"zmk,keymap"', text)
+    scope = text[m.end():] if m else text
+    return re.findall(r'display-name\s*=\s*"([^"]+)"', scope)
 
 def _subnode_layers(text, node):
     m = re.search(node + r"\s*\{[^}]*layers\s*=\s*<([^>]+)>", text, re.DOTALL)
     return set(map(int, m.group(1).split())) if m else set()
+
+def _xy_scale(text):
+    """precision サブノードの `zip_xy_scaler <m> <d>` を "1/3" の形で返す。"""
+    m = re.search(r"precision\s*\{.*?zip_xy_scaler\s+(\d+)\s+(\d+)", text, re.DOTALL)
+    return f"{m.group(1)}/{m.group(2)}" if m else None
 
 def parse_overlay(text):
     m = re.search(r"zip_temp_layer\s+(\d+)", text)
@@ -29,7 +43,8 @@ def parse_overlay(text):
     pan     = _subnode_layers(text, "panner")
     gesture = _subnode_layers(text, "gesturer_mac") | _subnode_layers(text, "gesturer_win")
     keybind = _subnode_layers(text, "cursor_keys")
-    return aml, scroll, pan, gesture, keybind
+    precise = _subnode_layers(text, "precision")
+    return aml, scroll, pan, gesture, keybind, precise, _xy_scale(text)
 
 # ── Static layer descriptions (keyed by display-name) ──────────────────────────
 
@@ -48,6 +63,8 @@ LAYER_COLOR = {
     "SNAP-M": "#d03592",
     "SNAP-W": "#d03592",
     "CURSOR": "#0075ca",
+    "CLICK":   "#6f42c1",
+    "PRECISE": "#6f42c1",
 }
 
 ACTIVATION = {
@@ -64,6 +81,8 @@ ACTIVATION = {
     "SNAP-M": "Q 長押し  (MAC ベース時)",
     "SNAP-W": "Q 長押し  (WIN ベース時)",
     "CURSOR": "— （未実装・予約済み）",
+    "CLICK":   "Del 長押し  /  caps_word 位置 長押し",
+    "PRECISE": "F 長押し（400ms）",
 }
 
 # (background, foreground, label)  — pastel fills consistent with keymap-drawer combo/held colors
@@ -75,6 +94,7 @@ BALL_VOLUME  = ("#fff3cd", "#856404", "ボリューム（エンコーダ共通�
 BALL_PAN     = ("#d1ecf1", "#0598a7", "2D パン（自由スクロール）")
 BALL_GESTURE = ("#ffe8cc", "#e36209", "ジェスチャー（ウィンドウスナップ）")
 BALL_KEYBIND = ("#ddf4ff", "#0075ca", "矢印キー入力")
+BALL_PRECISE = ("#ddf4ff", "#0366d6", "カーソル（{} 速）")
 
 # ── Design tokens (aligned with keymap-drawer) ──────────────────────────────────
 
@@ -120,7 +140,8 @@ def pill(cx, cy, label, bg, fg, min_w=90):
 
 # ── Main SVG builder ────────────────────────────────────────────────────────────
 
-def build(display_names, aml, scroll_layers, pan_layers, gesture_layers, keybind_layers):
+def build(display_names, aml, scroll_layers, pan_layers, gesture_layers, keybind_layers,
+          precise_layers, xy_scale):
     n = len(display_names)
     H = TITLE_H + HEAD_H + n * ROW_H + PAD + 14
 
@@ -186,6 +207,10 @@ def build(display_names, aml, scroll_layers, pan_layers, gesture_layers, keybind
             out.append(pill(ball_cx, cy, BALL_GESTURE[2], BALL_GESTURE[0], BALL_GESTURE[1], min_w=CW[3] - 20))
         elif i in keybind_layers:
             out.append(pill(ball_cx, cy, BALL_KEYBIND[2], BALL_KEYBIND[0], BALL_KEYBIND[1]))
+        elif i in precise_layers:
+            # AML を通らないので「→ 自動で MOUSE へ」は付けない
+            out.append(pill(ball_cx, cy, BALL_PRECISE[2].format(xy_scale or "減速"),
+                            BALL_PRECISE[0], BALL_PRECISE[1], min_w=CW[3] - 20))
         elif name == "CURSOR":
             cw = 72; ch = 22
             px = CX[3] + 10; py = cy - ch // 2
@@ -224,12 +249,13 @@ def build(display_names, aml, scroll_layers, pan_layers, gesture_layers, keybind
 def main():
     ktext = KEYMAP.read_text(encoding="utf-8")
     otext = OVERLAY.read_text(encoding="utf-8")
-    names                          = parse_display_names(ktext)
-    aml, scroll, pan, gesture, keybind = parse_overlay(otext)
-    svg = build(names, aml, scroll, pan, gesture, keybind)
+    names = parse_display_names(ktext)
+    aml, scroll, pan, gesture, keybind, precise, xy_scale = parse_overlay(otext)
+    svg = build(names, aml, scroll, pan, gesture, keybind, precise, xy_scale)
     OUTPUT.write_text(svg, encoding="utf-8")
-    print(f"Written: {OUTPUT}  (aml={aml}, scroll={sorted(scroll)}, "
-          f"pan={sorted(pan)}, gesture={sorted(gesture)}, keybind={sorted(keybind)})")
+    print(f"Written: {OUTPUT}  ({len(names)} layers, aml={aml}, scroll={sorted(scroll)}, "
+          f"pan={sorted(pan)}, gesture={sorted(gesture)}, keybind={sorted(keybind)}, "
+          f"precise={sorted(precise)} @ {xy_scale})")
 
 if __name__ == "__main__":
     main()
