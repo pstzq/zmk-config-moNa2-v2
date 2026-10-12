@@ -171,6 +171,28 @@
         >;
     };
 
+    // F長押し(layer 14): 精密モード。カーソルを減速して細かく合わせる
+    //
+    // zip_xy_scaler は標準 ZMK の入力プロセッサ (input/processors.dtsi)。
+    // scroll 用の zip_scroll_scaler と兄弟で、こちらは REL_X/REL_Y を対象にする。
+    // ノード定義側に track-remainders があるため、端数は次のイベントへ持ち越され、
+    // 低速時に値が 0 に丸められてカクつくことがない (慣性スクロールで踏んだ轍)。
+    //
+    // 固定減速 → runtime の順は scroller/panner と同じ。DYA Studio のマウス感度
+    // スライダーは実効倍率として素直に上に乗る。
+    //
+    // AML の &zip_temp_layer は意図的に入れていない。F 長押しは能動的にボールを
+    // 操作する場面なので MOUSE 層(7) を自動で重ねる必要がなく、重ねると層14の
+    // クリック割り当てと取り合いになるため。
+    precision {
+        layers = <14>;
+        // zip_xy_scaler 1 3 = 1/3 速。実機で好みに合わせて 1/2〜1/5 で調整する
+        input-processors =
+            <&zip_xy_transform INPUT_TRANSFORM_X_INVERT
+             &zip_xy_scaler 1 3
+             &mouse_runtime_input_processor>;
+    };
+
     // Q長押し(layer 11): Win ウィンドウスナップ(Win+矢印)
     gesturer_win {
         layers = <11>;
