@@ -19,7 +19,13 @@
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
 
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 30
+/* エンコーダ1クリックのスクロール量 ≈ SCRL_VAL × MSC_TICK_MS × (tap-ms 中の tick 数) / 1000。
+ * &msc は MSC_TICK_MS ごとにスクロールを出す。tap-ms=20 だと tick は 8/16ms の2回なので
+ * 130 × 0.008 × 2 ≈ 2 段。旧設定 (30, 16ms, tap-ms=100) も 0.48 × 6 tick ≈ 2 段で量は同じ。
+ * 1クリックでビヘイビアキューが tap-ms だけ止まるので、tap-ms=20 なら毎秒約50クリック
+ * (5回転) まで遅れずに追従する。旧 100ms では毎秒10クリックで、一気に回すと追いつきが長かった */
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 130
+#define MSC_TICK_MS 8
 
 /* mod-tap 誤爆対策 (&mt / mt_bspc):
  * 直前のキー入力からこの時間(ms)以内は hold(修飾キー)が発動せず tap 扱いになる。
@@ -43,6 +49,11 @@
 #define CURSOR       12  // (現在未使用)  長押し → トラックボールで矢印キー入力
 #define CLICK        13  // 長押し → クリック層（カーソル移動はそのまま、指でクリック）
 #define PRECISE      14  // F 長押し(400ms) → 精密モード（カーソル減速 + 右手クリック）
+
+/* エンコーダ用 &msc の出力間隔 (既定 16ms)。短くして1クリック目からすぐスクロールさせる */
+&msc {
+    trigger-period-ms = <MSC_TICK_MS>;
+};
 
 &mt {
     flavor = "balanced";
@@ -244,7 +255,9 @@
             #sensor-binding-cells = <0>;
             cw-binding = <&msc SCRL_DOWN>;
             ccw-binding = <&msc SCRL_UP>;
-            tap-ms = <100>;
+            // 1クリックでキューが tap-ms だけ止まる。100ms だと毎秒10クリックしか
+            // 捌けず追いつきが長いので 20ms に (量は SCRL_VAL / MSC_TICK_MS 側で合わせてある)
+            tap-ms = <20>;
         };
 
         rsr_vol: rsr_vol {
@@ -252,7 +265,8 @@
             #sensor-binding-cells = <0>;
             cw-binding = <&kp C_VOL_DN>;
             ccw-binding = <&kp C_VOL_UP>;
-            tap-ms = <100>;
+            // 音量キーは押下時間で量が変わらないので、追いつきが速くなるよう短くする
+            tap-ms = <20>;
         };
 
         // クリック層用 hold-tap: タップ=caps_word / 長押し=クリック層(CLICK)
