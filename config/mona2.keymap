@@ -19,7 +19,13 @@
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
 
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 30
+/* エンコーダ1クリックのスクロール量 ≈ SCRL_VAL × MSC_TICK_MS × (tap-ms 中の tick 数) / 1000。
+ * &msc は MSC_TICK_MS ごとにスクロールを出す。tap-ms=20 だと tick は 8/16ms の2回なので
+ * 130 × 0.008 × 2 ≈ 2 段。旧設定 (30, 16ms, tap-ms=100) も 0.48 × 6 tick ≈ 2 段で量は同じ。
+ * 1クリックでビヘイビアキューが tap-ms だけ止まるので、tap-ms=20 なら毎秒約50クリック
+ * (5回転) まで遅れずに追従する。旧 100ms では毎秒10クリックで、一気に回すと追いつきが長かった */
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 130
+#define MSC_TICK_MS 8
 
 /* mod-tap 誤爆対策 (&mt / mt_bspc):
  * 直前のキー入力からこの時間(ms)以内は hold(修飾キー)が発動せず tap 扱いになる。
@@ -42,6 +48,12 @@
 #define GESTURE_SNAP_WIN 11  // Q長押し(Win) → ウィンドウスナップ(Win+矢印)
 #define CURSOR       12  // (現在未使用)  長押し → トラックボールで矢印キー入力
 #define CLICK        13  // 長押し → クリック層（カーソル移動はそのまま、指でクリック）
+#define PRECISE      14  // F 長押し(400ms) → 精密モード（カーソル減速 + 右手クリック）
+
+/* エンコーダ用 &msc の出力間隔 (既定 16ms)。短くして1クリック目からすぐスクロールさせる */
+&msc {
+    trigger-period-ms = <MSC_TICK_MS>;
+};
 
 &mt {
     flavor = "balanced";
@@ -243,7 +255,9 @@
             #sensor-binding-cells = <0>;
             cw-binding = <&msc SCRL_DOWN>;
             ccw-binding = <&msc SCRL_UP>;
-            tap-ms = <100>;
+            // 1クリックでキューが tap-ms だけ止まる。100ms だと毎秒10クリックしか
+            // 捌けず追いつきが長いので 20ms に (量は SCRL_VAL / MSC_TICK_MS 側で合わせてある)
+            tap-ms = <20>;
         };
 
         rsr_vol: rsr_vol {
@@ -251,7 +265,8 @@
             #sensor-binding-cells = <0>;
             cw-binding = <&kp C_VOL_DN>;
             ccw-binding = <&kp C_VOL_UP>;
-            tap-ms = <100>;
+            // 音量キーは押下時間で量が変わらないので、追いつきが速くなるよう短くする
+            tap-ms = <20>;
         };
 
         // クリック層用 hold-tap: タップ=caps_word / 長押し=クリック層(CLICK)
@@ -265,6 +280,30 @@
             bindings = <&mo>, <&caps_word>;
         };
 
+        // 精密モード用 hold-tap: タップ=通常の文字 / 長押し(400ms)=精密層(PRECISE)
+        //
+        // flavor が "tap-preferred" なのが肝。&lt や &mt が使う "balanced" は
+        // 「他のキーが押されて離された」時点で hold 判定するため、F をこの方式に
+        // すると `fa` `fo` と打っただけで層に落ちる。tap-preferred は
+        // 「tapping-term の経過」でしか hold にならないので、
+        //   - 通常のタイピングでは原理的に発動しない
+        //   - D+F コンボ (timeout 50ms) が先に成立して抜ける
+        // という二重の保護になる。「長押しで入る」という要求と手段が一致している。
+        //
+        // 代償: hold 判定が確定するまで後続キーが遅延する (`fo` の o が少し待たされる)。
+        // 実害が出たら hold-trigger-key-positions で右手キー限定にする手がある。
+        prec_ht: prec_ht {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <400>;   // 精密モードに入るまでの長押し時間。250〜500 で調整
+            quick-tap-ms = <200>;      // タップ直後の押しっぱなしは文字のオートリピート
+#if MT_REQUIRE_PRIOR_IDLE_MS > 0
+            require-prior-idle-ms = <MT_REQUIRE_PRIOR_IDLE_MS>;  // 打鍵直後は発動しない
+#endif
+            bindings = <&mo>, <&kp>;
+        };
+
     };
 
     keymap {
@@ -274,7 +313,7 @@
             display-name = "MAC";
             bindings = <
 &lt GESTURE_SNAP_MAC Q  &kp W      &kp E     &kp R               &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
-&kp A                   &kp S      &kp D     &kp F               &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RGUI JIS_MINUS
+&kp A                   &kp S      &kp D     &prec_ht PRECISE F  &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RGUI JIS_MINUS
 &mt LSHFT Z             &kp X      &kp C     &kp V               &kp B        &clk_caps CLICK 0     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
 &kp LGUI                &kp LCTRL  &kp LALT  &mt_bspc LGUI BSPC  &lt SYM SPACE  &lt NAV_MAC LANG2    &lt NAV_MAC LANG1  &lt NUM ENTER                             &lt CLICK DEL
             >;
@@ -286,7 +325,7 @@
             display-name = "WIN";
             bindings = <
 &lt GESTURE_SNAP_WIN Q  &kp W     &kp E     &kp R                &kp T                                                  &kp Y          &kp U  &kp I      &kp O    &lt GESTURE_PAN P
-&kp A                  &kp S     &kp D     &kp F                &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
+&kp A                  &kp S     &kp D     &prec_ht PRECISE F   &kp G                       &kp JIS_AT             &kp H          &kp J  &kp K      &kp L    &mt RCTRL JIS_MINUS
 &mt LSHFT Z            &kp X     &kp C     &kp V                &kp B        &clk_caps CLICK 0     &kp JIS_UNDER          &kp N          &kp M  &kp COMMA  &kp DOT  &mt RSHFT JIS_FSLH
 &kp LCTRL              &kp LGUI  &kp LALT  &mt_bspc LCTRL BSPC  &lt SYM SPACE  &lt NAV_WIN LANG2    &lt NAV_WIN LANG1  &lt NUM ENTER                             &lt CLICK DEL
             >;
@@ -436,6 +475,23 @@
 &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans            &trans            &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
 &trans  &mkp MB4  &trans    &mkp MB5  &trans  &trans    &trans            &trans  &mkp MB4  &trans    &mkp MB5  &trans
 &trans  &trans    &trans    &trans    &trans  &trans    &trans  &trans                                          &trans
+            >;
+
+            sensor-bindings = <&scroll_up_down>;
+        };
+
+        // 精密層: F 長押し(400ms)で起動。右手クリック + カーソル減速。
+        // カーソル減速は boards/shields/mona2/mona2_r.overlay の
+        // trackball_central_listener/precision (layers = <14>) が担当する。
+        // CLICK 層と違い左手はクリックを持たない (起動キーの F を左手が押さえているため)。
+        // 右手 J/K/L=左/中/右クリック・M/.=戻る/進む (CLICK 層の右手と同一配置)
+        precise_layer {
+            display-name = "PRECISE";
+            bindings = <
+&trans  &trans  &trans  &trans  &trans                              &trans  &trans    &trans    &trans    &trans
+&trans  &trans  &trans  &trans  &trans            &trans            &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans            &trans  &mkp MB4  &trans    &mkp MB5  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans                                          &trans
             >;
 
             sensor-bindings = <&scroll_up_down>;

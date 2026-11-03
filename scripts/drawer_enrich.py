@@ -147,6 +147,7 @@ LAYER_HEADINGS = {
     "SNAP-W": "11 · SNAP-W — ウィンドウ整列 (Win) · Q 長押し + ボール",
     "CURSOR": "12 · CURSOR — 予約 (未使用)",
     "CLICK":  "13 · CLICK — クリック層 · Del or caps 長押し",
+    "PRECISE": "14 · PRECISE — 精密モード · F 長押し(400ms) + ボール",
 }
 
 

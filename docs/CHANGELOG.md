@@ -11,6 +11,110 @@
 
 ---
 
+## 2026-09-09  精密モード(PRECISE=14)を追加 — F 長押しでカーソル減速 + 右手クリック
+
+（by チャット依頼）
+
+### 目的
+
+細かい位置合わせのときにカーソルが速すぎる。左手の `F` を長押ししている間だけ
+カーソルを遅くし、同時に（`caps_word` 長押し＝CLICK層と同じ要領で）右手でクリック
+できるようにする。
+
+### 追加内容
+
+- **PRECISE層(14)** を新設（`config/mona2.keymap`）。右手 `J`/`K`/`L`=左/中/右クリック、
+  `M`/`.`=戻る/進む（CLICK層の右手と同一配置）。左手は起動キーの `F` を押さえている
+  ためクリックを持たず全て `&trans`
+- **カーソル減速**: `boards/shields/mona2/mona2_r.overlay` の
+  `trackball_central_listener` に `precision`（`layers = <14>`）チェーンを追加し、
+  標準 ZMK の `&zip_xy_scaler 1 3` で 1/3 速にする。ノード定義側に `track-remainders`
+  があるので低速時に値が 0 へ丸められてカクつくことはない（慣性スクロールで踏んだ轍）。
+  固定減速 → `&mouse_runtime_input_processor` の順は scroller/panner と揃えてあり、
+  DYA Studio の感度スライダーはその上に素直に乗る
+- **AML は意図的に外した**: このチェーンに `&zip_temp_layer` を入れていない。F 長押しは
+  能動的にボールを操作する場面で MOUSE層(7) を自動で重ねる必要がなく、重ねると
+  層14のクリック割り当てと取り合いになるため
+- LED配色: PRECISE=青（`config/mona2_r.conf`、`LAYER_14_COLOR=4`）。MOUSE/CLICK の白と
+  あえて変えている。**400ms 経って精密モードに入れたかを目で確認できる**ようにするため
+
+### 起動キーの設計（`prec_ht`）
+
+`&lt` の流用は見送った。`&lt` はこの config で `flavor = "balanced"` を
+グローバル設定しており、SPACE・英数・かな・Q・P・DEL が共有しているため。
+それ以上に本質的な問題として、**balanced は tapping-term を伸ばしても保護にならない**
+（他キーの押下・解放で即 hold 判定するので `fa` `fo` と打つだけで層に落ちる）。
+
+専用 hold-tap `prec_ht` を定義し、`flavor = "tap-preferred"` にした。これは
+**時間経過でしか hold にならない** flavor なので、
+
+- 通常のタイピングでは原理的に発動しない
+- `D`+`F` の Shift+Tab コンボ（timeout 50ms）が先に成立して抜ける
+
+という二重の保護になる。「長押しで入る」という要求と手段が一致している形。
+`tapping-term-ms = 400` / `require-prior-idle-ms` は既存 `&mt` と同じ 125ms。
+
+代償として hold 判定が確定するまで後続キーが遅延する（`fo` の `o` が少し待たされる）。
+実害が出たら `hold-trigger-key-positions` で右手キー限定にする手がある。
+
+### ついでに直したもの: 動作図のレイヤー番号が +8 ずれていた
+
+`scripts/draw_behavior.py` の `parse_display_names()` がファイル全体から
+`display-name` を拾っていたため、**2026-08-12 の runtime-combo 移行以降、
+コンボの display-name 8個がレイヤー 0〜7 として混入**し、実レイヤーが全て +8
+ずれて描かれていた（`mona2_behavior.svg` で "Tab" がレイヤー0・★デフォルト層に
+なっていた）。走査範囲を `zmk,keymap` ノード以降に限定して修正。
+「図からコンボが消えていた」と同じ、移行時に取りこぼしていた副作用。
+
+併せて同スクリプトへ CLICK / PRECISE の色と起動方法を追加し、PRECISE 行の
+トラックボール欄は overlay の `zip_xy_scaler` を読んで「カーソル（1/3 速）」と
+実値で描くようにした（AML を通らないので「→ 自動で MOUSE へ」は付けない）。
+
+> `scripts/draw_statemachine.py`（状態遷移図）は座標が手置きで、そもそも CLICK も
+> 載っていない。PRECISE だけ足すと不整合になるため今回は触っていない。
+
+### キー選定の経緯
+
+左手人差し指ホーム = 移動ゼロで数秒〜十数秒のホールドに耐える、という押しやすさを優先。
+ローマ字入力では `f` は低頻度（`ふ` は `hu` でも打てる）なのも効いている。
+`G` は `D`+`F` コンボと無縁でリスクゼロだが、が行（`ga`/`gu`/`go`）でローマ字では
+`F` より頻度が高いため見送った。`B`(25) は将来「クリック系を左手内側に集約」する
+整理をするなら候補。
+
+---
+
+## 2026-08-22  v1.0.0-rc1 リリース / ブランチ整理を完了
+
+（TODO.md から移動。作業自体は手元の環境で実行）
+
+### リリース
+
+実機確認（2026-08-20・全項目クリア）を経て ZMK v0.4 移行版を `main` へマージし、
+タグ `v1.0.0-rc1` で Release を作成。`release.yml` がハイフン入りタグを
+自動でプレリリース扱いにするため、GitHub 上もプレリリースとして公開されている。
+`release.yml` が `main` に乗ったので、以後は `workflow_dispatch` からの手動実行も
+使える（GitHub はデフォルトブランチにあるワークフローしか受け付けないため、
+それまではタグ push トリガーしか使えなかった）。
+
+### ブランチ整理
+
+不要な10本を整理し、リモートを `main` + 作業中ブランチのみの状態に戻した。
+
+- **削除（8本）**: `claude/click-layer` / `claude/keymap-rework` /
+  `claude/mona2-firmware-review-s2s0vk` / `claude/pan-aml-tuning` /
+  `claude/repo-main-review-5vuajq` / `claude/snap-4dir-doc` /
+  `claude/japanese-text-check-3gAgC` / `DYA-Studio`
+- **タグへ退避（2本）**: `archive/DYA-ooshini`（大西配列まわり・27コミット）と
+  `archive/hhkb-research`（HHKB のファームウェア解析・STM32 Cortex-M /
+  `.hfb` フォーマット / 実機での 0xD0 検証）。戻すときは
+  `git checkout -b <名前> archive/<名前>`
+
+Git のブランチはフォルダではなくコミットへのポインタなので「しまっておく」概念が
+無い。消す前にタグを打てば履歴は永久に残り、ブランチ一覧だけ綺麗になる、という
+整理方針を採った。
+
+---
+
 ## 2026-08-12  DYA Studio 2026/08版に対応（ZMK v0.4 世代移行）
 
 （by チャット依頼）
