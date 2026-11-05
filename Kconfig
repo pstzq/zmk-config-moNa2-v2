@@ -1,0 +1,9 @@
+config MONA2_PROFILE_BASE_LAYER
+    bool "Switch base layer (MAC/WIN) to match the active BT profile"
+    depends on ZMK_BLE && (!ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL)
+    help
+      When the active BLE profile changes (including the first time after
+      boot), activate the matching base layer: profile 0 -> layer 0 (MAC),
+      profiles 1 and 2 -> layer 1 (WIN). Layers are not persisted, so
+      without this a reboot of the central leaves the keyboard on MAC even
+      though it reconnects to the Windows profile.
