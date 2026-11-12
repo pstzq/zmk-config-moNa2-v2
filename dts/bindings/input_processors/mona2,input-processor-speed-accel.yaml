@@ -1,0 +1,31 @@
+description: |
+  Keyball-style speed-dependent pointer scaling.
+
+  movement = |x| + |y| of the current sensor report. The first entry of
+  "thresholds" that movement is strictly greater than selects the matching
+  entry of "multipliers-percent". If none matches, "default-percent" is used.
+  Thresholds must be in descending order.
+
+compatible: "mona2,input-processor-speed-accel"
+
+include: ip_zero_param.yaml
+
+properties:
+  thresholds:
+    type: array
+    required: true
+    description: Movement thresholds in sensor counts per report, descending.
+  multipliers-percent:
+    type: array
+    required: true
+    description: Multiplier for each threshold, in percent (150 = 1.5x).
+  default-percent:
+    type: int
+    default: 100
+    description: Multiplier used when movement is not above any threshold.
+  pair-timeout-ms:
+    type: int
+    default: 30
+    description: |
+      X and Y arrive as separate events. When an X event comes, the Y of the
+      previous report is used for |y| if it is newer than this.

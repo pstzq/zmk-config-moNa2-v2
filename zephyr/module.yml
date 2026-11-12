@@ -1,3 +1,7 @@
 build:
+  # このリポジトリ自体を Zephyr モジュールとして読み込ませ、小さな独自コードを足す
+  cmake: .
+  kconfig: Kconfig
   settings:
     board_root: .
+    dts_root: .
