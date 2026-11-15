@@ -1,0 +1,10 @@
+config MONA2_INPUT_PROCESSOR_SPEED_ACCEL
+    bool "Speed-dependent cursor scaling for the trackball"
+    default y
+    depends on DT_HAS_MONA2_INPUT_PROCESSOR_SPEED_ACCEL_ENABLED
+    help
+      Keyball-style pointer acceleration: the size of each movement
+      (|x| + |y|) picks a multiplier from a table, so slow movements are
+      slowed down for precise aiming and fast flicks are sped up.
+      Built automatically when a "mona2,input-processor-speed-accel"
+      node is enabled in the devicetree (right half only).

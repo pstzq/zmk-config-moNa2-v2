@@ -24,6 +24,28 @@
         // min-velocity-q8 は旧 inertial-scroll-threshold (=10) と尺度が異なるため
         // 既定値 96 のまま様子を見る。余韻が長すぎる/短すぎる場合はここを増減する。
     };
+
+    // 速度連動のカーソル加速 (Keyball の adjust_mouse_speed 相当。src/input_processor_speed_accel.c)
+    // 1レポートの移動量 |x|+|y| が thresholds の値を「超えた」最初の段の倍率を掛ける。
+    // ゆっくり動かすと減速して1文字を狙いやすく、素早く振ると加速して遠くへ飛ぶ。
+    //
+    // 係数の調整はここだけ触ればよい (2つの配列は同じ個数・上から大きい順):
+    //   thresholds          : 移動量のしきい値 (センサーのカウント数)
+    //   multipliers-percent : そのしきい値を超えたときの倍率 (%。150 = 1.5倍)
+    //   default-percent     : どのしきい値も超えないとき (移動量 0〜1) の倍率
+    //
+    // 初期値は元ネタ (mass 氏 / shakupan 氏が roBa・moNa2 で使用) の表そのまま:
+    //   >60:3.0  >30:1.5  >5:1.0  >4:0.9  >3:0.7  >2:0.5  >1:0.2  それ以下:1.0
+    // ただし Keyball とはセンサーの CPI やレポート間隔が違うので、体感は同じにならない。
+    // 全体が速すぎ/遅すぎるときは DYA Studio のマウス感度スライダーで、
+    // 「遅い動きだけ」「速い動きだけ」を変えたいときはここの表で調整する。
+    speed_accel: speed_accel {
+        compatible = "mona2,input-processor-speed-accel";
+        #input-processor-cells = <0>;
+        thresholds          = <60  30   5   4   3   2   1>;
+        multipliers-percent = <300 150 100  90  70  50  20>;
+        default-percent = <100>;
+    };
 };
 
 &default_transform {
@@ -117,7 +139,10 @@
     status = "okay";
     device = <&trackball_central>;
     // オートマウスレイヤー(AML): ボール操作で MOUSE 層(=6) を一時有効化
-    input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &mouse_runtime_input_processor &zip_temp_layer 7 500>;
+    // &speed_accel (速度連動加速) は runtime の感度倍率より「前」に置く。
+    // 移動量の判定を生のセンサー値で行うため (Studio のスライダーで段の境目がずれないように)。
+    // 加速をやめたいときは &speed_accel をこの行から消すだけでよい。
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT &speed_accel &mouse_runtime_input_processor &zip_temp_layer 7 500>;
 
     scroller {
         layers = <4 5 6>;   // NUM(4)/NAV_MAC(5)/NAV_WIN(6) でスクロール有効
